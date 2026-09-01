@@ -33,14 +33,14 @@ final class Governance {
 	}
 
 	public static function record_post_change( int $post_id, \WP_Post $post, bool $update, ?\WP_Post $post_before ): void {
-		unset( $post_before );
 		$owner_type = Entity::owner_type_for_post( $post_id );
 		if ( '' === $owner_type || in_array( $post->post_status, [ 'auto-draft', 'trash' ], true ) ) {
 			return;
 		}
 
+		$created = ! $update || ( $post_before instanceof \WP_Post && 'auto-draft' === $post_before->post_status );
 		Audit::record(
-			$update ? self::RECORD_UPDATED : self::RECORD_CREATED,
+			$created ? self::RECORD_CREATED : self::RECORD_UPDATED,
 			'notice',
 			[
 				'record_id'     => $post_id,
