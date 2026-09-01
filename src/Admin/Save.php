@@ -73,9 +73,6 @@ final class Save {
 			}
 		}
 
-		foreach ( array_unique( $areas ) as $area ) {
-			Governance::record_data_updated( $owner_type, $post_id, $area );
-		}
 		if ( $areas ) {
 			Activity::record(
 				$owner_type,
