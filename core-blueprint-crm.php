@@ -3,7 +3,7 @@
  * Plugin Name:       Core Blueprint CRM
  * Plugin URI:        https://coreblueprint.io
  * Description:       Self-hosted customer relationship management for people, organizations, services and customer context.
- * Version:           0.1.0-rc1
+ * Version:           0.1.0-rc2
  * Author:            Core Blueprint
  * Author URI:        https://coreblueprint.io
  * License:           GPL-2.0+
@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CB_CRM_VERSION', '0.1.0-rc1' );
+define( 'CB_CRM_VERSION', '0.1.0-rc2' );
 define( 'CB_CRM_SCHEMA_VERSION', '1.0' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
 define( 'CB_CRM_REQUIRED_BASE', '1.0.0-rc3.35' );
