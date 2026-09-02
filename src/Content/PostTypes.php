@@ -49,7 +49,8 @@ final class PostTypes {
 			'exclude_from_search' => true, 'has_archive' => false, 'rewrite' => false,
 			'supports' => self::SERVICE === $type ? [ 'title', 'editor' ] : [ 'title' ],
 			'menu_icon' => $icon,
-			'capability_type' => [ 'cb_crm_record', 'cb_crm_records' ], 'map_meta_cap' => true,
+			'capability_type' => [ 'cb_crm_record', 'cb_crm_records' ],
+			'map_meta_cap' => false,
 			'capabilities' => [
 				'edit_post' => Capabilities::MANAGE, 'read_post' => Capabilities::MANAGE, 'delete_post' => Capabilities::MANAGE,
 				'edit_posts' => Capabilities::MANAGE, 'edit_others_posts' => Capabilities::MANAGE, 'publish_posts' => Capabilities::MANAGE,
