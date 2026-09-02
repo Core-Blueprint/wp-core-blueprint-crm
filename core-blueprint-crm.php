@@ -96,8 +96,7 @@ function cb_crm_activate(): void {
 			[ 'back_link' => true ]
 		);
 	}
-	\CB\CRM\Capabilities::install();
-	\CB\CRM\Database\Schema::register();
+	\CB\CRM\Install::activate();
 }
 register_activation_hook( __FILE__, 'cb_crm_activate' );
 
