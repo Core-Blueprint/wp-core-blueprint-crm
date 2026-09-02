@@ -22,8 +22,13 @@ final class PanelRegistry {
 		$label = sanitize_text_field( (string) ( $definition['label'] ?? '' ) );
 		$post_types = array_values( array_intersect( array_map( 'sanitize_key', (array) ( $definition['post_types'] ?? [] ) ), [ Entity::CONTACT, Entity::ORGANIZATION, Entity::SERVICE ] ) );
 		$render = $definition['render'] ?? null;
-		$context = in_array( (string) ( $definition['context'] ?? 'normal' ), [ 'normal', 'side', 'advanced' ], true ) ? (string) $definition['context'] : 'normal';
-		$priority = in_array( (string) ( $definition['priority'] ?? 'default' ), [ 'high', 'core', 'default', 'low' ], true ) ? (string) $definition['priority'] : 'default';
+
+		$requested_context = (string) ( $definition['context'] ?? 'normal' );
+		$context = in_array( $requested_context, [ 'normal', 'side', 'advanced' ], true ) ? $requested_context : 'normal';
+
+		$requested_priority = (string) ( $definition['priority'] ?? 'default' );
+		$priority = in_array( $requested_priority, [ 'high', 'core', 'default', 'low' ], true ) ? $requested_priority : 'default';
+
 		if ( '' === $id || '' === $label || ! $post_types || ! is_callable( $render ) || isset( self::$panels[ $id ] ) ) { return false; }
 		self::$panels[ $id ] = compact( 'id', 'label', 'post_types', 'render', 'context', 'priority' );
 		return true;
