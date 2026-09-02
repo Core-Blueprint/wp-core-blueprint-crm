@@ -1,0 +1,46 @@
+name: Temporary CRM i18n QC
+
+on:
+  push:
+    branches:
+      - qc/crm-launch-readiness
+    paths:
+      - '.github/workflows/tmp-crm-i18n-qc.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  qc:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install gettext
+        run: sudo apt-get update -qq && sudo apt-get install -y gettext
+      - name: Generate launch POT
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p languages
+          find . -type f -name '*.php' -not -path './vendor/*' -not -path './languages/*' -not -path './.github/*' -print0 | xargs -0 xgettext --language=PHP --from-code=UTF-8 --keyword=__ --keyword=_e --keyword=esc_html__ --keyword=esc_html_e --keyword=esc_attr__ --keyword=esc_attr_e --keyword=_x:1,2c --keyword=_ex:1,2c --keyword=_n:1,2 --keyword=_nx:1,2,4c --sort-output --package-name='Core Blueprint CRM' --package-version='1.0.0-rc1' -o languages/core-blueprint-crm.pot
+          printf 'POT_MSGIDS=' && grep -c '^msgid ' languages/core-blueprint-crm.pot
+      - name: Contract sanity
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l >/tmp/crm-php-lint.log
+          if grep -q 'CB_CRM_REQUIRED_BASE' core-blueprint-crm.php src/Integration/Suite.php; then exit 1; fi
+          if grep -q "'requires_base'" src/Integration/Suite.php; then exit 1; fi
+          grep -q 'Governance\\Audit' src/Governance.php
+          grep -q 'EventRegistry::register' src/Governance.php
+      - name: Commit POT
+        shell: bash
+        run: |
+          git config user.name 'Core Blueprint CI'
+          git config user.email 'actions@users.noreply.github.com'
+          git add languages/core-blueprint-crm.pot
+          git diff --cached --check
+          git commit -m 'Add CRM launch translation template'
+          git push origin HEAD:qc/crm-launch-readiness
