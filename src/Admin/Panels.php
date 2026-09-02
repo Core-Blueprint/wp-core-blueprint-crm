@@ -60,9 +60,9 @@ final class Panels {
 				$email_mode = ContactIdentity::EMAIL_CRM;
 			}
 			?>
-		<tr><th><label for="cb-crm-first-name"><?php esc_html_e( 'First name', 'core-blueprint-crm' ); ?></label></th><td><input class="regular-text" id="cb-crm-first-name" name="cb_crm_details[first_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::FIRST_NAME, true ) ); ?>"></td></tr>
-		<tr><th><label for="cb-crm-last-name"><?php esc_html_e( 'Last name', 'core-blueprint-crm' ); ?></label></th><td><input class="regular-text" id="cb-crm-last-name" name="cb_crm_details[last_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::LAST_NAME, true ) ); ?>"></td></tr>
-		<tr><th><label for="cb-crm-job-title"><?php esc_html_e( 'Job title', 'core-blueprint-crm' ); ?></label></th><td><input class="regular-text" id="cb-crm-job-title" name="cb_crm_details[job_title]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::JOB_TITLE, true ) ); ?>"></td></tr>
+		<tr><th><label for="cb-crm-first-name"><?php esc_html_e( 'First name', 'core-blueprint-crm' ); ?></label></th><td><input type="text" class="regular-text" id="cb-crm-first-name" name="cb_crm_details[first_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::FIRST_NAME, true ) ); ?>"></td></tr>
+		<tr><th><label for="cb-crm-last-name"><?php esc_html_e( 'Last name', 'core-blueprint-crm' ); ?></label></th><td><input type="text" class="regular-text" id="cb-crm-last-name" name="cb_crm_details[last_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::LAST_NAME, true ) ); ?>"></td></tr>
+		<tr><th><label for="cb-crm-job-title"><?php esc_html_e( 'Job title', 'core-blueprint-crm' ); ?></label></th><td><input type="text" class="regular-text" id="cb-crm-job-title" name="cb_crm_details[job_title]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::JOB_TITLE, true ) ); ?>"></td></tr>
 		<tr>
 			<th><label for="cb-crm-user-search"><?php esc_html_e( 'WordPress account', 'core-blueprint-crm' ); ?></label></th>
 			<td>
@@ -92,7 +92,7 @@ final class Panels {
 			</td>
 		</tr>
 		<?php elseif ( Entity::ORGANIZATION === $owner_type ) : ?>
-		<tr><th><label for="cb-crm-legal-name"><?php esc_html_e( 'Legal name', 'core-blueprint-crm' ); ?></label></th><td><input class="regular-text" id="cb-crm-legal-name" name="cb_crm_details[legal_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::LEGAL_NAME, true ) ); ?>"></td></tr>
+		<tr><th><label for="cb-crm-legal-name"><?php esc_html_e( 'Legal name', 'core-blueprint-crm' ); ?></label></th><td><input type="text" class="regular-text" id="cb-crm-legal-name" name="cb_crm_details[legal_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::LEGAL_NAME, true ) ); ?>"></td></tr>
 		<?php endif; ?>
 		</tbody></table>
 		<?php
@@ -212,8 +212,8 @@ final class Panels {
 		?>
 		<tr data-cb-crm-row>
 			<td><select name="<?php echo esc_attr( $prefix . '[method_type]' ); ?>"><?php foreach ( ContactMethods::TYPES as $type ) : ?><option value="<?php echo esc_attr( $type ); ?>" <?php selected( (string) ( $row['method_type'] ?? 'email' ), $type ); ?>><?php echo esc_html( self::contact_method_label( $type ) ); ?></option><?php endforeach; ?></select></td>
-			<td><input name="<?php echo esc_attr( $prefix . '[label]' ); ?>" value="<?php echo esc_attr( (string) ( $row['label'] ?? '' ) ); ?>"></td>
-			<td><input class="regular-text" name="<?php echo esc_attr( $prefix . '[value]' ); ?>" value="<?php echo esc_attr( (string) ( $row['value'] ?? '' ) ); ?>"></td>
+			<td><input type="text" name="<?php echo esc_attr( $prefix . '[label]' ); ?>" value="<?php echo esc_attr( (string) ( $row['label'] ?? '' ) ); ?>"></td>
+			<td><input type="text" class="regular-text" name="<?php echo esc_attr( $prefix . '[value]' ); ?>" value="<?php echo esc_attr( (string) ( $row['value'] ?? '' ) ); ?>"></td>
 			<td><label><input type="checkbox" name="<?php echo esc_attr( $prefix . '[is_primary]' ); ?>" value="1" <?php checked( ! empty( $row['is_primary'] ) ); ?>> <span class="screen-reader-text"><?php esc_html_e( 'Primary contact method', 'core-blueprint-crm' ); ?></span></label></td>
 			<td><button type="button" class="button-link-delete" data-cb-crm-remove-row><?php esc_html_e( 'Remove', 'core-blueprint-crm' ); ?></button></td>
 		</tr>
@@ -226,13 +226,13 @@ final class Panels {
 		?>
 		<div class="cb-crm-address-card" data-cb-crm-row>
 			<div class="cb-crm-address-grid">
-				<div class="cb-crm-address-field"><label><?php esc_html_e( 'Label', 'core-blueprint-crm' ); ?><input name="<?php echo esc_attr( $prefix . '[label]' ); ?>" value="<?php echo esc_attr( (string) ( $row['label'] ?? '' ) ); ?>" placeholder="<?php echo esc_attr__( 'e.g. Work or Home', 'core-blueprint-crm' ); ?>"></label></div>
-				<div class="cb-crm-address-field is-wide"><label><?php esc_html_e( 'Address line 1', 'core-blueprint-crm' ); ?><input name="<?php echo esc_attr( $prefix . '[address_line_1]' ); ?>" value="<?php echo esc_attr( (string) ( $row['address_line_1'] ?? '' ) ); ?>"></label></div>
-				<div class="cb-crm-address-field is-wide"><label><?php esc_html_e( 'Address line 2', 'core-blueprint-crm' ); ?><input name="<?php echo esc_attr( $prefix . '[address_line_2]' ); ?>" value="<?php echo esc_attr( (string) ( $row['address_line_2'] ?? '' ) ); ?>"></label></div>
-				<div class="cb-crm-address-field is-small"><label><?php esc_html_e( 'Postal code', 'core-blueprint-crm' ); ?><input name="<?php echo esc_attr( $prefix . '[postal_code]' ); ?>" value="<?php echo esc_attr( (string) ( $row['postal_code'] ?? '' ) ); ?>"></label></div>
-				<div class="cb-crm-address-field"><label><?php esc_html_e( 'City', 'core-blueprint-crm' ); ?><input name="<?php echo esc_attr( $prefix . '[city]' ); ?>" value="<?php echo esc_attr( (string) ( $row['city'] ?? '' ) ); ?>"></label></div>
-				<div class="cb-crm-address-field"><label><?php esc_html_e( 'Region', 'core-blueprint-crm' ); ?><input name="<?php echo esc_attr( $prefix . '[region]' ); ?>" value="<?php echo esc_attr( (string) ( $row['region'] ?? '' ) ); ?>"></label></div>
-				<div class="cb-crm-address-field is-small"><label><?php esc_html_e( 'Country code', 'core-blueprint-crm' ); ?><input maxlength="2" name="<?php echo esc_attr( $prefix . '[country]' ); ?>" value="<?php echo esc_attr( (string) ( $row['country'] ?? '' ) ); ?>" placeholder="NL"></label></div>
+				<div class="cb-crm-address-field"><label><?php esc_html_e( 'Label', 'core-blueprint-crm' ); ?><input type="text" name="<?php echo esc_attr( $prefix . '[label]' ); ?>" value="<?php echo esc_attr( (string) ( $row['label'] ?? '' ) ); ?>" placeholder="<?php echo esc_attr__( 'e.g. Work or Home', 'core-blueprint-crm' ); ?>"></label></div>
+				<div class="cb-crm-address-field is-wide"><label><?php esc_html_e( 'Address line 1', 'core-blueprint-crm' ); ?><input type="text" name="<?php echo esc_attr( $prefix . '[address_line_1]' ); ?>" value="<?php echo esc_attr( (string) ( $row['address_line_1'] ?? '' ) ); ?>"></label></div>
+				<div class="cb-crm-address-field is-wide"><label><?php esc_html_e( 'Address line 2', 'core-blueprint-crm' ); ?><input type="text" name="<?php echo esc_attr( $prefix . '[address_line_2]' ); ?>" value="<?php echo esc_attr( (string) ( $row['address_line_2'] ?? '' ) ); ?>"></label></div>
+				<div class="cb-crm-address-field is-small"><label><?php esc_html_e( 'Postal code', 'core-blueprint-crm' ); ?><input type="text" name="<?php echo esc_attr( $prefix . '[postal_code]' ); ?>" value="<?php echo esc_attr( (string) ( $row['postal_code'] ?? '' ) ); ?>"></label></div>
+				<div class="cb-crm-address-field"><label><?php esc_html_e( 'City', 'core-blueprint-crm' ); ?><input type="text" name="<?php echo esc_attr( $prefix . '[city]' ); ?>" value="<?php echo esc_attr( (string) ( $row['city'] ?? '' ) ); ?>"></label></div>
+				<div class="cb-crm-address-field"><label><?php esc_html_e( 'Region', 'core-blueprint-crm' ); ?><input type="text" name="<?php echo esc_attr( $prefix . '[region]' ); ?>" value="<?php echo esc_attr( (string) ( $row['region'] ?? '' ) ); ?>"></label></div>
+				<div class="cb-crm-address-field is-small"><label><?php esc_html_e( 'Country code', 'core-blueprint-crm' ); ?><input type="text" maxlength="2" name="<?php echo esc_attr( $prefix . '[country]' ); ?>" value="<?php echo esc_attr( (string) ( $row['country'] ?? '' ) ); ?>" placeholder="NL"></label></div>
 			</div>
 			<div class="cb-crm-address-actions">
 				<label><input type="checkbox" name="<?php echo esc_attr( $prefix . '[is_primary]' ); ?>" value="1" <?php checked( ! empty( $row['is_primary'] ) ); ?>> <?php esc_html_e( 'Primary address', 'core-blueprint-crm' ); ?></label>
@@ -247,7 +247,7 @@ final class Panels {
 		$prefix = 'cb_crm_names[' . (string) $index . ']';
 		?>
 		<tr data-cb-crm-row>
-			<td><input class="regular-text" name="<?php echo esc_attr( $prefix . '[name]' ); ?>" value="<?php echo esc_attr( (string) ( $row['name'] ?? '' ) ); ?>"></td>
+			<td><input type="text" class="regular-text" name="<?php echo esc_attr( $prefix . '[name]' ); ?>" value="<?php echo esc_attr( (string) ( $row['name'] ?? '' ) ); ?>"></td>
 			<td><select name="<?php echo esc_attr( $prefix . '[name_type]' ); ?>"><?php foreach ( Names::TYPES as $type ) : ?><option value="<?php echo esc_attr( $type ); ?>" <?php selected( (string) ( $row['name_type'] ?? 'alias' ), $type ); ?>><?php echo esc_html( self::name_type_label( $type ) ); ?></option><?php endforeach; ?></select></td>
 			<td><input type="date" name="<?php echo esc_attr( $prefix . '[started_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['started_at'] ?? '' ) ); ?>"></td>
 			<td><input type="date" name="<?php echo esc_attr( $prefix . '[ended_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['ended_at'] ?? '' ) ); ?>"></td>
@@ -264,7 +264,7 @@ final class Panels {
 		?>
 		<tr data-cb-crm-row>
 			<td><select name="<?php echo esc_attr( $prefix . '[organization_id]' ); ?>"><option value="0">—</option><?php foreach ( $options as $org ) : ?><option value="<?php echo esc_attr( (string) $org->ID ); ?>" <?php selected( (int) ( $row['organization_id'] ?? 0 ), $org->ID ); ?>><?php echo esc_html( $org->post_title ); ?></option><?php endforeach; ?></select></td>
-			<td><input name="<?php echo esc_attr( $prefix . '[role_title]' ); ?>" value="<?php echo esc_attr( (string) ( $row['role_title'] ?? '' ) ); ?>"></td>
+			<td><input type="text" name="<?php echo esc_attr( $prefix . '[role_title]' ); ?>" value="<?php echo esc_attr( (string) ( $row['role_title'] ?? '' ) ); ?>"></td>
 			<td><input type="date" name="<?php echo esc_attr( $prefix . '[started_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['started_at'] ?? '' ) ); ?>"></td>
 			<td><input type="date" name="<?php echo esc_attr( $prefix . '[ended_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['ended_at'] ?? '' ) ); ?>"></td>
 			<td><label><input type="checkbox" name="<?php echo esc_attr( $prefix . '[is_primary]' ); ?>" value="1" <?php checked( ! empty( $row['is_primary'] ) ); ?>> <span class="screen-reader-text"><?php esc_html_e( 'Primary organization', 'core-blueprint-crm' ); ?></span></label></td>
@@ -284,7 +284,7 @@ final class Panels {
 			<td><select name="<?php echo esc_attr( $prefix . '[status]' ); ?>"><?php foreach ( Services::STATUSES as $status ) : ?><option value="<?php echo esc_attr( $status ); ?>" <?php selected( (string) ( $row['status'] ?? 'active' ), $status ); ?>><?php echo esc_html( self::service_status_label( $status ) ); ?></option><?php endforeach; ?></select></td>
 			<td><input type="date" name="<?php echo esc_attr( $prefix . '[started_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['started_at'] ?? '' ) ); ?>"></td>
 			<td><input type="date" name="<?php echo esc_attr( $prefix . '[ended_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['ended_at'] ?? '' ) ); ?>"></td>
-			<td><input name="<?php echo esc_attr( $prefix . '[notes]' ); ?>" value="<?php echo esc_attr( (string) ( $row['notes'] ?? '' ) ); ?>"></td>
+			<td><input type="text" name="<?php echo esc_attr( $prefix . '[notes]' ); ?>" value="<?php echo esc_attr( (string) ( $row['notes'] ?? '' ) ); ?>"></td>
 			<td><button type="button" class="button-link-delete" data-cb-crm-remove-row><?php esc_html_e( 'Remove', 'core-blueprint-crm' ); ?></button></td>
 		</tr>
 		<?php

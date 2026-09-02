@@ -1,0 +1,127 @@
+.cb-crm-pricing-grid,
+.cb-crm-service-grid {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 16px;
+}
+
+.cb-crm-field {
+	grid-column: span 6;
+}
+
+.cb-crm-field.is-small {
+	grid-column: span 3;
+}
+
+.cb-crm-field.is-wide {
+	grid-column: span 12;
+}
+
+.cb-crm-field > label {
+	display: block;
+	margin-bottom: 5px;
+}
+
+.cb-crm-field > input:not([type="checkbox"]),
+.cb-crm-field > select {
+	width: 100%;
+	max-width: 520px;
+}
+
+.cb-crm-empty-state {
+	padding: 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.cb-crm-empty-state p {
+	margin: 6px 0 12px;
+	color: #50575e;
+}
+
+.cb-crm-service-list {
+	display: grid;
+	gap: 16px;
+}
+
+.cb-crm-service-card {
+	padding: 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.cb-crm-custom-pricing {
+	margin-top: 12px;
+	padding: 12px;
+	border-left: 4px solid #72aee6;
+	background: #f6f7f7;
+}
+
+.cb-crm-custom-pricing[hidden],
+[data-cb-crm-tax-rate-field][hidden] {
+	display: none;
+}
+
+.cb-crm-agreement-notes {
+	margin-top: 12px;
+}
+
+.cb-crm-service-actions {
+	margin-top: 10px;
+	text-align: right;
+}
+
+.cb-crm-settings-grid {
+	display: grid;
+	grid-template-columns: minmax(320px, 0.8fr) minmax(520px, 1.7fr);
+	gap: 16px;
+	margin-top: 20px;
+	align-items: start;
+}
+
+.cb-crm-settings-grid .postbox {
+	margin: 0;
+}
+
+.cb-crm-tax-rates-table form {
+	margin: 0;
+}
+
+@media (max-width: 960px) {
+	.cb-crm-settings-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 782px) {
+	.cb-crm-field,
+	.cb-crm-field.is-small {
+		grid-column: span 12;
+	}
+}
+
+[id^="cb-crm-panel-"] .form-table th {
+	padding-top: 14px;
+	padding-bottom: 14px;
+}
+
+[id^="cb-crm-panel-"] .form-table td {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+[id^="cb-crm-panel-"] .cb-crm-repeatable-table th,
+[id^="cb-crm-panel-"] .cb-crm-repeatable-table td {
+	padding: 10px 8px;
+}
+
+[id^="cb-crm-panel-"] .cb-crm-address-card {
+	padding: 16px;
+	border-radius: 4px;
+}
+
+[id^="cb-crm-panel-"] .cb-crm-address-grid {
+	gap: 16px;
+}

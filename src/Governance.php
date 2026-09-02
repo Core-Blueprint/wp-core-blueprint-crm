@@ -11,12 +11,13 @@ use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;
 
 final class Governance {
-	public const RECORD_CREATED  = 'crm.record.created';
-	public const RECORD_UPDATED  = 'crm.record.updated';
-	public const DATA_UPDATED    = 'crm.data.updated';
-	public const NOTE_CREATED    = 'crm.note.created';
-	public const ORDER_ACTIVITY  = 'crm.order.activity';
-	public const TICKET_ACTIVITY = 'crm.ticket.activity';
+	public const RECORD_CREATED   = 'crm.record.created';
+	public const RECORD_UPDATED   = 'crm.record.updated';
+	public const DATA_UPDATED     = 'crm.data.updated';
+	public const NOTE_CREATED     = 'crm.note.created';
+	public const ORDER_ACTIVITY   = 'crm.order.activity';
+	public const TICKET_ACTIVITY  = 'crm.ticket.activity';
+	public const TAX_RATE_CHANGED = 'crm.tax_rate.changed';
 
 	public static function init(): void {
 		add_action( 'init', [ __CLASS__, 'register_events' ], 10 );
@@ -30,6 +31,7 @@ final class Governance {
 		EventRegistry::register( [ 'id' => self::NOTE_CREATED, 'label' => __( 'CRM note created', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::ORDER_ACTIVITY, 'label' => __( 'CRM WooCommerce activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::TICKET_ACTIVITY, 'label' => __( 'CRM Helpdesk activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
+		EventRegistry::register( [ 'id' => self::TAX_RATE_CHANGED, 'label' => __( 'CRM tax rate changed', 'core-blueprint-crm' ), 'retention_category' => 'settings' ] );
 	}
 
 	public static function record_post_change( int $post_id, \WP_Post $post, bool $update, ?\WP_Post $post_before ): void {
@@ -91,6 +93,14 @@ final class Governance {
 		Audit::record( self::TICKET_ACTIVITY, 'info', [
 			'contact_id'    => $contact_id,
 			'ticket_id'     => $ticket_id,
+			'action'        => sanitize_key( $action ),
+			'actor_user_id' => get_current_user_id(),
+		] );
+	}
+
+	public static function record_tax_rate_changed( int $tax_rate_id, string $action ): void {
+		Audit::record( self::TAX_RATE_CHANGED, 'notice', [
+			'tax_rate_id'   => $tax_rate_id,
 			'action'        => sanitize_key( $action ),
 			'actor_user_id' => get_current_user_id(),
 		] );
