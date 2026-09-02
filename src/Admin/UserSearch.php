@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace CB\CRM\Admin;
 
 use CB\CRM\Capabilities;
-
 defined( 'ABSPATH' ) || exit;
 
 final class UserSearch {
@@ -27,7 +26,7 @@ final class UserSearch {
 		}
 
 		$term = isset( $_POST['term'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['term'] ) ) : '';
-		if ( mb_strlen( $term ) < 2 ) {
+		if ( strlen( $term ) < 2 ) {
 			wp_send_json_success( [] );
 		}
 
