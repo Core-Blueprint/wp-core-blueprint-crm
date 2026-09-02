@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CB\CRM\Admin;
 
+use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;
 
 final class Admin {
@@ -10,7 +11,10 @@ final class Admin {
 		Menu::init();
 		Panels::init();
 		Save::init();
+		UserSearch::init();
+		Assets::init();
 		add_filter( 'plugin_action_links_' . CB_CRM_BASENAME, [ __CLASS__, 'action_links' ] );
+		add_filter( 'enter_title_here', [ __CLASS__, 'title_placeholder' ], 10, 2 );
 	}
 
 	/** @param string[] $links
@@ -23,5 +27,14 @@ final class Admin {
 			esc_html__( 'CRM', 'core-blueprint-crm' )
 		);
 		return $links;
+	}
+
+	public static function title_placeholder( string $title, \WP_Post $post ): string {
+		return match ( $post->post_type ) {
+			PostTypes::CONTACT      => __( 'Display name', 'core-blueprint-crm' ),
+			PostTypes::ORGANIZATION => __( 'Organization name', 'core-blueprint-crm' ),
+			PostTypes::SERVICE      => __( 'Service name', 'core-blueprint-crm' ),
+			default                 => $title,
+		};
 	}
 }

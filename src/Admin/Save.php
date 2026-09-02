@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace CB\CRM\Admin;
 
 use CB\CRM\Capabilities;
+use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\Content\Meta;
+use CB\CRM\Content\RecordStatus;
 use CB\CRM\Governance;
 use CB\CRM\Repository\Activity;
 use CB\CRM\Repository\Addresses;
@@ -38,29 +40,34 @@ final class Save {
 			return;
 		}
 
-		$areas = [];
+		$areas   = [];
 		$details = isset( $_POST['cb_crm_details'] ) && is_array( $_POST['cb_crm_details'] ) ? wp_unslash( $_POST['cb_crm_details'] ) : [];
 		self::save_details( $owner_type, $post_id, $details );
 		$areas[] = 'details';
 
-		if ( isset( $_POST['cb_crm_contact_methods'] ) && is_array( $_POST['cb_crm_contact_methods'] ) ) {
-			ContactMethods::replace( $owner_type, $post_id, wp_unslash( $_POST['cb_crm_contact_methods'] ) );
+		if ( isset( $_POST['cb_crm_contact_methods_present'] ) ) {
+			$rows = isset( $_POST['cb_crm_contact_methods'] ) && is_array( $_POST['cb_crm_contact_methods'] ) ? wp_unslash( $_POST['cb_crm_contact_methods'] ) : [];
+			ContactMethods::replace( $owner_type, $post_id, $rows );
 			$areas[] = 'contact_methods';
 		}
-		if ( isset( $_POST['cb_crm_addresses'] ) && is_array( $_POST['cb_crm_addresses'] ) ) {
-			Addresses::replace( $owner_type, $post_id, wp_unslash( $_POST['cb_crm_addresses'] ) );
+		if ( isset( $_POST['cb_crm_addresses_present'] ) ) {
+			$rows = isset( $_POST['cb_crm_addresses'] ) && is_array( $_POST['cb_crm_addresses'] ) ? wp_unslash( $_POST['cb_crm_addresses'] ) : [];
+			Addresses::replace( $owner_type, $post_id, $rows );
 			$areas[] = 'addresses';
 		}
-		if ( isset( $_POST['cb_crm_names'] ) && is_array( $_POST['cb_crm_names'] ) ) {
-			Names::replace( $owner_type, $post_id, wp_unslash( $_POST['cb_crm_names'] ) );
+		if ( isset( $_POST['cb_crm_names_present'] ) ) {
+			$rows = isset( $_POST['cb_crm_names'] ) && is_array( $_POST['cb_crm_names'] ) ? wp_unslash( $_POST['cb_crm_names'] ) : [];
+			Names::replace( $owner_type, $post_id, $rows );
 			$areas[] = 'names';
 		}
-		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_organizations'] ) && is_array( $_POST['cb_crm_organizations'] ) ) {
-			Organizations::replace_for_contact( $post_id, wp_unslash( $_POST['cb_crm_organizations'] ) );
+		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_organizations_present'] ) ) {
+			$rows = isset( $_POST['cb_crm_organizations'] ) && is_array( $_POST['cb_crm_organizations'] ) ? wp_unslash( $_POST['cb_crm_organizations'] ) : [];
+			Organizations::replace_for_contact( $post_id, $rows );
 			$areas[] = 'organizations';
 		}
-		if ( in_array( $owner_type, [ Entity::CONTACT, Entity::ORGANIZATION ], true ) && isset( $_POST['cb_crm_services'] ) && is_array( $_POST['cb_crm_services'] ) ) {
-			Services::replace( $owner_type, $post_id, wp_unslash( $_POST['cb_crm_services'] ) );
+		if ( in_array( $owner_type, [ Entity::CONTACT, Entity::ORGANIZATION ], true ) && isset( $_POST['cb_crm_services_present'] ) ) {
+			$rows = isset( $_POST['cb_crm_services'] ) && is_array( $_POST['cb_crm_services'] ) ? wp_unslash( $_POST['cb_crm_services'] ) : [];
+			Services::replace( $owner_type, $post_id, $rows );
 			$areas[] = 'services';
 		}
 
@@ -90,19 +97,28 @@ final class Save {
 
 	/** @param array<string,mixed> $details */
 	private static function save_details( string $owner_type, int $post_id, array $details ): void {
-		update_post_meta( $post_id, Meta::STATUS, sanitize_key( (string) ( $details['status'] ?? '' ) ) );
+		$status = RecordStatus::normalize( (string) ( $details['status'] ?? RecordStatus::ACTIVE ) );
+		update_post_meta( $post_id, Meta::STATUS, $status );
 
 		if ( Entity::CONTACT === $owner_type ) {
 			update_post_meta( $post_id, Meta::FIRST_NAME, sanitize_text_field( (string) ( $details['first_name'] ?? '' ) ) );
 			update_post_meta( $post_id, Meta::LAST_NAME, sanitize_text_field( (string) ( $details['last_name'] ?? '' ) ) );
 			update_post_meta( $post_id, Meta::JOB_TITLE, sanitize_text_field( (string) ( $details['job_title'] ?? '' ) ) );
+
 			$user_id = absint( $details['wp_user_id'] ?? 0 );
 			if ( $user_id > 0 && ! get_userdata( $user_id ) ) {
 				$user_id = 0;
 			}
 			update_post_meta( $post_id, Meta::WP_USER_ID, $user_id );
-			$email_mode = sanitize_key( (string) ( $details['email_mode'] ?? 'crm' ) );
-			update_post_meta( $post_id, Meta::EMAIL_MODE, in_array( $email_mode, [ 'crm', 'wp_user' ], true ) ? $email_mode : 'crm' );
+
+			$email_mode = sanitize_key( (string) ( $details['email_mode'] ?? ContactIdentity::EMAIL_CRM ) );
+			if ( ! in_array( $email_mode, [ ContactIdentity::EMAIL_CRM, ContactIdentity::EMAIL_WP ], true ) ) {
+				$email_mode = ContactIdentity::EMAIL_CRM;
+			}
+			if ( ContactIdentity::EMAIL_WP === $email_mode && 0 === $user_id ) {
+				$email_mode = ContactIdentity::EMAIL_CRM;
+			}
+			update_post_meta( $post_id, Meta::EMAIL_MODE, $email_mode );
 		}
 
 		if ( Entity::ORGANIZATION === $owner_type ) {

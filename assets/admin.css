@@ -1,0 +1,141 @@
+.cb-crm-user-picker {
+	max-width: 520px;
+	position: relative;
+}
+
+.cb-crm-user-picker input[type="search"] {
+	width: 100%;
+}
+
+.cb-crm-user-selected {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 8px;
+	padding: 8px 10px;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.cb-crm-user-selected[hidden] {
+	display: none;
+}
+
+.cb-crm-user-selected-copy {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.cb-crm-user-selected-copy span {
+	color: #646970;
+}
+
+.cb-crm-user-results {
+	position: absolute;
+	z-index: 20;
+	left: 0;
+	right: 0;
+	max-height: 260px;
+	overflow: auto;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+
+.cb-crm-user-result {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	padding: 9px 12px;
+	border: 0;
+	border-bottom: 1px solid #f0f0f1;
+	background: transparent;
+	cursor: pointer;
+	text-align: left;
+}
+
+.cb-crm-user-result:hover,
+.cb-crm-user-result:focus {
+	background: #f6f7f7;
+	outline: 0;
+}
+
+.cb-crm-user-result span,
+.cb-crm-user-result-empty {
+	color: #646970;
+}
+
+.cb-crm-user-result-empty {
+	padding: 10px 12px;
+}
+
+.cb-crm-repeatable-table td {
+	vertical-align: middle;
+}
+
+.cb-crm-repeatable-table input:not([type="checkbox"]),
+.cb-crm-repeatable-table select {
+	max-width: 100%;
+}
+
+.cb-crm-repeater-toolbar {
+	margin-top: 10px;
+}
+
+.cb-crm-address-list {
+	display: grid;
+	gap: 12px;
+}
+
+.cb-crm-address-card {
+	padding: 12px;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.cb-crm-address-grid {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.cb-crm-address-field {
+	grid-column: span 6;
+}
+
+.cb-crm-address-field.is-wide {
+	grid-column: span 12;
+}
+
+.cb-crm-address-field.is-small {
+	grid-column: span 3;
+}
+
+.cb-crm-address-field label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+.cb-crm-address-field input:not([type="checkbox"]) {
+	width: 100%;
+}
+
+.cb-crm-address-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-top: 12px;
+}
+
+@media (max-width: 782px) {
+	.cb-crm-address-field,
+	.cb-crm-address-field.is-small {
+		grid-column: span 12;
+	}
+}
