@@ -16,6 +16,8 @@ final class Plugin {
 	public static function boot(): void {
 		if ( self::$booted ) { return; }
 		self::$booted = true;
+
+		Install::maybe_upgrade();
 		Capabilities::init();
 		PostTypes::init();
 		PanelRegistry::init();
