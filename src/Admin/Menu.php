@@ -5,6 +5,7 @@ namespace CB\CRM\Admin;
 
 use CB\CRM\Capabilities;
 use CB\CRM\Content\PostTypes;
+use CB\CRM\Repository\TaxRates;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,6 +43,7 @@ final class Menu {
 			[ __( 'Organizations', 'core-blueprint-crm' ), self::count( PostTypes::ORGANIZATION ), admin_url( 'edit.php?post_type=' . PostTypes::ORGANIZATION ), __( 'Companies, institutions and other organizations.', 'core-blueprint-crm' ) ],
 			[ __( 'Services', 'core-blueprint-crm' ), self::count( PostTypes::SERVICE ), admin_url( 'edit.php?post_type=' . PostTypes::SERVICE ), __( 'Services that can be linked to contacts and organizations.', 'core-blueprint-crm' ) ],
 		];
+		$active_tax_rates = count( TaxRates::all( false ) );
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Core Blueprint CRM', 'core-blueprint-crm' ); ?></h1>
@@ -57,6 +59,18 @@ final class Menu {
 						</div>
 					</div>
 				<?php endforeach; ?>
+			</div>
+
+			<h2 style="margin-top:28px;"><?php esc_html_e( 'Configuration', 'core-blueprint-crm' ); ?></h2>
+			<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:1000px;">
+				<div class="postbox" style="margin:0;max-width:320px;">
+					<div class="inside">
+						<h2 style="margin-top:0;"><?php esc_html_e( 'Tax Rates', 'core-blueprint-crm' ); ?></h2>
+						<p style="font-size:28px;margin:8px 0;"><strong><?php echo esc_html( (string) $active_tax_rates ); ?></strong> <span style="font-size:13px;font-weight:400;color:#646970;"><?php esc_html_e( 'active', 'core-blueprint-crm' ); ?></span></p>
+						<p><?php esc_html_e( 'Reusable VAT/tax rates for service pricing.', 'core-blueprint-crm' ); ?></p>
+						<p><a class="button" href="<?php echo esc_url( TaxRatesPage::url() ); ?>"><?php esc_html_e( 'Manage', 'core-blueprint-crm' ); ?></a></p>
+					</div>
+				</div>
 			</div>
 		</div>
 		<?php

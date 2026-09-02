@@ -21,9 +21,9 @@ declare(strict_types=1);
 defined( 'ABSPATH' ) || exit;
 
 define( 'CB_CRM_VERSION', '0.1.0-rc2' );
-define( 'CB_CRM_SCHEMA_VERSION', '1.0' );
+define( 'CB_CRM_SCHEMA_VERSION', '1.1' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
-define( 'CB_CRM_REQUIRED_BASE', '1.0.0-rc3.35' );
+define( 'CB_CRM_REQUIRED_BASE', '1.0.0-rc3.40' );
 define( 'CB_CRM_FILE', __FILE__ );
 define( 'CB_CRM_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CB_CRM_URL', plugin_dir_url( __FILE__ ) );
@@ -91,7 +91,7 @@ function cb_crm_activate(): void {
 		}
 		deactivate_plugins( CB_CRM_BASENAME );
 		wp_die(
-			esc_html( 'Core Blueprint CRM requires Core Blueprint Base 1.0.0-rc3.35 or newer with Core API 1.x.' ),
+			esc_html( sprintf( 'Core Blueprint CRM requires Core Blueprint Base %s or newer with Core API 1.x.', CB_CRM_REQUIRED_BASE ) ),
 			esc_html( 'Core Blueprint dependency required' ),
 			[ 'back_link' => true ]
 		);

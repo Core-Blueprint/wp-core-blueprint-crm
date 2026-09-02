@@ -4,15 +4,19 @@ declare(strict_types=1);
 namespace CB\CRM\Admin;
 
 use CB\CRM\Content\PostTypes;
+use CB\CRM\Content\ServicePricing;
 defined( 'ABSPATH' ) || exit;
 
 final class Admin {
 	public static function init(): void {
+		ServicePricing::init();
 		Menu::init();
 		Panels::init();
 		Save::init();
 		UserSearch::init();
 		Assets::init();
+		PricingUi::init();
+		TaxRatesPage::init();
 		add_filter( 'plugin_action_links_' . CB_CRM_BASENAME, [ __CLASS__, 'action_links' ] );
 		add_filter( 'enter_title_here', [ __CLASS__, 'title_placeholder' ], 10, 2 );
 	}

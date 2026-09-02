@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CB\CRM\Admin;
 
+use CB\Core\UI\FormComposition;
 use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;
 
@@ -16,6 +17,8 @@ final class Assets {
 		if ( ! $screen || ! in_array( (string) $screen->post_type, [ PostTypes::CONTACT, PostTypes::ORGANIZATION, PostTypes::SERVICE ], true ) ) {
 			return;
 		}
+
+		FormComposition::enqueue( FormComposition::PRESENTATION_WP_NATIVE );
 
 		wp_enqueue_style(
 			'cb-crm-admin',
