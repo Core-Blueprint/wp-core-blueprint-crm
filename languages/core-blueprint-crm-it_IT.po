@@ -1,0 +1,765 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Core Blueprint CRM 1.0.0-rc1\n"
+"PO-Revision-Date: 2026-09-03 00:15+0000\n"
+"Last-Translator: Core Blueprint\n"
+"Language-Team: it_IT\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Integration/Suite.php:53
+#, php-format
+msgid "%1$d contacts · %2$d organizations"
+msgstr "%1$d contacts · %2$d organizations"
+
+#: src/Admin/TaxRatesPage.php:109 src/Admin/Panels.php:104
+#: src/Admin/Panels.php:131 src/Admin/Panels.php:146 src/Admin/Panels.php:160
+msgid "Actions"
+msgstr "Azioni"
+
+#: src/Admin/TaxRatesPage.php:123
+msgid "Activate"
+msgstr "Attiva"
+
+#: src/Admin/TaxRatesPage.php:118 src/Admin/Panels.php:318
+#: src/Repository/Services.php:18 src/Content/RecordStatus.php:27
+msgid "Active"
+msgstr "Attivo"
+
+#: src/Admin/Panels.php:182
+msgid "Activity"
+msgstr "Attività"
+
+#: src/Content/PostTypes.php:40 src/Content/PostTypes.php:41
+#, php-format
+msgid "Add %s"
+msgstr "Add %s"
+
+#: src/Admin/Panels.php:123
+msgid "Add address"
+msgstr "Aggiungi indirizzo"
+
+#: src/Admin/Panels.php:111
+msgid "Add contact method"
+msgstr "Aggiungi metodo di contatto"
+
+#: src/Admin/Panels.php:138
+msgid "Add name or alias"
+msgstr "Aggiungi nome o alias"
+
+#: src/Admin/Panels.php:173
+msgid "Add note"
+msgstr "Aggiungi nota"
+
+#: src/Admin/Panels.php:153
+msgid "Add organization"
+msgstr "Aggiungi organizzazione"
+
+#: src/Admin/PricingUi.php:157 src/Admin/Panels.php:167
+msgid "Add service"
+msgstr "Aggiungi servizio"
+
+#: src/Admin/TaxRatesPage.php:85 src/Admin/TaxRatesPage.php:97
+#: src/Admin/PricingUi.php:102
+msgid "Add tax rate"
+msgstr "Aggiungi aliquota fiscale"
+
+#: src/Admin/Panels.php:230
+msgid "Address line 1"
+msgstr "Riga indirizzo 1"
+
+#: src/Admin/Panels.php:231
+msgid "Address line 2"
+msgstr "Riga indirizzo 2"
+
+#: src/Admin/Panels.php:30
+msgid "Addresses"
+msgstr "Indirizzi"
+
+#: src/Admin/PricingUi.php:226
+msgid "Agreement notes"
+msgstr "Note accordo"
+
+#: src/Admin/Panels.php:310
+msgid "Alias"
+msgstr "Alias"
+
+#: src/Content/RecordStatus.php:29
+msgid "Archived"
+msgstr "Archiviato"
+
+#: src/Integration/Suite.php:36 src/Admin/Menu.php:21 src/Admin/Menu.php:22
+#: src/Admin/Admin.php:31
+msgid "CRM"
+msgstr "CRM"
+
+#: src/Admin/Panels.php:28
+msgid "CRM Details"
+msgstr "CRM Dettagli"
+
+#: src/Governance.php:33
+msgid "CRM Helpdesk activity recorded"
+msgstr "CRM Attività di helpdesk registrata"
+
+#: src/Content/PostTypes.php:25
+msgid "CRM Tag"
+msgstr "CRM Tag"
+
+#: src/Content/PostTypes.php:25
+msgid "CRM Tags"
+msgstr "CRM Tag"
+
+#: src/Governance.php:32
+msgid "CRM WooCommerce activity recorded"
+msgstr "CRM Attività WooCommerce registrata"
+
+#: src/Admin/Panels.php:88
+msgid "CRM contact methods"
+msgstr "Metodi di contatto CRM"
+
+#: src/Admin/Save.php:79
+msgid "CRM note added"
+msgstr "Nota CRM aggiunta"
+
+#: src/Governance.php:31
+msgid "CRM note created"
+msgstr "Nota CRM creata"
+
+#: src/Governance.php:28
+msgid "CRM record created"
+msgstr "Record CRM creato"
+
+#: src/Governance.php:30
+msgid "CRM record data updated"
+msgstr "Dati del record CRM aggiornati"
+
+#: src/Admin/Save.php:88
+msgid "CRM record details updated"
+msgstr "Dettagli del record CRM aggiornati"
+
+#: src/Governance.php:29
+msgid "CRM record updated"
+msgstr "Record CRM aggiornato"
+
+#: src/Governance.php:34
+msgid "CRM tax rate changed"
+msgstr "Aliquota fiscale CRM modificata"
+
+#: src/Admin/PricingUi.php:175
+msgid "Choose a service to see its standard pricing."
+msgstr "Scegli un servizio per visualizzarne i prezzi standard."
+
+#: src/Admin/PricingUi.php:182
+msgid "Choose a service…"
+msgstr "Scegli un servizio…"
+
+#: src/Admin/Panels.php:91
+msgid ""
+"Choose which email address CRM should prefer. WordPress account linking "
+"itself remains optional."
+msgstr ""
+"Scegli quale indirizzo email il CRM deve preferire. Il collegamento stesso "
+"dell'account WordPress rimane facoltativo."
+
+#: src/Admin/Panels.php:233
+msgid "City"
+msgstr "Città"
+
+#: src/Admin/TaxRatesPage.php:91 src/Admin/TaxRatesPage.php:109
+msgid "Code"
+msgstr "Codice"
+
+#: src/Admin/Menu.php:43
+msgid "Companies, institutions and other organizations."
+msgstr "Aziende, istituzioni e altre organizzazioni."
+
+#: src/Admin/Menu.php:64
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: src/Admin/TaxRatesPage.php:104
+msgid "Configured rates"
+msgstr "Tariffe configurate"
+
+#: src/Content/PostTypes.php:20
+msgid "Contact"
+msgstr "Contatto"
+
+#: src/Admin/Panels.php:29
+msgid "Contact Methods"
+msgstr "Metodi di contatto"
+
+#: src/Admin/Menu.php:31 src/Admin/Menu.php:42 src/Content/PostTypes.php:20
+msgid "Contacts"
+msgstr "Contatti"
+
+#: src/Admin/Panels.php:160
+msgid "Context"
+msgstr "Contesto"
+
+#: src/Admin/Menu.php:49 src/Capabilities.php:25
+msgid "Core Blueprint CRM"
+msgstr "Core Blueprint CRM"
+
+#: core-blueprint-crm.php:69
+#, php-format
+msgid ""
+"Core Blueprint CRM requires Core API %1$s or a newer compatible minor "
+"version. This site provides %2$s."
+msgstr ""
+"Core Blueprint CRM requires Core API %1$so una versione minore compatibile "
+"più recente. Questo sito fornisce%2$s."
+
+#: core-blueprint-crm.php:65
+msgid "Core Blueprint CRM requires an active Core Blueprint Base plugin."
+msgstr "Core Blueprint CRM richiede un plugin Core Blueprint Base attivo."
+
+#: core-blueprint-crm.php:103
+msgid "Core Blueprint CRM:"
+msgstr "Core Blueprint CRM:"
+
+#: src/Admin/TaxRatesPage.php:109
+msgid "Country"
+msgstr "Paese"
+
+#: src/Admin/TaxRatesPage.php:92 src/Admin/Panels.php:235
+msgid "Country code"
+msgstr "Codice paese"
+
+#: src/Admin/PricingUi.php:145
+msgid "Create and save a Service before assigning it to this record."
+msgstr "Crea e salva un servizio prima di assegnarlo a questo record."
+
+#: src/Admin/PricingUi.php:146
+msgid "Create service"
+msgstr "Crea servizio"
+
+#: src/Admin/PricingUi.php:82 src/Admin/PricingUi.php:219
+msgid "Currency"
+msgstr "Valuta"
+
+#: src/Admin/PricingUi.php:218
+msgid "Custom price"
+msgstr "Prezzo personalizzato"
+
+#: src/Admin/PricingUi.php:210
+msgid "Custom pricing"
+msgstr "Prezzi personalizzati"
+
+#: src/Admin/TaxRatesPage.php:123
+msgid "Deactivate"
+msgstr "Disattiva"
+
+#: src/Admin/Admin.php:38
+msgid "Display name"
+msgstr "Nome visualizzato"
+
+#: src/Content/PostTypes.php:42
+#, php-format
+msgid "Edit %s"
+msgstr "Edit %s"
+
+#: src/Admin/Panels.php:295
+msgid "Email"
+msgstr "Email"
+
+#: src/Admin/Panels.php:317 src/Repository/Services.php:20
+msgid "Ended"
+msgstr "Fine"
+
+#: src/Content/ServicePricing.php:106
+msgid "Excluding VAT"
+msgstr "IVA esclusa"
+
+#: src/Admin/Panels.php:63
+msgid "First name"
+msgstr "Nome"
+
+#: src/Admin/Panels.php:309
+msgid "Former"
+msgstr "Precedente"
+
+#: src/Admin/PricingUi.php:204 src/Admin/Panels.php:131
+#: src/Admin/Panels.php:146 src/Admin/Panels.php:160
+msgid "From"
+msgstr "Da"
+
+#: src/Admin/TaxRatesPage.php:174
+#, php-format
+msgid "From %s"
+msgstr "Da%s"
+
+#: src/Admin/TaxRatesPage.php:91
+msgid ""
+"Generated automatically from the label. Change it only when you need a "
+"different stable internal code."
+msgstr ""
+"Generato automaticamente dall'etichetta. Cambialo solo quando hai bisogno di"
+" un codice interno stabile diverso."
+
+#: src/Integration/Helpdesk.php:23
+msgid "Helpdesk"
+msgstr "Helpdesk"
+
+#: src/Admin/TaxRatesPage.php:118 src/Admin/PricingUi.php:243
+#: src/Content/RecordStatus.php:28
+msgid "Inactive"
+msgstr "Inattivo"
+
+#: src/Content/ServicePricing.php:107
+msgid "Including VAT"
+msgstr "IVA inclusa"
+
+#: src/Admin/Panels.php:65
+msgid "Job title"
+msgstr "Titolo lavoro"
+
+#: src/Admin/TaxRatesPage.php:90 src/Admin/TaxRatesPage.php:109
+#: src/Admin/Panels.php:104 src/Admin/Panels.php:229
+msgid "Label"
+msgstr "Etichetta"
+
+#: src/Admin/Panels.php:64
+msgid "Last name"
+msgstr "Cognome"
+
+#: src/Admin/PricingUi.php:79
+msgid "Leave empty when this service has no standard price."
+msgstr "Lascia vuoto quando questo servizio non ha un prezzo standard."
+
+#: src/Admin/Panels.php:306
+msgid "Legal"
+msgstr "Legale"
+
+#: src/Admin/Panels.php:95
+msgid "Legal name"
+msgstr "Nome legale"
+
+#: src/Integration/WooCommerce.php:38
+msgid ""
+"Link this contact to a WordPress user to show their WooCommerce orders."
+msgstr ""
+"Collega questo contatto a un utente WordPress per mostrare i suoi ordini "
+"WooCommerce."
+
+#: src/Integration/Helpdesk.php:35
+msgid "Link this contact to a WordPress user to show their support tickets."
+msgstr ""
+"Collega questo contatto a un utente WordPress per mostrare i suoi ticket di "
+"supporto."
+
+#: src/Admin/Panels.php:89
+msgid "Linked WordPress account"
+msgstr "Account WordPress collegato"
+
+#: src/Admin/Menu.php:58 src/Admin/Menu.php:71
+msgid "Manage"
+msgstr "Gestisci"
+
+#: src/Capabilities.php:24
+msgid "Manage CRM"
+msgstr "Gestisci CRM"
+
+#: src/Admin/TaxRatesPage.php:79
+msgid ""
+"Manage reusable VAT/tax rates for CRM service pricing. Existing rates are "
+"deactivated rather than deleted so historical references remain intact."
+msgstr ""
+"Gestisci le aliquote IVA/fiscali riutilizzabili per i prezzi del servizio "
+"CRM. Le tariffe esistenti vengono disattivate anziché eliminate, quindi i "
+"riferimenti storici rimangono intatti."
+
+#: src/Admin/PricingUi.php:97
+msgid "Manage tax rates"
+msgstr "Gestisci aliquote fiscali"
+
+#: src/Admin/Panels.php:297
+msgid "Mobile"
+msgstr "Mobile"
+
+#: src/Admin/Panels.php:131
+msgid "Name"
+msgstr "Nome"
+
+#: src/Admin/Panels.php:31
+msgid "Names & Aliases"
+msgstr "Nomi e alias"
+
+#: src/Content/PostTypes.php:43
+#, php-format
+msgid "New %s"
+msgstr "New %s"
+
+#: src/Content/PostTypes.php:46
+#, php-format
+msgid "No %s found."
+msgstr "No %strovato."
+
+#: src/Integration/Helpdesk.php:41
+msgid "No Helpdesk tickets for this user."
+msgstr "Nessun ticket di helpdesk per questo utente."
+
+#: src/Integration/WooCommerce.php:50
+msgid "No WooCommerce orders for this user."
+msgstr "Nessun ordine WooCommerce per questo utente."
+
+#: src/Admin/Panels.php:184
+msgid "No activity yet."
+msgstr "Ancora nessuna attività."
+
+#: src/Admin/TaxRatesPage.php:169
+msgid "No date limit"
+msgstr "Nessun limite di data"
+
+#: src/Admin/Assets.php:42
+msgid "No matching WordPress users found."
+msgstr "Nessun utente WordPress corrispondente trovato."
+
+#: src/Admin/Panels.php:176
+msgid "No notes yet."
+msgstr "Ancora nessuna nota."
+
+#: src/Admin/PricingUi.php:144
+msgid "No services are available yet."
+msgstr "Nessun servizio ancora disponibile."
+
+#: src/Content/ServicePricing.php:153
+msgid "No standard price configured."
+msgstr "Nessun prezzo standard configurato."
+
+#: src/Admin/PricingUi.php:102
+msgid ""
+"No tax rates are configured yet. Add a tax rate before using VAT-inclusive "
+"or VAT-exclusive pricing."
+msgstr ""
+"Nessuna aliquota fiscale ancora configurata. Aggiungi un'aliquota fiscale "
+"prima di utilizzare prezzi IVA inclusa o IVA esclusa."
+
+#: src/Admin/TaxRatesPage.php:106
+msgid "No tax rates configured yet."
+msgstr "Nessuna aliquota fiscale ancora configurata."
+
+#: src/Admin/Panels.php:34
+msgid "Notes & Activity"
+msgstr "Note e attività"
+
+#: src/Admin/TaxRatesPage.php:92
+msgid "Optional ISO 3166-1 alpha-2 country code."
+msgstr "Codice paese ISO 3166-1 alpha-2 opzionale."
+
+#: src/Admin/PricingUi.php:227
+msgid "Optional context about this service or price agreement."
+msgstr "Contesto facoltativo su questo servizio o accordo sui prezzi."
+
+#: src/Admin/Panels.php:81
+msgid "Optional. Link this CRM contact to an existing WordPress account."
+msgstr ""
+"Opzionale. Collega questo contatto CRM a un account WordPress esistente."
+
+#: src/Admin/Panels.php:146 src/Content/PostTypes.php:21
+msgid "Organization"
+msgstr "Organizzazione"
+
+#: src/Admin/Admin.php:39
+msgid "Organization name"
+msgstr "Nome dell'organizzazione"
+
+#: src/Admin/Menu.php:32 src/Admin/Menu.php:43 src/Admin/Panels.php:32
+#: src/Content/PostTypes.php:21
+msgid "Organizations"
+msgstr "Organizzazioni"
+
+#: src/Admin/Panels.php:300
+msgid "Other"
+msgstr "Altro"
+
+#: src/Admin/Menu.php:30
+msgid "Overview"
+msgstr "Panoramica"
+
+#: src/Admin/Panels.php:316 src/Repository/Services.php:19
+msgid "Paused"
+msgstr "In pausa"
+
+#: src/Admin/Menu.php:42
+msgid "People and their customer context."
+msgstr "Persone e il loro contesto cliente."
+
+#: src/Admin/Panels.php:296
+msgid "Phone"
+msgstr "Telefono"
+
+#: src/Admin/Panels.php:232
+msgid "Postal code"
+msgstr "Codice Postale"
+
+#: src/Admin/Panels.php:307
+msgid "Preferred"
+msgstr "Preferito"
+
+#: src/Admin/Panels.php:85
+msgid "Preferred email source"
+msgstr "Origine e-mail preferita"
+
+#: src/Admin/PricingUi.php:86 src/Admin/PricingUi.php:220
+msgid "Price is"
+msgstr "Il prezzo è"
+
+#: src/Admin/PricingUi.php:207
+msgid "Pricing"
+msgstr "Prezzi"
+
+#: src/Admin/Panels.php:104 src/Admin/Panels.php:146
+msgid "Primary"
+msgstr "Primario"
+
+#: src/Admin/Panels.php:238
+msgid "Primary address"
+msgstr "Indirizzo primario"
+
+#: src/Admin/Panels.php:217
+msgid "Primary contact method"
+msgstr "Primary contact method"
+
+#: src/Admin/Panels.php:270
+msgid "Primary organization"
+msgstr "Organizzazione primaria"
+
+#: src/Admin/TaxRatesPage.php:93 src/Admin/TaxRatesPage.php:109
+msgid "Rate"
+msgstr "Valutare"
+
+#: src/Admin/Panels.php:174
+msgid "Recent notes"
+msgstr "Note recenti"
+
+#: src/Admin/Panels.php:234
+msgid "Region"
+msgstr "Region"
+
+#: src/Admin/Panels.php:76 src/Admin/Panels.php:218 src/Admin/Panels.php:254
+#: src/Admin/Panels.php:271 src/Admin/Panels.php:288
+msgid "Remove"
+msgstr "Rimuovere"
+
+#: src/Admin/Panels.php:239
+msgid "Remove address"
+msgstr "Remove address"
+
+#: src/Admin/PricingUi.php:229
+msgid "Remove service"
+msgstr "Rimuovi il servizio"
+
+#: src/Admin/Menu.php:70
+msgid "Reusable VAT/tax rates for service pricing."
+msgstr "Reusable VAT/tax rates for service pricing."
+
+#: src/Admin/Panels.php:146
+msgid "Role"
+msgstr "Role"
+
+#: src/Content/PostTypes.php:45
+#, php-format
+msgid "Search %s"
+msgstr "Ricerca%s"
+
+#: src/Admin/Panels.php:78
+msgid "Search by name or email…"
+msgstr "Search by name or email…"
+
+#: src/Admin/Assets.php:43
+msgid "Searching…"
+msgstr "Searching…"
+
+#: src/Admin/PricingUi.php:237
+msgid "Select tax rate…"
+msgstr "Select tax rate…"
+
+#: src/Admin/Menu.php:50
+msgid ""
+"Self-hosted customer relationship management for contacts, organizations, "
+"services and customer context."
+msgstr ""
+"Self-hosted customer relationship management for contacts, organizations, "
+"services and customer context."
+
+#: src/Admin/PricingUi.php:180 src/Admin/Panels.php:160
+#: src/Content/PostTypes.php:22
+msgid "Service"
+msgstr "Service"
+
+#: src/Admin/Admin.php:40
+msgid "Service name"
+msgstr "Service name"
+
+#: src/Admin/PricingUi.php:121
+msgid "Service pricing updated"
+msgstr "Service pricing updated"
+
+#: src/Admin/Menu.php:33 src/Admin/Menu.php:44 src/Admin/PricingUi.php:44
+#: src/Admin/Panels.php:33 src/Content/PostTypes.php:22
+msgid "Services"
+msgstr "Services"
+
+#: src/Admin/Menu.php:44
+msgid "Services that can be linked to contacts and organizations."
+msgstr "Services that can be linked to contacts and organizations."
+
+#: src/Admin/PricingUi.php:29
+msgid "Standard Pricing"
+msgstr "Standard Pricing"
+
+#: src/Admin/PricingUi.php:77
+msgid "Standard price"
+msgstr "Standard price"
+
+#: src/Admin/TaxRatesPage.php:109 src/Admin/PricingUi.php:197
+#: src/Admin/Panels.php:43 src/Admin/Panels.php:160
+msgid "Status"
+msgstr "Status"
+
+#: src/Admin/Panels.php:180
+msgid "System"
+msgstr "System"
+
+#: src/Admin/Menu.php:34
+msgid "Tags"
+msgstr "Tags"
+
+#: src/Admin/TaxRatesPage.php:26 src/Admin/TaxRatesPage.php:27
+#: src/Admin/TaxRatesPage.php:78 src/Admin/Menu.php:68
+msgid "Tax Rates"
+msgstr "Tax Rates"
+
+#: src/Admin/PricingUi.php:94 src/Admin/PricingUi.php:221
+msgid "Tax rate"
+msgstr "Tax rate"
+
+#: src/Admin/TaxRatesPage.php:153
+msgid "Tax rate activated."
+msgstr "Tax rate activated."
+
+#: src/Admin/TaxRatesPage.php:152
+msgid "Tax rate added."
+msgstr "Aggiunta aliquota fiscale."
+
+#: src/Admin/TaxRatesPage.php:154
+msgid "Tax rate deactivated. Existing references remain intact."
+msgstr "Tax rate deactivated. Existing references remain intact."
+
+#: src/Admin/TaxRatesPage.php:155
+msgid ""
+"The tax rate could not be saved. Check the code, percentage and validity "
+"dates."
+msgstr ""
+"The tax rate could not be saved. Check the code, percentage and validity "
+"dates."
+
+#: src/Admin/Panels.php:308
+msgid "Trading"
+msgstr "Trading"
+
+#: src/Admin/Panels.php:104 src/Admin/Panels.php:131
+msgid "Type"
+msgstr "Tipo"
+
+#: src/Admin/PricingUi.php:192
+#, php-format
+msgid "Unavailable service #%d"
+msgstr "Servizio non disponibile #%d"
+
+#: src/Admin/PricingUi.php:205 src/Admin/Panels.php:131
+#: src/Admin/Panels.php:146 src/Admin/Panels.php:160
+msgid "Until"
+msgstr "Until"
+
+#: src/Admin/TaxRatesPage.php:174
+#, php-format
+msgid "Until %s"
+msgstr "Fino a%s"
+
+#: src/Admin/PricingUi.php:209
+msgid "Use service pricing"
+msgstr "Use service pricing"
+
+#: src/Content/ServicePricing.php:108
+msgid "VAT exempt / no VAT"
+msgstr "VAT exempt / no VAT"
+
+#: src/Admin/TaxRatesPage.php:94
+msgid "Valid from"
+msgstr "Valid from"
+
+#: src/Admin/TaxRatesPage.php:95
+msgid "Valid until"
+msgstr "Valido fino al"
+
+#: src/Admin/TaxRatesPage.php:109
+msgid "Validity"
+msgstr "Validity"
+
+#: src/Admin/Panels.php:104
+msgid "Value"
+msgstr "Valore"
+
+#: src/Content/PostTypes.php:44
+#, php-format
+msgid "View %s"
+msgstr "View %s"
+
+#: src/Capabilities.php:27
+msgid ""
+"View and manage CRM contacts, organizations, services, relationships, notes "
+"and activity."
+msgstr ""
+"View and manage CRM contacts, organizations, services, relationships, notes "
+"and activity."
+
+#: src/Admin/Panels.php:298
+msgid "Website"
+msgstr "Sito web"
+
+#: src/Admin/Panels.php:299
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: src/Integration/WooCommerce.php:26
+msgid "WooCommerce Orders"
+msgstr "Ordini WooCommerce"
+
+#: src/Integration/WooCommerce.php:82
+#, php-format
+msgid "WooCommerce order #%1$d changed from %2$s to %3$s"
+msgstr "N. ordine WooCommerce%1$d changed from %2$sA%3$s"
+
+#: src/Admin/Panels.php:67
+msgid "WordPress account"
+msgstr "WordPress account"
+
+#: src/Admin/Assets.php:44
+msgid "WordPress user search failed. Try again."
+msgstr "WordPress user search failed. Try again."
+
+#: src/Admin/UserSearch.php:25
+msgid "You are not allowed to search WordPress users."
+msgstr "Non ti è consentito cercare utenti WordPress."
+
+#: src/Admin/Menu.php:39
+msgid "You do not have permission to manage CRM data."
+msgstr "You do not have permission to manage CRM data."
+
+#: src/Admin/TaxRatesPage.php:72 src/Admin/TaxRatesPage.php:140
+msgid "You do not have permission to manage CRM tax rates."
+msgstr "You do not have permission to manage CRM tax rates."
+
+#: src/Admin/Menu.php:69
+msgid "active"
+msgstr "active"
+
+#: src/Admin/Panels.php:229
+msgid "e.g. Work or Home"
+msgstr "e.g. Work or Home"

@@ -19,12 +19,11 @@ final class Suite {
 
 	public static function register_extension(): void {
 		ExtensionRegistry::register( [
-			'id'            => self::ID,
-			'plugin_file'   => CB_CRM_BASENAME,
-			'requires_api'  => CB_CRM_REQUIRED_API,
-			'requires_base' => CB_CRM_REQUIRED_BASE,
-			'menu_url'      => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
-			'status_id'     => 'crm',
+			'id'           => self::ID,
+			'plugin_file'  => CB_CRM_BASENAME,
+			'requires_api' => CB_CRM_REQUIRED_API,
+			'menu_url'     => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
+			'status_id'    => 'crm',
 		] );
 	}
 
