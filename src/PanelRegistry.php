@@ -14,13 +14,20 @@ final class PanelRegistry {
 		add_action( 'add_meta_boxes', [ __CLASS__, 'metaboxes' ], 20 );
 	}
 
-	public static function registration(): void { do_action( 'cb_crm_register_panels' ); }
+	public static function registration(): void {
+		do_action( 'cb_crm_register_panels' );
+	}
 
 	/** @param array<string,mixed> $definition */
 	public static function register( array $definition ): bool {
-		$id = sanitize_key( (string) ( $definition['id'] ?? '' ) );
-		$label = sanitize_text_field( (string) ( $definition['label'] ?? '' ) );
-		$post_types = array_values( array_intersect( array_map( 'sanitize_key', (array) ( $definition['post_types'] ?? [] ) ), [ Entity::CONTACT, Entity::ORGANIZATION, Entity::SERVICE ] ) );
+		$id         = sanitize_key( (string) ( $definition['id'] ?? '' ) );
+		$label      = sanitize_text_field( (string) ( $definition['label'] ?? '' ) );
+		$post_types = array_values(
+			array_intersect(
+				array_map( 'sanitize_key', (array) ( $definition['post_types'] ?? [] ) ),
+				[ Entity::CONTACT, Entity::ORGANIZATION ]
+			)
+		);
 		$render = $definition['render'] ?? null;
 
 		$requested_context = (string) ( $definition['context'] ?? 'normal' );
@@ -29,7 +36,9 @@ final class PanelRegistry {
 		$requested_priority = (string) ( $definition['priority'] ?? 'default' );
 		$priority = in_array( $requested_priority, [ 'high', 'core', 'default', 'low' ], true ) ? $requested_priority : 'default';
 
-		if ( '' === $id || '' === $label || ! $post_types || ! is_callable( $render ) || isset( self::$panels[ $id ] ) ) { return false; }
+		if ( '' === $id || '' === $label || ! $post_types || ! is_callable( $render ) || isset( self::$panels[ $id ] ) ) {
+			return false;
+		}
 		self::$panels[ $id ] = compact( 'id', 'label', 'post_types', 'render', 'context', 'priority' );
 		return true;
 	}
@@ -38,11 +47,20 @@ final class PanelRegistry {
 		foreach ( self::$panels as $panel ) {
 			foreach ( $panel['post_types'] as $owner_type ) {
 				$post_type = Entity::post_type_for_owner( $owner_type );
-				if ( '' === $post_type ) { continue; }
+				if ( '' === $post_type ) {
+					continue;
+				}
 				$box_id = 'cb-crm-panel-' . $panel['id'];
-				add_meta_box( $box_id, $panel['label'], static function ( \WP_Post $post ) use ( $panel, $owner_type ): void {
-					call_user_func( $panel['render'], $owner_type, (int) $post->ID, $post );
-				}, $post_type, $panel['context'], $panel['priority'] );
+				add_meta_box(
+					$box_id,
+					$panel['label'],
+					static function ( \WP_Post $post ) use ( $panel, $owner_type ): void {
+						call_user_func( $panel['render'], $owner_type, (int) $post->ID, $post );
+					},
+					$post_type,
+					$panel['context'],
+					$panel['priority']
+				);
 				add_filter(
 					'postbox_classes_' . $post_type . '_' . $box_id,
 					static function ( array $classes ): array {
