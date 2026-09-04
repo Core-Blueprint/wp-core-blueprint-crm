@@ -15,7 +15,6 @@ use CB\CRM\Repository\ContactMethods;
 use CB\CRM\Repository\Names;
 use CB\CRM\Repository\Notes;
 use CB\CRM\Repository\Organizations;
-use CB\CRM\Repository\Services;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,13 +24,12 @@ final class Panels {
 	}
 
 	public static function register(): void {
-		PanelRegistry::register( [ 'id' => 'details', 'label' => __( 'CRM Details', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION, Entity::SERVICE ], 'render' => [ __CLASS__, 'details' ], 'context' => 'normal', 'priority' => 'high' ] );
+		PanelRegistry::register( [ 'id' => 'details', 'label' => __( 'CRM Details', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION ], 'render' => [ __CLASS__, 'details' ], 'context' => 'normal', 'priority' => 'high' ] );
 		PanelRegistry::register( [ 'id' => 'contact-methods', 'label' => __( 'Contact Methods', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION ], 'render' => [ __CLASS__, 'contact_methods' ] ] );
 		PanelRegistry::register( [ 'id' => 'addresses', 'label' => __( 'Addresses', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION ], 'render' => [ __CLASS__, 'addresses' ] ] );
-		PanelRegistry::register( [ 'id' => 'names', 'label' => __( 'Names & Aliases', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION, Entity::SERVICE ], 'render' => [ __CLASS__, 'names' ] ] );
+		PanelRegistry::register( [ 'id' => 'names', 'label' => __( 'Names & Aliases', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION ], 'render' => [ __CLASS__, 'names' ] ] );
 		PanelRegistry::register( [ 'id' => 'organizations', 'label' => __( 'Organizations', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT ], 'render' => [ __CLASS__, 'organizations' ] ] );
-		PanelRegistry::register( [ 'id' => 'services', 'label' => __( 'Services', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION ], 'render' => [ __CLASS__, 'services' ] ] );
-		PanelRegistry::register( [ 'id' => 'notes-activity', 'label' => __( 'Notes & Activity', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION, Entity::SERVICE ], 'render' => [ __CLASS__, 'notes_activity' ] ] );
+		PanelRegistry::register( [ 'id' => 'notes-activity', 'label' => __( 'Notes & Activity', 'core-blueprint-crm' ), 'post_types' => [ Entity::CONTACT, Entity::ORGANIZATION ], 'render' => [ __CLASS__, 'notes_activity' ] ] );
 	}
 
 	public static function details( string $owner_type, int $post_id ): void {
@@ -153,20 +151,6 @@ final class Panels {
 		<?php self::repeatable_table_end( __( 'Add organization', 'core-blueprint-crm' ) );
 	}
 
-	public static function services( string $owner_type, int $post_id ): void {
-		$rows    = Services::for_owner( $owner_type, $post_id );
-		$options = get_posts( [ 'post_type' => PostTypes::SERVICE, 'post_status' => [ 'publish', 'draft', 'private' ], 'numberposts' => -1, 'orderby' => 'title', 'order' => 'ASC' ] );
-		echo '<input type="hidden" name="cb_crm_services_present" value="1">';
-		self::repeatable_table_start( 'services', count( $rows ), [ __( 'Service', 'core-blueprint-crm' ), __( 'Status', 'core-blueprint-crm' ), __( 'From', 'core-blueprint-crm' ), __( 'Until', 'core-blueprint-crm' ), __( 'Context', 'core-blueprint-crm' ), __( 'Actions', 'core-blueprint-crm' ) ] );
-		foreach ( $rows as $i => $row ) {
-			self::service_row( $i, $row, $options );
-		}
-		self::repeatable_table_middle();
-		?>
-		<template><?php self::service_row( '__INDEX__', [], $options ); ?></template>
-		<?php self::repeatable_table_end( __( 'Add service', 'core-blueprint-crm' ) );
-	}
-
 	public static function notes_activity( string $owner_type, int $post_id ): void {
 		$notes    = Notes::for_owner( $owner_type, $post_id, 20 );
 		$activity = Activity::for_owner( $owner_type, $post_id, 30 );
@@ -273,23 +257,6 @@ final class Panels {
 		<?php
 	}
 
-	/** @param array<string,mixed> $row
-	 *  @param \WP_Post[] $options
-	 */
-	private static function service_row( int|string $index, array $row, array $options ): void {
-		$prefix = 'cb_crm_services[' . (string) $index . ']';
-		?>
-		<tr data-cb-crm-row>
-			<td><select name="<?php echo esc_attr( $prefix . '[service_id]' ); ?>"><option value="0">—</option><?php foreach ( $options as $service ) : ?><option value="<?php echo esc_attr( (string) $service->ID ); ?>" <?php selected( (int) ( $row['service_id'] ?? 0 ), $service->ID ); ?>><?php echo esc_html( $service->post_title ); ?></option><?php endforeach; ?></select></td>
-			<td><select name="<?php echo esc_attr( $prefix . '[status]' ); ?>"><?php foreach ( Services::STATUSES as $status ) : ?><option value="<?php echo esc_attr( $status ); ?>" <?php selected( (string) ( $row['status'] ?? 'active' ), $status ); ?>><?php echo esc_html( self::service_status_label( $status ) ); ?></option><?php endforeach; ?></select></td>
-			<td><input type="date" name="<?php echo esc_attr( $prefix . '[started_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['started_at'] ?? '' ) ); ?>"></td>
-			<td><input type="date" name="<?php echo esc_attr( $prefix . '[ended_at]' ); ?>" value="<?php echo esc_attr( (string) ( $row['ended_at'] ?? '' ) ); ?>"></td>
-			<td><input type="text" name="<?php echo esc_attr( $prefix . '[notes]' ); ?>" value="<?php echo esc_attr( (string) ( $row['notes'] ?? '' ) ); ?>"></td>
-			<td><button type="button" class="button-link-delete" data-cb-crm-remove-row><?php esc_html_e( 'Remove', 'core-blueprint-crm' ); ?></button></td>
-		</tr>
-		<?php
-	}
-
 	private static function contact_method_label( string $type ): string {
 		return match ( $type ) {
 			'email'    => __( 'Email', 'core-blueprint-crm' ),
@@ -308,14 +275,6 @@ final class Panels {
 			'trading'   => __( 'Trading', 'core-blueprint-crm' ),
 			'former'    => __( 'Former', 'core-blueprint-crm' ),
 			default     => __( 'Alias', 'core-blueprint-crm' ),
-		};
-	}
-
-	private static function service_status_label( string $status ): string {
-		return match ( $status ) {
-			'paused' => __( 'Paused', 'core-blueprint-crm' ),
-			'ended'  => __( 'Ended', 'core-blueprint-crm' ),
-			default  => __( 'Active', 'core-blueprint-crm' ),
 		};
 	}
 }

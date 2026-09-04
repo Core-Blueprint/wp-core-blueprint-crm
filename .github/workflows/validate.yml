@@ -1,0 +1,37 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - main
+      - 'crm-v1-*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: crm-validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: PHP 8.4 checks
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@2.37.2
+        with:
+          php-version: '8.4'
+          coverage: none
+      - name: Run CRM checks
+        shell: bash
+        run: bash tools/check
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: find assets -type f -name '*.js' -print0 | xargs -0 -r -n1 node --check

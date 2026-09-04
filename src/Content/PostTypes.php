@@ -8,7 +8,6 @@ defined( 'ABSPATH' ) || exit;
 final class PostTypes {
 	public const CONTACT = 'cb_crm_contact';
 	public const ORGANIZATION = 'cb_crm_org';
-	public const SERVICE = 'cb_crm_service';
 	public const TAG = 'cb_crm_tag';
 
 	public static function init(): void {
@@ -19,7 +18,6 @@ final class PostTypes {
 	public static function register(): void {
 		self::register_type( self::CONTACT, __( 'Contacts', 'core-blueprint-crm' ), __( 'Contact', 'core-blueprint-crm' ), 'dashicons-businessperson' );
 		self::register_type( self::ORGANIZATION, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organization', 'core-blueprint-crm' ), 'dashicons-building' );
-		self::register_type( self::SERVICE, __( 'Services', 'core-blueprint-crm' ), __( 'Service', 'core-blueprint-crm' ), 'dashicons-hammer' );
 
 		register_taxonomy( self::TAG, [ self::CONTACT, self::ORGANIZATION ], [
 			'labels' => [ 'name' => __( 'CRM Tags', 'core-blueprint-crm' ), 'singular_name' => __( 'CRM Tag', 'core-blueprint-crm' ) ],
@@ -47,7 +45,7 @@ final class PostTypes {
 			],
 			'public' => false, 'publicly_queryable' => false, 'show_ui' => true, 'show_in_menu' => false, 'show_in_rest' => false,
 			'exclude_from_search' => true, 'has_archive' => false, 'rewrite' => false,
-			'supports' => self::SERVICE === $type ? [ 'title', 'editor' ] : [ 'title' ],
+			'supports' => [ 'title' ],
 			'menu_icon' => $icon,
 			'capability_type' => [ 'cb_crm_record', 'cb_crm_records' ],
 			'map_meta_cap' => false,

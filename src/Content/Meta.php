@@ -13,7 +13,7 @@ final class Meta {
 	public const LEGAL_NAME = '_cb_crm_legal_name';
 
 	public static function register(): void {
-		foreach ( [ PostTypes::CONTACT, PostTypes::ORGANIZATION, PostTypes::SERVICE ] as $post_type ) {
+		foreach ( [ PostTypes::CONTACT, PostTypes::ORGANIZATION ] as $post_type ) {
 			register_post_meta( $post_type, self::STATUS, self::args( 'string', 'sanitize_key' ) );
 		}
 		register_post_meta( PostTypes::CONTACT, self::WP_USER_ID, self::args( 'integer', 'absint' ) );
@@ -26,7 +26,12 @@ final class Meta {
 
 	/** @return array<string,mixed> */
 	private static function args( string $type, callable|string $sanitize ): array {
-		return [ 'type' => $type, 'single' => true, 'show_in_rest' => false, 'sanitize_callback' => $sanitize,
-			'auth_callback' => static fn(): bool => current_user_can( \CB\CRM\Capabilities::MANAGE ) ];
+		return [
+			'type'              => $type,
+			'single'            => true,
+			'show_in_rest'      => false,
+			'sanitize_callback' => $sanitize,
+			'auth_callback'     => static fn(): bool => current_user_can( \CB\CRM\Capabilities::MANAGE ),
+		];
 	}
 }

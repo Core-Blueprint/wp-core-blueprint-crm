@@ -9,6 +9,7 @@ use CB\CRM\Integration\Docs;
 use CB\CRM\Integration\Helpdesk;
 use CB\CRM\Integration\Suite;
 use CB\CRM\Integration\WooCommerce;
+use CB\CRM\Integration\WorkPricing;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,6 +29,7 @@ final class Plugin {
 		Suite::init();
 		Governance::init();
 		Lifecycle::init();
+		WorkPricing::init();
 		Admin::init();
 		BuildersBootstrap::init();
 		Docs::init();

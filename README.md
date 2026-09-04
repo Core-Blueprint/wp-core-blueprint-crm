@@ -1,5 +1,7 @@
 # Core Blueprint CRM
 
-Core Blueprint CRM is a self-hosted customer relationship management extension for the Core Blueprint WordPress Suite.
+Core Blueprint CRM owns customer identity and relationship context: Contacts, Organizations and customer-specific Service Agreements.
 
-Development happens on feature/release-candidate branches. The CRM is designed to remain independently useful while exposing public integration contracts for other Core Blueprint extensions.
+Core Blueprint Work is the authority for the Service catalog, default pricing and VAT/tax data. CRM references Work through public contracts only and never provides a fallback Service or VAT catalog.
+
+The plugin remains builder-neutral. Optional builder adapters, including Bricks, sit on top of the public frontend contracts.

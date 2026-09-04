@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Core Blueprint CRM
  * Plugin URI:        https://coreblueprint.io
- * Description:       Self-hosted customer relationship management for people, organizations, services and customer context.
- * Version:           1.0.0-rc1
+ * Description:       Self-hosted customer relationship management for contacts, organizations and customer-specific commercial agreements.
+ * Version:           1.0.0-rc1.1
  * Author:            Core Blueprint
  * Author URI:        https://coreblueprint.io
  * License:           GPL-2.0+
@@ -20,10 +20,9 @@ declare(strict_types=1);
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CB_CRM_VERSION', '1.0.0-rc1' );
-define( 'CB_CRM_SCHEMA_VERSION', '1.2' );
+define( 'CB_CRM_VERSION', '1.0.0-rc1.1' );
+define( 'CB_CRM_SCHEMA_VERSION', '1.3' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
-define( 'CB_CRM_REQUIRED_BASE', '1.0.0-rc3.40' );
 define( 'CB_CRM_FILE', __FILE__ );
 define( 'CB_CRM_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CB_CRM_URL', plugin_dir_url( __FILE__ ) );
@@ -54,9 +53,7 @@ function cb_crm_api_compatible( string $available, string $required ): bool {
 
 function cb_crm_base_ready(): bool {
 	return defined( 'CB_CORE_API_VERSION' )
-		&& defined( 'CB_CORE_VERSION' )
 		&& cb_crm_api_compatible( (string) CB_CORE_API_VERSION, CB_CRM_REQUIRED_API )
-		&& version_compare( (string) CB_CORE_VERSION, CB_CRM_REQUIRED_BASE, '>=' )
 		&& class_exists( '\\CB\\Core\\ExtensionRegistry' )
 		&& class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
 		&& class_exists( '\\CB\\Core\\Governance\\Audit' )
@@ -64,7 +61,7 @@ function cb_crm_base_ready(): bool {
 }
 
 function cb_crm_dependency_message(): string {
-	if ( ! defined( 'CB_CORE_API_VERSION' ) || ! defined( 'CB_CORE_VERSION' ) ) {
+	if ( ! defined( 'CB_CORE_API_VERSION' ) ) {
 		return __( 'Core Blueprint CRM requires an active Core Blueprint Base plugin.', 'core-blueprint-crm' );
 	}
 	if ( ! cb_crm_api_compatible( (string) CB_CORE_API_VERSION, CB_CRM_REQUIRED_API ) ) {
@@ -75,15 +72,7 @@ function cb_crm_dependency_message(): string {
 			(string) CB_CORE_API_VERSION
 		);
 	}
-	if ( version_compare( (string) CB_CORE_VERSION, CB_CRM_REQUIRED_BASE, '<' ) ) {
-		return sprintf(
-			/* translators: 1: required Core Blueprint Base version, 2: available Base version. */
-			__( 'Core Blueprint CRM requires Core Blueprint Base %1$s or newer. This site provides %2$s.', 'core-blueprint-crm' ),
-			CB_CRM_REQUIRED_BASE,
-			(string) CB_CORE_VERSION
-		);
-	}
-	return __( 'Core Blueprint CRM could not access one or more required Core Blueprint Base services.', 'core-blueprint-crm' );
+	return __( 'Core Blueprint CRM could not access one or more required public Core Blueprint Base services.', 'core-blueprint-crm' );
 }
 
 function cb_crm_activate(): void {
@@ -102,7 +91,6 @@ function cb_crm_activate(): void {
 }
 register_activation_hook( __FILE__, 'cb_crm_activate' );
 
-// Register extension-owned tables before Base's central schema sweep at plugins_loaded priority 5.
 add_action( 'plugins_loaded', static function (): void {
 	if ( cb_crm_base_ready() ) {
 		\CB\CRM\Database\Schema::register();
