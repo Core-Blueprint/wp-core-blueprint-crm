@@ -59,7 +59,7 @@ final class PricingUi {
 
 	public static function enqueue(): void {
 		$screen = get_current_screen();
-		if ( ! $screen || ! in_array( (string) $screen->post_type, [ PostTypes::CONTACT, PostTypes::ORGANIZATION, PostTypes::SERVICE ], true ) ) {
+		if ( ! $screen || ! Menu::is_record_editor_screen( $screen ) ) {
 			return;
 		}
 		wp_enqueue_style( 'cb-crm-pricing', CB_CRM_URL . 'assets/pricing.css', [ 'cb-crm-admin' ], CB_CRM_VERSION );

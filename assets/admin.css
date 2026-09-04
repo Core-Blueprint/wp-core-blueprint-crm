@@ -1,3 +1,65 @@
+.cb-crm-overview-grid,
+.cb-crm-settings-grid {
+	display: grid;
+	gap: 16px;
+	align-items: start;
+}
+
+.cb-crm-overview-grid {
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	max-width: 1000px;
+	margin-top: 20px;
+}
+
+.cb-crm-overview-grid .postbox,
+.cb-crm-settings-grid .postbox {
+	min-width: 0;
+	margin: 0;
+}
+
+.cb-crm-overview-card h2 {
+	margin-top: 0;
+}
+
+.cb-crm-overview-count {
+	margin: 8px 0;
+	font-size: 28px;
+}
+
+.cb-crm-overview-section-title {
+	margin-top: 28px;
+}
+
+.cb-crm-overview-configuration {
+	max-width: 320px;
+}
+
+.cb-crm-settings-grid {
+	grid-template-columns: minmax(560px, .9fr) minmax(0, 1.1fr);
+	max-width: 1400px;
+	margin-top: 20px;
+}
+
+.cb-crm-settings-grid .form-table {
+	width: 100%;
+}
+
+.cb-crm-settings-grid .regular-text,
+.cb-crm-settings-grid input[type="date"] {
+	max-width: 100%;
+}
+
+.cb-crm-table-scroll,
+.cb-crm-repeater {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.cb-crm-repeatable-table,
+.cb-crm-tax-rates-table {
+	min-width: 680px;
+}
+
 .cb-crm-user-picker {
 	max-width: 520px;
 	position: relative;
@@ -61,7 +123,6 @@
 .cb-crm-user-result:hover,
 .cb-crm-user-result:focus {
 	background: #f6f7f7;
-	outline: 0;
 }
 
 .cb-crm-user-result span,
@@ -105,6 +166,7 @@
 
 .cb-crm-address-field {
 	grid-column: span 6;
+	min-width: 0;
 }
 
 .cb-crm-address-field.is-wide {
@@ -123,6 +185,7 @@
 
 .cb-crm-address-field input:not([type="checkbox"]) {
 	width: 100%;
+	max-width: 100%;
 }
 
 .cb-crm-address-actions {
@@ -133,9 +196,29 @@
 	margin-top: 12px;
 }
 
+@media (max-width: 1440px) {
+	.cb-crm-settings-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
 @media (max-width: 782px) {
+	.cb-crm-overview-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.cb-crm-overview-configuration,
+	.cb-crm-user-picker {
+		max-width: none;
+	}
+
 	.cb-crm-address-field,
 	.cb-crm-address-field.is-small {
 		grid-column: span 12;
+	}
+
+	.cb-crm-address-actions {
+		align-items: flex-start;
+		flex-direction: column;
 	}
 }

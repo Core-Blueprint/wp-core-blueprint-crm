@@ -14,11 +14,17 @@ final class Assets {
 
 	public static function enqueue(): void {
 		$screen = get_current_screen();
-		if ( ! $screen || ! in_array( (string) $screen->post_type, [ PostTypes::CONTACT, PostTypes::ORGANIZATION, PostTypes::SERVICE ], true ) ) {
+		if ( ! $screen ) {
 			return;
 		}
 
-		FormComposition::enqueue( FormComposition::PRESENTATION_WP_NATIVE );
+		$context          = Menu::screen_context( $screen );
+		$is_record_editor = Menu::is_record_editor_screen( $screen );
+		$is_layout_page   = in_array( $context, [ Menu::CONTEXT_OVERVIEW, Menu::CONTEXT_TAX_RATES ], true );
+
+		if ( ! $is_record_editor && ! $is_layout_page ) {
+			return;
+		}
 
 		wp_enqueue_style(
 			'cb-crm-admin',
@@ -26,6 +32,12 @@ final class Assets {
 			[],
 			CB_CRM_VERSION
 		);
+
+		if ( ! $is_record_editor ) {
+			return;
+		}
+
+		FormComposition::enqueue( FormComposition::PRESENTATION_WP_NATIVE );
 
 		wp_enqueue_script(
 			'cb-crm-admin',
