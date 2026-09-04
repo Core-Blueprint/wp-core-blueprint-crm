@@ -3,19 +3,15 @@ declare(strict_types=1);
 
 namespace CB\CRM\Admin;
 
+use CB\CRM\Application\Actions\UpdateContact;
+use CB\CRM\Application\Actions\UpdateOrganization;
 use CB\CRM\Capabilities;
-use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\Content\Meta;
 use CB\CRM\Content\RecordStatus;
 use CB\CRM\Governance;
 use CB\CRM\Repository\Activity;
-use CB\CRM\Repository\Addresses;
-use CB\CRM\Repository\ContactMethods;
-use CB\CRM\Repository\Names;
 use CB\CRM\Repository\Notes;
-use CB\CRM\Repository\Organizations;
-use CB\CRM\Repository\Services;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -45,87 +41,44 @@ final class Save {
 			return;
 		}
 
-		$areas    = [];
-		$failures = [];
-		$details  = isset( $_POST['cb_crm_details'] ) && is_array( $_POST['cb_crm_details'] ) ? wp_unslash( $_POST['cb_crm_details'] ) : [];
-		$failures = array_merge( $failures, self::save_details( $owner_type, $post_id, $details ) );
-		$areas[] = 'details';
+		if ( Entity::CONTACT === $owner_type || Entity::ORGANIZATION === $owner_type ) {
+			$result = Entity::CONTACT === $owner_type
+				? UpdateContact::execute( $post_id, self::record_input( $owner_type ) )
+				: UpdateOrganization::execute( $post_id, self::record_input( $owner_type ) );
+			if ( is_wp_error( $result ) ) {
+				$data = $result->get_error_data();
+				$failures = is_array( $data ) && isset( $data['failed_areas'] ) && is_array( $data['failed_areas'] )
+					? array_filter( array_map( 'sanitize_key', $data['failed_areas'] ) )
+					: [ 'details' ];
+				self::$failed_areas[ $post_id ] = array_values( array_unique( $failures ) );
+			}
+			self::save_note( $owner_type, $post_id );
+			return;
+		}
+
+		// Services keep their existing native save path. Phase 5 exposes only
+		// Contact and Organization canonical update actions.
+		$details = isset( $_POST['cb_crm_details'] ) && is_array( $_POST['cb_crm_details'] )
+			? wp_unslash( $_POST['cb_crm_details'] )
+			: [];
+		$status_value = isset( $details['status'] ) && is_scalar( $details['status'] )
+			? (string) $details['status']
+			: RecordStatus::ACTIVE;
+		$status = RecordStatus::normalize( $status_value );
+		update_post_meta( $post_id, Meta::STATUS, $status );
 		Governance::record_data_updated( $owner_type, $post_id, 'details' );
-
-		if ( isset( $_POST['cb_crm_contact_methods_present'] ) ) {
-			$rows = isset( $_POST['cb_crm_contact_methods'] ) && is_array( $_POST['cb_crm_contact_methods'] ) ? wp_unslash( $_POST['cb_crm_contact_methods'] ) : [];
-			if ( ContactMethods::replace( $owner_type, $post_id, $rows ) ) {
-				$areas[] = 'contact_methods';
-				Governance::record_data_updated( $owner_type, $post_id, 'contact_methods' );
-			} else {
-				$failures[] = 'contact_methods';
-			}
-		}
-		if ( isset( $_POST['cb_crm_addresses_present'] ) ) {
-			$rows = isset( $_POST['cb_crm_addresses'] ) && is_array( $_POST['cb_crm_addresses'] ) ? wp_unslash( $_POST['cb_crm_addresses'] ) : [];
-			if ( Addresses::replace( $owner_type, $post_id, $rows ) ) {
-				$areas[] = 'addresses';
-				Governance::record_data_updated( $owner_type, $post_id, 'addresses' );
-			} else {
-				$failures[] = 'addresses';
-			}
-		}
-		if ( isset( $_POST['cb_crm_names_present'] ) ) {
-			$rows = isset( $_POST['cb_crm_names'] ) && is_array( $_POST['cb_crm_names'] ) ? wp_unslash( $_POST['cb_crm_names'] ) : [];
-			if ( Names::replace( $owner_type, $post_id, $rows ) ) {
-				$areas[] = 'names';
-				Governance::record_data_updated( $owner_type, $post_id, 'names' );
-			} else {
-				$failures[] = 'names';
-			}
-		}
-		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_organizations_present'] ) ) {
-			$rows = isset( $_POST['cb_crm_organizations'] ) && is_array( $_POST['cb_crm_organizations'] ) ? wp_unslash( $_POST['cb_crm_organizations'] ) : [];
-			if ( Organizations::replace_for_contact( $post_id, $rows ) ) {
-				$areas[] = 'organizations';
-				Governance::record_data_updated( $owner_type, $post_id, 'organizations' );
-			} else {
-				$failures[] = 'organizations';
-			}
-		}
-		if ( in_array( $owner_type, [ Entity::CONTACT, Entity::ORGANIZATION ], true ) && isset( $_POST['cb_crm_services_present'] ) ) {
-			$rows = isset( $_POST['cb_crm_services'] ) && is_array( $_POST['cb_crm_services'] ) ? wp_unslash( $_POST['cb_crm_services'] ) : [];
-			if ( Services::replace( $owner_type, $post_id, $rows ) ) {
-				$areas[] = 'services';
-				Governance::record_data_updated( $owner_type, $post_id, 'services' );
-			} else {
-				$failures[] = 'services';
-			}
-		}
-
-		$note = isset( $_POST['cb_crm_new_note'] ) ? sanitize_textarea_field( (string) wp_unslash( $_POST['cb_crm_new_note'] ) ) : '';
-		if ( '' !== $note ) {
-			$note_id = Notes::add( $owner_type, $post_id, get_current_user_id(), $note );
-			if ( $note_id > 0 ) {
-				Governance::record_note_created( $owner_type, $post_id, $note_id );
-				Activity::record( $owner_type, $post_id, 'note_added', __( 'CRM note added', 'core-blueprint-crm' ), 'crm', get_current_user_id(), 'note', (string) $note_id );
-			} else {
-				$failures[] = 'note';
-			}
-		}
-
-		if ( $areas ) {
-			Activity::record(
-				$owner_type,
-				$post_id,
-				'record_updated',
-				__( 'CRM record details updated', 'core-blueprint-crm' ),
-				'crm',
-				get_current_user_id(),
-				'post',
-				(string) $post_id,
-				[ 'areas' => implode( ',', array_unique( $areas ) ) ]
-			);
-		}
-
-		if ( $failures ) {
-			self::$failed_areas[ $post_id ] = array_values( array_unique( $failures ) );
-		}
+		Activity::record(
+			$owner_type,
+			$post_id,
+			'record_updated',
+			__( 'CRM record details updated', 'core-blueprint-crm' ),
+			'crm',
+			get_current_user_id(),
+			'post',
+			(string) $post_id,
+			[ 'areas' => 'details' ]
+		);
+		self::save_note( $owner_type, $post_id );
 	}
 
 	public static function redirect_post_location( string $location, int $post_id ): string {
@@ -154,7 +107,9 @@ final class Save {
 			'names'           => __( 'names and aliases', 'core-blueprint-crm' ),
 			'organizations'   => __( 'organization relationships', 'core-blueprint-crm' ),
 			'services'        => __( 'service assignments', 'core-blueprint-crm' ),
+			'tags'            => __( 'CRM Tags', 'core-blueprint-crm' ),
 			'note'            => __( 'note', 'core-blueprint-crm' ),
+			'details'         => 'details',
 		];
 		$failed = [];
 		foreach ( $areas as $area ) {
@@ -166,42 +121,53 @@ final class Save {
 		);
 	}
 
-	/** @param array<string,mixed> $details @return string[] */
-	private static function save_details( string $owner_type, int $post_id, array $details ): array {
-		$failures = [];
-		$status = RecordStatus::normalize( (string) ( $details['status'] ?? RecordStatus::ACTIVE ) );
-		update_post_meta( $post_id, Meta::STATUS, $status );
-
+	/** @return array<string,mixed> */
+	private static function record_input( string $owner_type ): array {
+		$details = isset( $_POST['cb_crm_details'] ) && is_array( $_POST['cb_crm_details'] ) ? wp_unslash( $_POST['cb_crm_details'] ) : [];
+		$input = [
+			'status' => $details['status'] ?? RecordStatus::ACTIVE,
+		];
 		if ( Entity::CONTACT === $owner_type ) {
-			update_post_meta( $post_id, Meta::FIRST_NAME, sanitize_text_field( (string) ( $details['first_name'] ?? '' ) ) );
-			update_post_meta( $post_id, Meta::LAST_NAME, sanitize_text_field( (string) ( $details['last_name'] ?? '' ) ) );
-			update_post_meta( $post_id, Meta::JOB_TITLE, sanitize_text_field( (string) ( $details['job_title'] ?? '' ) ) );
-
-			$stored_user_id = ContactIdentity::linked_user_id( $post_id );
-			$user_id = absint( $details['wp_user_id'] ?? 0 );
-			if ( $user_id > 0 && ! get_userdata( $user_id ) ) {
-				$user_id = 0;
-				$failures[] = 'wordpress_user';
-			} elseif ( $user_id > 0 && ! ContactIdentity::can_link_user_to_contact( $user_id, $post_id ) ) {
-				$user_id = $stored_user_id;
-				$failures[] = 'wordpress_user';
-			}
-			update_post_meta( $post_id, Meta::WP_USER_ID, $user_id );
-
-			$email_mode = sanitize_key( (string) ( $details['email_mode'] ?? ContactIdentity::EMAIL_CRM ) );
-			if ( ! in_array( $email_mode, [ ContactIdentity::EMAIL_CRM, ContactIdentity::EMAIL_WP ], true ) ) {
-				$email_mode = ContactIdentity::EMAIL_CRM;
-			}
-			if ( ContactIdentity::EMAIL_WP === $email_mode && 0 === $user_id ) {
-				$email_mode = ContactIdentity::EMAIL_CRM;
-			}
-			update_post_meta( $post_id, Meta::EMAIL_MODE, $email_mode );
+			$input['first_name']  = $details['first_name'] ?? '';
+			$input['last_name']   = $details['last_name'] ?? '';
+			$input['job_title']   = $details['job_title'] ?? '';
+			$input['wp_user_id']  = $details['wp_user_id'] ?? 0;
+			$input['email_mode']  = $details['email_mode'] ?? 'crm';
 		}
-
 		if ( Entity::ORGANIZATION === $owner_type ) {
-			update_post_meta( $post_id, Meta::LEGAL_NAME, sanitize_text_field( (string) ( $details['legal_name'] ?? '' ) ) );
+			$input['legal_name'] = $details['legal_name'] ?? '';
 		}
+		if ( isset( $_POST['cb_crm_contact_methods_present'] ) ) {
+			$input['contact_methods'] = isset( $_POST['cb_crm_contact_methods'] ) && is_array( $_POST['cb_crm_contact_methods'] ) ? wp_unslash( $_POST['cb_crm_contact_methods'] ) : [];
+		}
+		if ( isset( $_POST['cb_crm_addresses_present'] ) ) {
+			$input['addresses'] = isset( $_POST['cb_crm_addresses'] ) && is_array( $_POST['cb_crm_addresses'] ) ? wp_unslash( $_POST['cb_crm_addresses'] ) : [];
+		}
+		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_names_present'] ) ) {
+			$input['names'] = isset( $_POST['cb_crm_names'] ) && is_array( $_POST['cb_crm_names'] ) ? wp_unslash( $_POST['cb_crm_names'] ) : [];
+		}
+		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_organizations_present'] ) ) {
+			$input['organizations'] = isset( $_POST['cb_crm_organizations'] ) && is_array( $_POST['cb_crm_organizations'] ) ? wp_unslash( $_POST['cb_crm_organizations'] ) : [];
+		}
+		if ( isset( $_POST['cb_crm_services_present'] ) ) {
+			$input['services'] = isset( $_POST['cb_crm_services'] ) && is_array( $_POST['cb_crm_services'] ) ? wp_unslash( $_POST['cb_crm_services'] ) : [];
+		}
+		return $input;
+	}
 
-		return $failures;
+	private static function save_note( string $owner_type, int $post_id ): void {
+		$note = isset( $_POST['cb_crm_new_note'] ) ? sanitize_textarea_field( (string) wp_unslash( $_POST['cb_crm_new_note'] ) ) : '';
+		if ( '' === $note ) {
+			return;
+		}
+		$note_id = Notes::add( $owner_type, $post_id, get_current_user_id(), $note );
+		if ( $note_id > 0 ) {
+			Governance::record_note_created( $owner_type, $post_id, $note_id );
+			Activity::record( $owner_type, $post_id, 'note_added', __( 'CRM note added', 'core-blueprint-crm' ), 'crm', get_current_user_id(), 'note', (string) $note_id );
+			return;
+		}
+		$existing = self::$failed_areas[ $post_id ] ?? [];
+		$existing[] = 'note';
+		self::$failed_areas[ $post_id ] = array_values( array_unique( $existing ) );
 	}
 }
