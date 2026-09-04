@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace CB\CRM\Frontend\Queries;
 
 use CB\CRM\Capabilities;
+use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\Content\Meta;
 use CB\CRM\Content\PostTypes;
@@ -20,6 +21,40 @@ final class Contacts {
 	/** @return array<string,mixed>|\WP_Error */
 	public static function current_user(): array|\WP_Error {
 		return Contact::current();
+	}
+
+	/**
+	 * Resolve the uniquely linked CRM Contact for an explicit WordPress user.
+	 *
+	 * A normal authenticated user may resolve only their own identity. Resolving
+	 * another WordPress user is an explicit CRM staff operation.
+	 *
+	 * @return array<string,mixed>|\WP_Error
+	 */
+	public static function for_user( int $user_id ): array|\WP_Error {
+		$actor_user_id = get_current_user_id();
+		if ( $actor_user_id <= 0 ) {
+			return new \WP_Error( 'crm_login_required' );
+		}
+		if ( $user_id <= 0 ) {
+			return new \WP_Error( 'crm_contact_not_found' );
+		}
+		if ( $actor_user_id !== $user_id && ! current_user_can( Capabilities::MANAGE ) ) {
+			return new \WP_Error( 'crm_forbidden' );
+		}
+
+		$match = ContactIdentity::find_by_user_id( $user_id );
+		if ( ! is_array( $match ) || empty( $match['contact_id'] ) ) {
+			return new \WP_Error( 'crm_contact_not_found' );
+		}
+		if ( ! empty( $match['ambiguous'] ) ) {
+			return new \WP_Error( 'crm_contact_ambiguous' );
+		}
+
+		$contact_id = absint( $match['contact_id'] );
+		return $contact_id > 0
+			? Contact::get( $contact_id )
+			: new \WP_Error( 'crm_contact_not_found' );
 	}
 
 	/**

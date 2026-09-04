@@ -10,6 +10,7 @@ CRM records are private by default.
 
 - Staff access requires `cb_manage_crm`.
 - A normal authenticated user may read only the uniquely linked CRM Contact for their own WordPress account.
+- Authorized CRM staff may resolve another WordPress user's uniquely linked Contact through `CB\CRM\Frontend\Queries\Contacts::for_user()`; ambiguous mappings fail closed.
 - That user may read only active related Organizations and active Services reachable from that Contact context.
 - An ambiguous WordPress-user-to-Contact link fails closed.
 - CRM Tags and assignment-level pricing details are staff-only projections.
@@ -96,8 +97,11 @@ All collection APIs are bounded to a maximum of 100 records per page.
 ### `CB\CRM\Frontend\Queries\Contacts`
 
 - `current_user()` — current user's uniquely linked Contact.
+- `for_user( int $user_id )` — resolve an explicit WordPress user's uniquely linked Contact. Self-resolution is allowed for the authenticated user; resolving another user requires `cb_manage_crm`. Missing and ambiguous mappings fail closed.
 - `staff( array $args = [] )` — `cb_manage_crm` required.
 - `for_organization( int $organization_id, int $limit = 30 )` — staff-only convenience query.
+
+`for_user()` is the supported customer-context bridge for companion extensions. A Helpdesk integration may, for example, take an authorized ticket's public `customer_user_id` and resolve the corresponding CRM Contact without reading `ContactIdentity` or CRM-owned storage directly.
 
 Supported staff filters:
 
