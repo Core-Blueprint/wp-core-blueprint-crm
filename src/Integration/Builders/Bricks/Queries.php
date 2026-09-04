@@ -59,21 +59,31 @@ final class Queries {
 		$object_type = is_object( $query_obj ) && isset( $query_obj->object_type )
 			? (string) $query_obj->object_type
 			: '';
+		$page = self::page( $query_obj );
 
 		if ( self::CURRENT_CONTACT === $object_type ) {
 			$contact = Contacts::current_user();
 			return is_wp_error( $contact ) ? [] : [ $contact ];
 		}
 		if ( self::CONTACTS === $object_type ) {
-			$query = Contacts::staff( [ 'per_page' => self::limit( $query_obj, 30 ) ] );
+			$query = Contacts::staff( [
+				'page'     => $page,
+				'per_page' => self::limit( $query_obj, 30 ),
+			] );
 			return is_wp_error( $query ) ? [] : $query['items'];
 		}
 		if ( self::ORGANIZATIONS === $object_type ) {
-			$query = Organizations::staff( [ 'per_page' => self::limit( $query_obj, 30 ) ] );
+			$query = Organizations::staff( [
+				'page'     => $page,
+				'per_page' => self::limit( $query_obj, 30 ),
+			] );
 			return is_wp_error( $query ) ? [] : $query['items'];
 		}
 		if ( self::SERVICES === $object_type ) {
-			$query = Services::query( [ 'per_page' => self::limit( $query_obj, 30 ) ] );
+			$query = Services::query( [
+				'page'     => $page,
+				'per_page' => self::limit( $query_obj, 30 ),
+			] );
 			return is_wp_error( $query ) ? [] : $query['items'];
 		}
 		if ( self::LINKED_DOCUMENTS === $object_type ) {
@@ -81,8 +91,9 @@ final class Queries {
 			if ( is_wp_error( $current ) || ! in_array( $current['type'], [ Entity::CONTACT, Entity::ORGANIZATION ], true ) ) {
 				return [];
 			}
+			$window   = self::window( $query_obj, 30 );
 			$owner_id = absint( $current['data']['id'] ?? 0 );
-			$links    = DocumentLinks::for_owner( $current['type'], $owner_id, self::limit( $query_obj, 30 ) );
+			$links    = DocumentLinks::for_owner( $current['type'], $owner_id, $window['fetch'] );
 			if ( is_wp_error( $links ) ) {
 				return [];
 			}
@@ -92,23 +103,25 @@ final class Queries {
 					$documents[] = $link['document'];
 				}
 			}
-			return $documents;
+			return self::slice_window( $documents, $window );
 		}
 		if ( self::DOCUMENT_RECORDS === $object_type ) {
 			$document_id = self::current_document_id();
 			if ( null === $document_id ) {
 				return [];
 			}
-			$links = DocumentLinks::for_document( $document_id, self::limit( $query_obj, 30 ) );
-			return is_wp_error( $links ) ? [] : $links;
+			$window = self::window( $query_obj, 30 );
+			$links  = DocumentLinks::for_document( $document_id, $window['fetch'] );
+			return is_wp_error( $links ) ? [] : self::slice_window( $links, $window );
 		}
 		if ( self::CONTACT_TICKETS === $object_type ) {
 			$contact_id = RecordContext::identifier( Entity::CONTACT );
 			if ( null === $contact_id ) {
 				return [];
 			}
-			$tickets = HelpdeskTickets::for_contact( $contact_id, self::limit( $query_obj, 30 ) );
-			return is_wp_error( $tickets ) ? [] : $tickets;
+			$window  = self::window( $query_obj, 30 );
+			$tickets = HelpdeskTickets::for_contact( $contact_id, $window['fetch'] );
+			return is_wp_error( $tickets ) ? [] : self::slice_window( $tickets, $window );
 		}
 		return $results;
 	}
@@ -148,5 +161,35 @@ final class Queries {
 			return $default;
 		}
 		return max( 1, min( 100, (int) $raw ) );
+	}
+
+	private static function page( mixed $query_obj ): int {
+		if ( ! is_object( $query_obj ) || ! isset( $query_obj->settings ) || ! is_array( $query_obj->settings ) ) {
+			return 1;
+		}
+		$raw = $query_obj->settings['paged'] ?? $query_obj->settings['page'] ?? 1;
+		if ( ! is_scalar( $raw ) || ! is_numeric( $raw ) ) {
+			return 1;
+		}
+		return max( 1, (int) $raw );
+	}
+
+	/** @return array{limit:int,offset:int,fetch:int} */
+	private static function window( mixed $query_obj, int $default ): array {
+		$limit  = self::limit( $query_obj, $default );
+		$offset = ( self::page( $query_obj ) - 1 ) * $limit;
+		return [
+			'limit'  => $limit,
+			'offset' => $offset,
+			'fetch'  => min( 100, $offset + $limit ),
+		];
+	}
+
+	/** @param array<int,mixed> $items
+	 *  @param array{limit:int,offset:int,fetch:int} $window
+	 *  @return array<int,mixed>
+	 */
+	private static function slice_window( array $items, array $window ): array {
+		return array_values( array_slice( $items, $window['offset'], $window['limit'] ) );
 	}
 }
