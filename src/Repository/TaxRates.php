@@ -20,6 +20,14 @@ final class TaxRates {
 		return is_array( $rows ) ? $rows : [];
 	}
 
+	/** @return array<int,array<string,mixed>> */
+	public static function available( ?string $on_date = null ): array {
+		return array_values( array_filter(
+			self::all( false ),
+			static fn( array $row ): bool => self::is_available( $row, $on_date )
+		) );
+	}
+
 	/** @return array<string,mixed>|null */
 	public static function get( int $id ): ?array {
 		global $wpdb;
@@ -28,6 +36,31 @@ final class TaxRates {
 		}
 		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . Schema::tax_rates_table() . ' WHERE id = %d LIMIT 1', $id ), ARRAY_A );
 		return is_array( $row ) ? $row : null;
+	}
+
+	/** @param array<string,mixed> $row */
+	public static function is_available( array $row, ?string $on_date = null ): bool {
+		if ( empty( $row['is_active'] ) ) {
+			return false;
+		}
+		$date = self::date( (string) ( $on_date ?? current_time( 'Y-m-d' ) ) );
+		if ( null === $date ) {
+			$date = current_time( 'Y-m-d' );
+		}
+		$from  = self::date( (string) ( $row['valid_from'] ?? '' ) );
+		$until = self::date( (string) ( $row['valid_until'] ?? '' ) );
+		if ( null !== $from && $date < $from ) {
+			return false;
+		}
+		if ( null !== $until && $date > $until ) {
+			return false;
+		}
+		return true;
+	}
+
+	public static function is_available_id( int $id, ?string $on_date = null ): bool {
+		$row = self::get( $id );
+		return is_array( $row ) && self::is_available( $row, $on_date );
 	}
 
 	/** @param array<string,mixed> $input */

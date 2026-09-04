@@ -14,7 +14,9 @@ final class Plugin {
 	private static bool $booted = false;
 
 	public static function boot(): void {
-		if ( self::$booted ) { return; }
+		if ( self::$booted ) {
+			return;
+		}
 		self::$booted = true;
 
 		Install::maybe_upgrade();
@@ -23,6 +25,7 @@ final class Plugin {
 		PanelRegistry::init();
 		Suite::init();
 		Governance::init();
+		Lifecycle::init();
 		Admin::init();
 		Helpdesk::init();
 		WooCommerce::init();

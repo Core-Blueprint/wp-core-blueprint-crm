@@ -124,6 +124,7 @@
 				action: 'cb_crm_search_users',
 				nonce: config.nonce || '',
 				term,
+				contact_id: String(config.contactId || 0),
 			});
 			try {
 				const response = await fetch(config.ajaxUrl, {

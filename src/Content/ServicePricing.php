@@ -74,8 +74,18 @@ final class ServicePricing {
 		$currency = self::normalize_currency( (string) ( $input['currency'] ?? self::DEFAULT_CURRENCY ) );
 		$tax_mode = self::normalize_tax_mode( (string) ( $input['tax_mode'] ?? self::TAX_EXCLUSIVE ) );
 		$tax_rate_id = absint( $input['tax_rate_id'] ?? 0 );
-		if ( self::TAX_EXEMPT === $tax_mode || ! TaxRates::get( $tax_rate_id ) ) {
+
+		if ( self::TAX_EXEMPT === $tax_mode ) {
 			$tax_rate_id = 0;
+		} elseif ( $tax_rate_id > 0 ) {
+			$rate = TaxRates::get( $tax_rate_id );
+			if ( ! $rate ) {
+				$tax_rate_id = 0;
+			} elseif ( $tax_rate_id !== $before['tax_rate_id'] && ! TaxRates::is_available( $rate ) ) {
+				// Existing historical rates remain valid references, but a new
+				// assignment must be active and within its configured validity window.
+				$tax_rate_id = $before['tax_rate_id'];
+			}
 		}
 
 		if ( null === $amount ) {

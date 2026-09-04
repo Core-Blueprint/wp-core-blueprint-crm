@@ -42,6 +42,15 @@ final class Services {
 			return false;
 		}
 
+		$historical_rates = [];
+		foreach ( self::for_owner( $owner_type, $owner_id ) as $existing ) {
+			$service_id = absint( $existing['service_id'] ?? 0 );
+			$rate_id    = absint( $existing['custom_tax_rate_id'] ?? 0 );
+			if ( $service_id > 0 && $rate_id > 0 ) {
+				$historical_rates[ $service_id . ':' . $rate_id ] = true;
+			}
+		}
+
 		$normalized = [];
 		foreach ( array_slice( $rows, 0, 50 ) as $row ) {
 			if ( ! is_array( $row ) ) {
@@ -70,8 +79,12 @@ final class Services {
 					$custom_currency = ServicePricing::normalize_currency( (string) ( $row['custom_currency'] ?? ServicePricing::DEFAULT_CURRENCY ) );
 					$custom_tax_mode = ServicePricing::normalize_tax_mode( (string) ( $row['custom_tax_mode'] ?? ServicePricing::TAX_EXCLUSIVE ) );
 					$rate_id = absint( $row['custom_tax_rate_id'] ?? 0 );
-					if ( ServicePricing::TAX_EXEMPT !== $custom_tax_mode && TaxRates::get( $rate_id ) ) {
-						$custom_tax_rate_id = $rate_id;
+					if ( ServicePricing::TAX_EXEMPT !== $custom_tax_mode && $rate_id > 0 ) {
+						$rate = TaxRates::get( $rate_id );
+						$historical_key = $service_id . ':' . $rate_id;
+						if ( $rate && ( TaxRates::is_available( $rate ) || isset( $historical_rates[ $historical_key ] ) ) ) {
+							$custom_tax_rate_id = $rate_id;
+						}
 					}
 				} else {
 					$pricing_mode = 'inherit';
