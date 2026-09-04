@@ -5,6 +5,7 @@ namespace CB\CRM;
 use CB\CRM\Admin\Admin;
 use CB\CRM\Content\PostTypes;
 use CB\CRM\Integration\Builders\Bootstrap as BuildersBootstrap;
+use CB\CRM\Integration\Docs;
 use CB\CRM\Integration\Helpdesk;
 use CB\CRM\Integration\Suite;
 use CB\CRM\Integration\WooCommerce;
@@ -29,6 +30,7 @@ final class Plugin {
 		Lifecycle::init();
 		Admin::init();
 		BuildersBootstrap::init();
+		Docs::init();
 		Helpdesk::init();
 		WooCommerce::init();
 	}

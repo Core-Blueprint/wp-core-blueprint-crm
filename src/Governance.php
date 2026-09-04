@@ -84,6 +84,33 @@ final class Governance {
 		] );
 	}
 
+	public static function record_document_link_changed(
+		string $owner_type,
+		int $owner_id,
+		int $document_id,
+		string $action,
+		string $relation_type = ''
+	): void {
+		$owner_type = sanitize_key( $owner_type );
+		$action     = sanitize_key( $action );
+		if (
+			! Entity::valid_owner( $owner_type, $owner_id, false )
+			|| $document_id <= 0
+			|| ! in_array( $action, [ 'linked', 'updated', 'unlinked' ], true )
+		) {
+			return;
+		}
+
+		Audit::record( self::DATA_UPDATED, 'notice', [
+			'record_id'     => $owner_id,
+			'record_type'   => $owner_type,
+			'area'          => 'documentation_' . $action,
+			'document_id'   => $document_id,
+			'relation_type' => substr( sanitize_text_field( $relation_type ), 0, 64 ),
+			'actor_user_id' => get_current_user_id(),
+		] );
+	}
+
 	public static function record_note_created( string $owner_type, int $owner_id, int $note_id ): void {
 		Audit::record( self::NOTE_CREATED, 'notice', [
 			'record_id'     => $owner_id,

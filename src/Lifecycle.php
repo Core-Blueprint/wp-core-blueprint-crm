@@ -9,6 +9,7 @@ use CB\CRM\Content\Meta;
 use CB\CRM\Content\PostTypes;
 use CB\CRM\Database\Schema;
 use CB\CRM\Repository\Activity;
+use CB\CRM\Repository\DocumentLinks;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -29,6 +30,10 @@ final class Lifecycle {
 	public static function deleted_post( int $post_id, \WP_Post $post ): void {
 		$owner_type = self::owner_type( $post );
 		if ( '' === $owner_type ) {
+			if ( ! DocumentLinks::delete_for_document( $post_id ) ) {
+				Governance::record_cleanup_failed( 'document', $post_id );
+				error_log( sprintf( '[Core Blueprint CRM] Document-link cleanup failed after deleting post #%d.', $post_id ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
 			return;
 		}
 
@@ -87,6 +92,7 @@ final class Lifecycle {
 				Schema::addresses_table(),
 				Schema::names_table(),
 				Schema::service_assignments_table(),
+				Schema::document_links_table(),
 				Schema::notes_table(),
 				Schema::activities_table(),
 			];
