@@ -20,6 +20,7 @@ final class Schema {
 				[ __CLASS__, 'organization_relations_table' ],
 				[ __CLASS__, 'service_assignments_table' ],
 				[ __CLASS__, 'tax_rates_table' ],
+				[ __CLASS__, 'document_links_table' ],
 				[ __CLASS__, 'notes_table' ],
 				[ __CLASS__, 'activities_table' ],
 			],
@@ -33,6 +34,7 @@ final class Schema {
 	public static function organization_relations_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_org_relations'; }
 	public static function service_assignments_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_service_assignments'; }
 	public static function tax_rates_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_tax_rates'; }
+	public static function document_links_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_document_links'; }
 	public static function notes_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_notes'; }
 	public static function activities_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_activities'; }
 
@@ -84,6 +86,14 @@ final class Schema {
 			country_code varchar(2) NOT NULL DEFAULT '', rate_bp int unsigned NOT NULL DEFAULT 0, is_active tinyint(1) unsigned NOT NULL DEFAULT 1,
 			valid_from date NULL, valid_until date NULL, created_at datetime NOT NULL, updated_at datetime NOT NULL,
 			PRIMARY KEY  (id), UNIQUE KEY code (code), KEY active (is_active), KEY country (country_code)
+		) {$charset};" );
+
+		dbDelta( 'CREATE TABLE ' . self::document_links_table() . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT, owner_type varchar(20) NOT NULL, owner_id bigint(20) unsigned NOT NULL,
+			document_id bigint(20) unsigned NOT NULL, relation_type varchar(64) NOT NULL DEFAULT '', notes text NULL,
+			created_at datetime NOT NULL, created_by bigint(20) unsigned NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id), UNIQUE KEY owner_document (owner_type,owner_id,document_id), KEY owner (owner_type,owner_id),
+			KEY document (document_id), KEY relation_type (relation_type)
 		) {$charset};" );
 
 		dbDelta( 'CREATE TABLE ' . self::notes_table() . " (

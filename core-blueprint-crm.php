@@ -21,7 +21,7 @@ declare(strict_types=1);
 defined( 'ABSPATH' ) || exit;
 
 define( 'CB_CRM_VERSION', '1.0.0-rc1' );
-define( 'CB_CRM_SCHEMA_VERSION', '1.1' );
+define( 'CB_CRM_SCHEMA_VERSION', '1.2' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
 define( 'CB_CRM_REQUIRED_BASE', '1.0.0-rc3.40' );
 define( 'CB_CRM_FILE', __FILE__ );
