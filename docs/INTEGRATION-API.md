@@ -139,6 +139,14 @@ Supported filters:
 - `page`
 - `per_page`
 
+### `CB\CRM\Frontend\Queries\DocumentLinks`
+
+- `for_owner( string $owner_type, int $owner_id, int $limit = 100 )` — authorization-aware single Contact/Organization relation read. Existing unavailable/unauthorized owners fail closed with `crm_record_not_found`.
+- `documents_for_owners( array $owners, int $limit = 100 )` — authorization-aware batch boundary for combined integrations. Accepts up to 25 `contact`/`organization` owner pairs and returns at most 100 distinct readable Docs, each with its CRM relation contexts.
+- `for_document( int $document_id, int $limit = 100 )` — staff-only reverse relation query.
+
+`documents_for_owners()` performs one bounded CRM relation read for the authorized owner set and one public Docs query for the referenced documents. Inaccessible CRM owners and unreadable Docs are omitted. A stored CRM relation never grants document access, and consumers must not reproduce this batch by querying CRM relation storage or Docs internals directly.
+
 ## Conditions
 
 `CB\CRM\Frontend\Conditions\Records` exposes:

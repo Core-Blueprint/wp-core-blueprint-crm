@@ -9,7 +9,9 @@ use CB\CRM\Database\Schema;
 defined( 'ABSPATH' ) || exit;
 
 final class DocumentLinks {
-	private const MAX_LIMIT = 100;
+	private const MAX_LIMIT           = 100;
+	private const MAX_BATCH_OWNERS    = 25;
+	private const MAX_BATCH_RELATIONS = 2500;
 
 	/** @return array<int,array<string,mixed>> */
 	public static function for_owner( string $owner_type, int $owner_id, int $limit = self::MAX_LIMIT ): array {
@@ -30,6 +32,81 @@ final class DocumentLinks {
 			ARRAY_A
 		);
 
+		return is_array( $rows ) ? $rows : [];
+	}
+
+	/**
+	 * Internal bounded relation read for multiple already-authorized CRM owners.
+	 *
+	 * Authorization stays in the public query layer. This method only normalizes
+	 * owner type/ID pairs and performs one relation-table query.
+	 *
+	 * @param array<int,array{type?:mixed,id?:mixed}> $owners
+	 * @return array<int,array<string,mixed>>
+	 */
+	public static function for_owners( array $owners, int $limit = self::MAX_BATCH_RELATIONS ): array {
+		global $wpdb;
+
+		$normalized = [];
+		foreach ( $owners as $owner ) {
+			if ( ! is_array( $owner ) ) {
+				continue;
+			}
+
+			$type = sanitize_key( (string) ( $owner['type'] ?? '' ) );
+			$id   = absint( $owner['id'] ?? 0 );
+			if ( ! in_array( $type, [ Entity::CONTACT, Entity::ORGANIZATION ], true ) || $id <= 0 ) {
+				continue;
+			}
+
+			$normalized[ $type . ':' . $id ] = [ 'type' => $type, 'id' => $id ];
+			if ( count( $normalized ) >= self::MAX_BATCH_OWNERS ) {
+				break;
+			}
+		}
+
+		if ( [] === $normalized ) {
+			return [];
+		}
+
+		$contact_ids      = [];
+		$organization_ids = [];
+		foreach ( $normalized as $owner ) {
+			if ( Entity::CONTACT === $owner['type'] ) {
+				$contact_ids[] = $owner['id'];
+			} else {
+				$organization_ids[] = $owner['id'];
+			}
+		}
+
+		$where  = [];
+		$params = [];
+
+		if ( [] !== $contact_ids ) {
+			$placeholders = implode( ',', array_fill( 0, count( $contact_ids ), '%d' ) );
+			$where[]      = '(owner_type = %s AND owner_id IN (' . $placeholders . '))';
+			$params[]     = Entity::CONTACT;
+			array_push( $params, ...$contact_ids );
+		}
+
+		if ( [] !== $organization_ids ) {
+			$placeholders = implode( ',', array_fill( 0, count( $organization_ids ), '%d' ) );
+			$where[]      = '(owner_type = %s AND owner_id IN (' . $placeholders . '))';
+			$params[]     = Entity::ORGANIZATION;
+			array_push( $params, ...$organization_ids );
+		}
+
+		if ( [] === $where ) {
+			return [];
+		}
+
+		$limit    = max( 1, min( self::MAX_BATCH_RELATIONS, $limit ) );
+		$sql      = 'SELECT * FROM ' . Schema::document_links_table()
+			. ' WHERE (' . implode( ' OR ', $where ) . ')'
+			. ' ORDER BY id ASC LIMIT %d';
+		$params[] = $limit;
+
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, ...$params ), ARRAY_A );
 		return is_array( $rows ) ? $rows : [];
 	}
 
