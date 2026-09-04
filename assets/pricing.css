@@ -5,8 +5,14 @@
 	gap: 16px;
 }
 
+.cb-crm-pricing-grid > *,
+.cb-crm-service-grid > * {
+	min-width: 0;
+}
+
 .cb-crm-field {
 	grid-column: span 6;
+	min-width: 0;
 }
 
 .cb-crm-field.is-small {
@@ -29,15 +35,11 @@
 }
 
 .cb-crm-empty-state {
-	padding: 16px;
-	border: 1px solid #dcdcde;
-	border-radius: 4px;
-	background: #fff;
+	padding: 12px 0;
 }
 
 .cb-crm-empty-state p {
 	margin: 6px 0 12px;
-	color: #50575e;
 }
 
 .cb-crm-service-list {
@@ -46,9 +48,9 @@
 }
 
 .cb-crm-service-card {
+	min-width: 0;
 	padding: 16px;
 	border: 1px solid #dcdcde;
-	border-radius: 4px;
 	background: #fff;
 }
 
@@ -73,26 +75,8 @@
 	text-align: right;
 }
 
-.cb-crm-settings-grid {
-	display: grid;
-	grid-template-columns: minmax(320px, 0.8fr) minmax(520px, 1.7fr);
-	gap: 16px;
-	margin-top: 20px;
-	align-items: start;
-}
-
-.cb-crm-settings-grid .postbox {
-	margin: 0;
-}
-
 .cb-crm-tax-rates-table form {
 	margin: 0;
-}
-
-@media (max-width: 960px) {
-	.cb-crm-settings-grid {
-		grid-template-columns: 1fr;
-	}
 }
 
 @media (max-width: 782px) {
@@ -100,28 +84,8 @@
 	.cb-crm-field.is-small {
 		grid-column: span 12;
 	}
-}
 
-[id^="cb-crm-panel-"] .form-table th {
-	padding-top: 14px;
-	padding-bottom: 14px;
-}
-
-[id^="cb-crm-panel-"] .form-table td {
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
-[id^="cb-crm-panel-"] .cb-crm-repeatable-table th,
-[id^="cb-crm-panel-"] .cb-crm-repeatable-table td {
-	padding: 10px 8px;
-}
-
-[id^="cb-crm-panel-"] .cb-crm-address-card {
-	padding: 16px;
-	border-radius: 4px;
-}
-
-[id^="cb-crm-panel-"] .cb-crm-address-grid {
-	gap: 16px;
+	.cb-crm-service-actions {
+		text-align: left;
+	}
 }

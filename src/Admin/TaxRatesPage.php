@@ -41,7 +41,6 @@ final class TaxRatesPage {
 			return;
 		}
 		FormComposition::enqueue( FormComposition::PRESENTATION_WP_NATIVE );
-		wp_enqueue_style( 'cb-crm-pricing', CB_CRM_URL . 'assets/pricing.css', [], CB_CRM_VERSION );
 		wp_enqueue_script( 'cb-crm-tax-rates', CB_CRM_URL . 'assets/tax-rates.js', [], CB_CRM_VERSION, true );
 	}
 
@@ -105,28 +104,30 @@ final class TaxRatesPage {
 						<?php if ( ! $rates ) : ?>
 							<p><?php esc_html_e( 'No tax rates configured yet.', 'core-blueprint-crm' ); ?></p>
 						<?php else : ?>
-							<table class="widefat striped cb-crm-tax-rates-table">
-								<thead><tr><th><?php esc_html_e( 'Code', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Label', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Country', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Rate', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Validity', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Actions', 'core-blueprint-crm' ); ?></th></tr></thead>
-								<tbody>
-								<?php foreach ( $rates as $rate ) : ?>
-									<tr>
-										<td><code><?php echo esc_html( (string) $rate['code'] ); ?></code></td>
-										<td><?php echo esc_html( (string) $rate['label'] ); ?></td>
-										<td><?php echo esc_html( (string) $rate['country_code'] ); ?></td>
-										<td><?php echo esc_html( TaxRates::format_rate_bp( (int) $rate['rate_bp'] ) . '%' ); ?></td>
-										<td><?php echo esc_html( self::validity( $rate ) ); ?></td>
-										<td><?php echo ! empty( $rate['is_active'] ) ? esc_html__( 'Active', 'core-blueprint-crm' ) : esc_html__( 'Inactive', 'core-blueprint-crm' ); ?></td>
-										<td>
-											<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-												<input type="hidden" name="action" value="cb_crm_toggle_tax_rate"><input type="hidden" name="tax_rate_id" value="<?php echo esc_attr( (string) $rate['id'] ); ?>"><input type="hidden" name="active" value="<?php echo empty( $rate['is_active'] ) ? '1' : '0'; ?>">
-												<?php wp_nonce_field( 'cb_crm_toggle_tax_rate' ); ?>
-												<button class="button" type="submit"><?php echo empty( $rate['is_active'] ) ? esc_html__( 'Activate', 'core-blueprint-crm' ) : esc_html__( 'Deactivate', 'core-blueprint-crm' ); ?></button>
-											</form>
-										</td>
-									</tr>
-								<?php endforeach; ?>
-								</tbody>
-							</table>
+							<div class="cb-crm-table-scroll">
+								<table class="widefat striped cb-crm-tax-rates-table">
+									<thead><tr><th><?php esc_html_e( 'Code', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Label', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Country', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Rate', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Validity', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></th><th><?php esc_html_e( 'Actions', 'core-blueprint-crm' ); ?></th></tr></thead>
+									<tbody>
+									<?php foreach ( $rates as $rate ) : ?>
+										<tr>
+											<td><code><?php echo esc_html( (string) $rate['code'] ); ?></code></td>
+											<td><?php echo esc_html( (string) $rate['label'] ); ?></td>
+											<td><?php echo esc_html( (string) $rate['country_code'] ); ?></td>
+											<td><?php echo esc_html( TaxRates::format_rate_bp( (int) $rate['rate_bp'] ) . '%' ); ?></td>
+											<td><?php echo esc_html( self::validity( $rate ) ); ?></td>
+											<td><?php echo ! empty( $rate['is_active'] ) ? esc_html__( 'Active', 'core-blueprint-crm' ) : esc_html__( 'Inactive', 'core-blueprint-crm' ); ?></td>
+											<td>
+												<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+													<input type="hidden" name="action" value="cb_crm_toggle_tax_rate"><input type="hidden" name="tax_rate_id" value="<?php echo esc_attr( (string) $rate['id'] ); ?>"><input type="hidden" name="active" value="<?php echo empty( $rate['is_active'] ) ? '1' : '0'; ?>">
+													<?php wp_nonce_field( 'cb_crm_toggle_tax_rate' ); ?>
+													<button class="button" type="submit"><?php echo empty( $rate['is_active'] ) ? esc_html__( 'Activate', 'core-blueprint-crm' ) : esc_html__( 'Deactivate', 'core-blueprint-crm' ); ?></button>
+												</form>
+											</td>
+										</tr>
+									<?php endforeach; ?>
+									</tbody>
+								</table>
+							</div>
 						<?php endif; ?>
 					</div>
 				</div>
