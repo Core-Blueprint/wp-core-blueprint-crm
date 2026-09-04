@@ -203,6 +203,22 @@ Both actions keep validation, WordPress-user-link uniqueness, CRM repository wri
 
 Malformed structured input fails the affected area without replacing an existing collection with an empty one. A `crm_update_failed` error may include `updated_areas` and `failed_areas` because existing CRM storage areas are independently transactional. Consumers must surface failure instead of assuming an all-or-nothing write.
 
+## Optional Helpdesk integration
+
+The CRM Contact editor may show recent Helpdesk tickets when Core Blueprint Helpdesk is active and the current staff user is authorized to manage Helpdesk tickets.
+
+The integration boundary is:
+
+- linked WordPress user ID from the CRM Contact is the authoritative customer identity;
+- ticket reads use `CB\Helpdesk\Frontend\Queries\Tickets::for_user( $user_id, 10 )`;
+- Helpdesk remains responsible for ticket authorization and public field projection;
+- the Helpdesk workspace URL is resolved through Base `CB\Core\ExtensionRegistry`;
+- CRM does not query Helpdesk tables or `CB\Helpdesk\Ticket\Repository`;
+- CRM never mutates Helpdesk ticket storage;
+- deactivating Helpdesk removes the optional CRM panel without changing CRM or Helpdesk data.
+
+The first correction intentionally does not add customer-snapshot email matching for guest/external tickets. Such matching requires a dedicated ambiguity-safe public Helpdesk provider before CRM may consume it.
+
 ## Explicit non-contracts
 
 The following are not public integration APIs:
@@ -210,6 +226,4 @@ The following are not public integration APIs:
 - `CB\CRM\Repository\*`
 - CRM-owned table names or direct SQL
 - WordPress admin form payloads/nonces
-- private Helpdesk repository access in the existing CRM Helpdesk panel
-
-The CRM → Helpdesk private repository usage is intentionally scheduled for the later dedicated CRM ↔ Helpdesk correction phase; Phase 5 does not expand or bless it.
+- Helpdesk repositories, tables or private admin implementation details
