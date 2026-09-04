@@ -42,11 +42,25 @@ foreach ( $forbidden_files as $file ) {
 }
 
 $source = '';
+$source_files = [];
 foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $root . '/src' ) ) as $file ) {
 	if ( $file->isFile() && 'php' === strtolower( $file->getExtension() ) ) {
-		$source .= "\n" . file_get_contents( $file->getPathname() );
+		$contents = file_get_contents( $file->getPathname() );
+		$relative = str_replace( $root . '/', '', $file->getPathname() );
+		$source_files[ $relative ] = $contents;
+		$source .= "\n" . $contents;
 	}
 }
+
+$find_token = static function ( string $token ) use ( $source_files ): array {
+	$matches = [];
+	foreach ( $source_files as $path => $contents ) {
+		if ( str_contains( $contents, $token ) ) {
+			$matches[] = $path;
+		}
+	}
+	return $matches;
+};
 
 $bootstrap   = file_get_contents( $root . '/core-blueprint-crm.php' );
 $schema      = file_get_contents( $root . '/src/Database/Schema.php' );
@@ -57,19 +71,29 @@ $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/Dyna
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Queries.php' )
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Conditions.php' );
 
+$forbidden_tokens = [
+	'PostTypes::SERVICE',
+	'Entity::SERVICE',
+	'Repository\\Services',
+	'Repository\\TaxRates',
+	'Content\\ServicePricing',
+	'cb_crm_service_assignments',
+	'cb_crm_tax_rates',
+];
+foreach ( $forbidden_tokens as $token ) {
+	$matches = $find_token( $token );
+	if ( [] !== $matches ) {
+		fwrite( STDERR, 'Forbidden token ' . $token . ' found in: ' . implode( ', ', $matches ) . "\n" );
+		$failed = true;
+	}
+}
+
 $checks = [
 	'candidate version is rc1.1' => str_contains( $bootstrap, 'Version:           1.0.0-rc1.1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.3'" ),
 	'CRM targets Core API without Base RC pin' => str_contains( $bootstrap, "CB_CRM_REQUIRED_API', '1.0'" ) && ! str_contains( $bootstrap, 'CB_CRM_REQUIRED_BASE' ),
 	'CRM no longer owns Service post type' => ! str_contains( $post_types, 'cb_crm_service' ) && ! str_contains( $entity, 'SERVICE' ),
 	'CRM schema owns agreements but no old assignments or VAT table' => str_contains( $schema, 'cb_crm_service_agreements' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
 	'Work provider preserves agreement reference' => str_contains( $workPricing, "'reference_type' => 'service_agreement'" ) && str_contains( $workPricing, 'pricing_projection' ),
-	'no PostTypes::SERVICE reference remains' => ! str_contains( $source, 'PostTypes::SERVICE' ),
-	'no Entity::SERVICE reference remains' => ! str_contains( $source, 'Entity::SERVICE' ),
-	'no CRM Repository\\Services reference remains' => ! str_contains( $source, 'Repository\\Services' ),
-	'no CRM Repository\\TaxRates reference remains' => ! str_contains( $source, 'Repository\\TaxRates' ),
-	'no CRM Content\\ServicePricing reference remains' => ! str_contains( $source, 'Content\\ServicePricing' ),
-	'no old service-assignment table reference remains' => ! str_contains( $source, 'cb_crm_service_assignments' ),
-	'no old CRM VAT table reference remains' => ! str_contains( $source, 'cb_crm_tax_rates' ),
 	'Work coupling uses public API only' => 0 === preg_match( '/CB\\\\Work\\\\(?!PublicApi\\\\)/', $source ),
 	'Bricks exposes agreements not CRM Service catalog' => str_contains( $bricks, 'cb_crm_service_agreements' ) && str_contains( $bricks, 'cb_crm_contact_has_service_agreement' ) && ! str_contains( $bricks, 'cb_crm_services' ) && ! str_contains( $bricks, 'cb_crm_service_name' ),
 ];
