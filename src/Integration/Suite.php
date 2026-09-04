@@ -23,7 +23,6 @@ final class Suite {
 			'id'            => self::ID,
 			'plugin_file'   => CB_CRM_BASENAME,
 			'requires_api'  => CB_CRM_REQUIRED_API,
-			'requires_base' => CB_CRM_REQUIRED_BASE,
 			'menu_url'      => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
 			'status_id'     => 'crm',
 		] );
@@ -45,28 +44,19 @@ final class Suite {
 	public static function status(): array {
 		$installed_schema = (string) get_option( Schema::OPTION, '0' );
 		if ( version_compare( $installed_schema, CB_CRM_SCHEMA_VERSION, '<' ) ) {
-			return [
-				'state'  => 'warn',
-				'detail' => __( 'CRM database upgrade pending.', 'core-blueprint-crm' ),
-				'url'    => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
-			];
+			return [ 'state' => 'warn', 'detail' => __( 'CRM database upgrade pending.', 'core-blueprint-crm' ), 'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ) ];
 		}
 		if ( version_compare( $installed_schema, CB_CRM_SCHEMA_VERSION, '>' ) ) {
-			return [
-				'state'  => 'warn',
-				'detail' => __( 'CRM database schema is newer than this plugin build.', 'core-blueprint-crm' ),
-				'url'    => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
-			];
+			return [ 'state' => 'warn', 'detail' => __( 'CRM database schema is newer than this plugin build.', 'core-blueprint-crm' ), 'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ) ];
 		}
 
 		return [
 			'state'  => 'ok',
 			'detail' => sprintf(
-				/* translators: 1: contacts, 2: organizations, 3: services. */
-				__( '%1$d contacts · %2$d organizations · %3$d services', 'core-blueprint-crm' ),
+				/* translators: 1: contacts, 2: organizations. */
+				__( '%1$d contacts · %2$d organizations', 'core-blueprint-crm' ),
 				self::record_count( PostTypes::CONTACT ),
-				self::record_count( PostTypes::ORGANIZATION ),
-				self::record_count( PostTypes::SERVICE )
+				self::record_count( PostTypes::ORGANIZATION )
 			),
 			'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
 		];

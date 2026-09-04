@@ -18,8 +18,7 @@ final class Schema {
 				[ __CLASS__, 'addresses_table' ],
 				[ __CLASS__, 'names_table' ],
 				[ __CLASS__, 'organization_relations_table' ],
-				[ __CLASS__, 'service_assignments_table' ],
-				[ __CLASS__, 'tax_rates_table' ],
+				[ __CLASS__, 'service_agreements_table' ],
 				[ __CLASS__, 'document_links_table' ],
 				[ __CLASS__, 'notes_table' ],
 				[ __CLASS__, 'activities_table' ],
@@ -32,8 +31,7 @@ final class Schema {
 	public static function addresses_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_addresses'; }
 	public static function names_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_names'; }
 	public static function organization_relations_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_org_relations'; }
-	public static function service_assignments_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_service_assignments'; }
-	public static function tax_rates_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_tax_rates'; }
+	public static function service_agreements_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_service_agreements'; }
 	public static function document_links_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_document_links'; }
 	public static function notes_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_notes'; }
 	public static function activities_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_activities'; }
@@ -72,20 +70,14 @@ final class Schema {
 			created_at datetime NOT NULL, updated_at datetime NOT NULL, PRIMARY KEY  (id), KEY contact (contact_id), KEY organization (organization_id), KEY active_contact (contact_id,ended_at)
 		) {$charset};" );
 
-		dbDelta( 'CREATE TABLE ' . self::service_assignments_table() . " (
-			id bigint(20) unsigned NOT NULL AUTO_INCREMENT, service_id bigint(20) unsigned NOT NULL, owner_type varchar(20) NOT NULL, owner_id bigint(20) unsigned NOT NULL,
-			status varchar(32) NOT NULL DEFAULT 'active', started_at date NULL, ended_at date NULL,
+		dbDelta( 'CREATE TABLE ' . self::service_agreements_table() . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT, work_service_id bigint(20) unsigned NOT NULL,
+			customer_type varchar(20) NOT NULL, customer_id bigint(20) unsigned NOT NULL,
+			status varchar(32) NOT NULL DEFAULT 'active', valid_from date NULL, valid_until date NULL,
 			pricing_mode varchar(16) NOT NULL DEFAULT 'inherit', custom_amount_minor bigint(20) unsigned NULL, custom_currency varchar(3) NULL,
 			custom_tax_mode varchar(16) NULL, custom_tax_rate_id bigint(20) unsigned NULL, notes text NULL,
 			created_at datetime NOT NULL, updated_at datetime NOT NULL,
-			PRIMARY KEY  (id), KEY owner (owner_type,owner_id), KEY service (service_id), KEY status (status), KEY custom_tax_rate (custom_tax_rate_id)
-		) {$charset};" );
-
-		dbDelta( 'CREATE TABLE ' . self::tax_rates_table() . " (
-			id bigint(20) unsigned NOT NULL AUTO_INCREMENT, code varchar(64) NOT NULL, label varchar(190) NOT NULL,
-			country_code varchar(2) NOT NULL DEFAULT '', rate_bp int unsigned NOT NULL DEFAULT 0, is_active tinyint(1) unsigned NOT NULL DEFAULT 1,
-			valid_from date NULL, valid_until date NULL, created_at datetime NOT NULL, updated_at datetime NOT NULL,
-			PRIMARY KEY  (id), UNIQUE KEY code (code), KEY active (is_active), KEY country (country_code)
+			PRIMARY KEY  (id), KEY customer (customer_type,customer_id), KEY work_service (work_service_id), KEY status (status), KEY custom_tax_rate (custom_tax_rate_id)
 		) {$charset};" );
 
 		dbDelta( 'CREATE TABLE ' . self::document_links_table() . " (
