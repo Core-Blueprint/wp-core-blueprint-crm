@@ -13,11 +13,13 @@ defined( 'ABSPATH' ) || exit;
 final class Governance {
 	public const RECORD_CREATED   = 'crm.record.created';
 	public const RECORD_UPDATED   = 'crm.record.updated';
+	public const RECORD_DELETED   = 'crm.record.deleted';
 	public const DATA_UPDATED     = 'crm.data.updated';
 	public const NOTE_CREATED     = 'crm.note.created';
 	public const ORDER_ACTIVITY   = 'crm.order.activity';
 	public const TICKET_ACTIVITY  = 'crm.ticket.activity';
 	public const TAX_RATE_CHANGED = 'crm.tax_rate.changed';
+	public const CLEANUP_FAILED   = 'crm.cleanup.failed';
 
 	public static function init(): void {
 		add_action( 'init', [ __CLASS__, 'register_events' ], 10 );
@@ -27,11 +29,13 @@ final class Governance {
 	public static function register_events(): void {
 		EventRegistry::register( [ 'id' => self::RECORD_CREATED, 'label' => __( 'CRM record created', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::RECORD_UPDATED, 'label' => __( 'CRM record updated', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
+		EventRegistry::register( [ 'id' => self::RECORD_DELETED, 'label' => __( 'CRM record deleted', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::DATA_UPDATED, 'label' => __( 'CRM record data updated', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::NOTE_CREATED, 'label' => __( 'CRM note created', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::ORDER_ACTIVITY, 'label' => __( 'CRM WooCommerce activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::TICKET_ACTIVITY, 'label' => __( 'CRM Helpdesk activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::TAX_RATE_CHANGED, 'label' => __( 'CRM tax rate changed', 'core-blueprint-crm' ), 'retention_category' => 'settings' ] );
+		EventRegistry::register( [ 'id' => self::CLEANUP_FAILED, 'label' => __( 'CRM record cleanup failed', 'core-blueprint-crm' ), 'retention_category' => 'maintenance' ] );
 	}
 
 	public static function record_post_change( int $post_id, \WP_Post $post, bool $update, ?\WP_Post $post_before ): void {
@@ -50,6 +54,22 @@ final class Governance {
 				'actor_user_id' => get_current_user_id(),
 			]
 		);
+	}
+
+	public static function record_record_deleted( string $owner_type, int $owner_id ): void {
+		Audit::record( self::RECORD_DELETED, 'notice', [
+			'record_id'     => $owner_id,
+			'record_type'   => sanitize_key( $owner_type ),
+			'actor_user_id' => get_current_user_id(),
+		] );
+	}
+
+	public static function record_cleanup_failed( string $owner_type, int $owner_id ): void {
+		Audit::record( self::CLEANUP_FAILED, 'warning', [
+			'record_id'     => $owner_id,
+			'record_type'   => sanitize_key( $owner_type ),
+			'actor_user_id' => get_current_user_id(),
+		] );
 	}
 
 	public static function record_data_updated( string $owner_type, int $owner_id, string $area ): void {

@@ -35,10 +35,24 @@ final class Assets {
 			true
 		);
 
+		$current_contact_id = 0;
+		if ( PostTypes::CONTACT === (string) $screen->post_type ) {
+			global $post;
+			if ( $post instanceof \WP_Post && PostTypes::CONTACT === $post->post_type ) {
+				$current_contact_id = (int) $post->ID;
+			} elseif ( isset( $_GET['post'] ) ) {
+				$candidate = absint( $_GET['post'] );
+				if ( PostTypes::CONTACT === get_post_type( $candidate ) ) {
+					$current_contact_id = $candidate;
+				}
+			}
+		}
+
 		wp_localize_script( 'cb-crm-admin', 'cbCrmAdmin', [
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-			'nonce'   => wp_create_nonce( UserSearch::nonce_action() ),
-			'i18n'    => [
+			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+			'nonce'     => wp_create_nonce( UserSearch::nonce_action() ),
+			'contactId' => $current_contact_id,
+			'i18n'      => [
 				'noUsers'   => __( 'No matching WordPress users found.', 'core-blueprint-crm' ),
 				'searching' => __( 'Searching…', 'core-blueprint-crm' ),
 				'error'     => __( 'WordPress user search failed. Try again.', 'core-blueprint-crm' ),

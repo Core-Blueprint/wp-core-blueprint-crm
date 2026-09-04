@@ -23,6 +23,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'CB_CRM_VERSION', '1.0.0-rc1' );
 define( 'CB_CRM_SCHEMA_VERSION', '1.1' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
+define( 'CB_CRM_REQUIRED_BASE', '1.0.0-rc3.40' );
 define( 'CB_CRM_FILE', __FILE__ );
 define( 'CB_CRM_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CB_CRM_URL', plugin_dir_url( __FILE__ ) );
@@ -53,7 +54,9 @@ function cb_crm_api_compatible( string $available, string $required ): bool {
 
 function cb_crm_base_ready(): bool {
 	return defined( 'CB_CORE_API_VERSION' )
+		&& defined( 'CB_CORE_VERSION' )
 		&& cb_crm_api_compatible( (string) CB_CORE_API_VERSION, CB_CRM_REQUIRED_API )
+		&& version_compare( (string) CB_CORE_VERSION, CB_CRM_REQUIRED_BASE, '>=' )
 		&& class_exists( '\\CB\\Core\\ExtensionRegistry' )
 		&& class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
 		&& class_exists( '\\CB\\Core\\Governance\\Audit' )
@@ -61,15 +64,26 @@ function cb_crm_base_ready(): bool {
 }
 
 function cb_crm_dependency_message(): string {
-	if ( ! defined( 'CB_CORE_API_VERSION' ) ) {
+	if ( ! defined( 'CB_CORE_API_VERSION' ) || ! defined( 'CB_CORE_VERSION' ) ) {
 		return __( 'Core Blueprint CRM requires an active Core Blueprint Base plugin.', 'core-blueprint-crm' );
 	}
-	return sprintf(
-		/* translators: 1: required Core API version, 2: available Core API version. */
-		__( 'Core Blueprint CRM requires Core API %1$s or a newer compatible minor version. This site provides %2$s.', 'core-blueprint-crm' ),
-		CB_CRM_REQUIRED_API,
-		(string) CB_CORE_API_VERSION
-	);
+	if ( ! cb_crm_api_compatible( (string) CB_CORE_API_VERSION, CB_CRM_REQUIRED_API ) ) {
+		return sprintf(
+			/* translators: 1: required Core API version, 2: available Core API version. */
+			__( 'Core Blueprint CRM requires Core API %1$s or a newer compatible minor version. This site provides %2$s.', 'core-blueprint-crm' ),
+			CB_CRM_REQUIRED_API,
+			(string) CB_CORE_API_VERSION
+		);
+	}
+	if ( version_compare( (string) CB_CORE_VERSION, CB_CRM_REQUIRED_BASE, '<' ) ) {
+		return sprintf(
+			/* translators: 1: required Core Blueprint Base version, 2: available Base version. */
+			__( 'Core Blueprint CRM requires Core Blueprint Base %1$s or newer. This site provides %2$s.', 'core-blueprint-crm' ),
+			CB_CRM_REQUIRED_BASE,
+			(string) CB_CORE_VERSION
+		);
+	}
+	return __( 'Core Blueprint CRM could not access one or more required Core Blueprint Base services.', 'core-blueprint-crm' );
 }
 
 function cb_crm_activate(): void {
@@ -79,8 +93,8 @@ function cb_crm_activate(): void {
 		}
 		deactivate_plugins( CB_CRM_BASENAME );
 		wp_die(
-			esc_html( 'Core Blueprint CRM requires an active, Core API 1.x compatible Core Blueprint Base installation.' ),
-			esc_html( 'Core Blueprint dependency required' ),
+			esc_html( cb_crm_dependency_message() ),
+			esc_html__( 'Core Blueprint dependency required', 'core-blueprint-crm' ),
 			[ 'back_link' => true ]
 		);
 	}

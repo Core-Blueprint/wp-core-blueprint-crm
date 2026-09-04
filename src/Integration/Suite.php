@@ -6,6 +6,7 @@ namespace CB\CRM\Integration;
 use CB\Core\ExtensionRegistry;
 use CB\CRM\Admin\Menu;
 use CB\CRM\Content\PostTypes;
+use CB\CRM\Database\Schema;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -19,11 +20,12 @@ final class Suite {
 
 	public static function register_extension(): void {
 		ExtensionRegistry::register( [
-			'id'           => self::ID,
-			'plugin_file'  => CB_CRM_BASENAME,
-			'requires_api' => CB_CRM_REQUIRED_API,
-			'menu_url'     => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
-			'status_id'    => 'crm',
+			'id'            => self::ID,
+			'plugin_file'   => CB_CRM_BASENAME,
+			'requires_api'  => CB_CRM_REQUIRED_API,
+			'requires_base' => CB_CRM_REQUIRED_BASE,
+			'menu_url'      => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
+			'status_id'     => 'crm',
 		] );
 	}
 
@@ -41,20 +43,43 @@ final class Suite {
 
 	/** @return array{state:string,detail:string,url:string} */
 	public static function status(): array {
-		$contacts      = wp_count_posts( PostTypes::CONTACT );
-		$organizations = wp_count_posts( PostTypes::ORGANIZATION );
-		$contact_count = isset( $contacts->publish ) ? (int) $contacts->publish : 0;
-		$org_count     = isset( $organizations->publish ) ? (int) $organizations->publish : 0;
+		$installed_schema = (string) get_option( Schema::OPTION, '0' );
+		if ( version_compare( $installed_schema, CB_CRM_SCHEMA_VERSION, '<' ) ) {
+			return [
+				'state'  => 'warn',
+				'detail' => __( 'CRM database upgrade pending.', 'core-blueprint-crm' ),
+				'url'    => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
+			];
+		}
+		if ( version_compare( $installed_schema, CB_CRM_SCHEMA_VERSION, '>' ) ) {
+			return [
+				'state'  => 'warn',
+				'detail' => __( 'CRM database schema is newer than this plugin build.', 'core-blueprint-crm' ),
+				'url'    => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
+			];
+		}
 
 		return [
 			'state'  => 'ok',
 			'detail' => sprintf(
-				/* translators: 1: contacts, 2: organizations. */
-				__( '%1$d contacts · %2$d organizations', 'core-blueprint-crm' ),
-				$contact_count,
-				$org_count
+				/* translators: 1: contacts, 2: organizations, 3: services. */
+				__( '%1$d contacts · %2$d organizations · %3$d services', 'core-blueprint-crm' ),
+				self::record_count( PostTypes::CONTACT ),
+				self::record_count( PostTypes::ORGANIZATION ),
+				self::record_count( PostTypes::SERVICE )
 			),
 			'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
 		];
+	}
+
+	private static function record_count( string $post_type ): int {
+		$counts = wp_count_posts( $post_type );
+		$total  = 0;
+		foreach ( get_object_vars( $counts ) as $status => $count ) {
+			if ( ! in_array( $status, [ 'trash', 'auto-draft' ], true ) ) {
+				$total += (int) $count;
+			}
+		}
+		return $total;
 	}
 }

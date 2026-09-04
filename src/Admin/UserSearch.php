@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace CB\CRM\Admin;
 
 use CB\CRM\Capabilities;
+use CB\CRM\Content\ContactIdentity;
+use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;
 
 final class UserSearch {
@@ -30,6 +32,11 @@ final class UserSearch {
 			wp_send_json_success( [] );
 		}
 
+		$current_contact_id = isset( $_POST['contact_id'] ) ? absint( $_POST['contact_id'] ) : 0;
+		if ( $current_contact_id > 0 && PostTypes::CONTACT !== get_post_type( $current_contact_id ) ) {
+			$current_contact_id = 0;
+		}
+
 		$query = new \WP_User_Query( [
 			'number'         => 20,
 			'search'         => '*' . $term . '*',
@@ -41,6 +48,9 @@ final class UserSearch {
 
 		$results = [];
 		foreach ( $query->get_results() as $user ) {
+			if ( ! ContactIdentity::can_link_user_to_contact( (int) $user->ID, $current_contact_id ) ) {
+				continue;
+			}
 			$results[] = [
 				'id'    => (int) $user->ID,
 				'name'  => (string) $user->display_name,

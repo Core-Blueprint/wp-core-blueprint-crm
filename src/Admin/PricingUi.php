@@ -98,8 +98,8 @@ final class PricingUi {
 				</p>
 			</div>
 		</div>
-		<?php if ( ! $rates ) : ?>
-			<div class="notice notice-info inline"><p><?php esc_html_e( 'No tax rates are configured yet. Add a tax rate before using VAT-inclusive or VAT-exclusive pricing.', 'core-blueprint-crm' ); ?> <a href="<?php echo esc_url( TaxRatesPage::url() ); ?>"><?php esc_html_e( 'Add tax rate', 'core-blueprint-crm' ); ?></a></p></div>
+		<?php if ( ! TaxRates::available() ) : ?>
+			<div class="notice notice-info inline"><p><?php esc_html_e( 'No tax rates are currently available. Add or activate a tax rate with a valid date range before using VAT-inclusive or VAT-exclusive pricing.', 'core-blueprint-crm' ); ?> <a href="<?php echo esc_url( TaxRatesPage::url() ); ?>"><?php esc_html_e( 'Manage tax rates', 'core-blueprint-crm' ); ?></a></p></div>
 		<?php endif; ?>
 		<?php
 	}
@@ -236,13 +236,15 @@ final class PricingUi {
 		printf( '<select %s name="%s">', '' !== $id ? 'id="' . esc_attr( $id ) . '"' : '', esc_attr( $name ) );
 		echo '<option value="0">' . esc_html__( 'Select tax rate…', 'core-blueprint-crm' ) . '</option>';
 		foreach ( $rates as $rate ) {
-			$rate_id = (int) $rate['id'];
-			$label = TaxRates::display_label( $rate );
-			$inactive = empty( $rate['is_active'] );
-			if ( $inactive ) {
-				$label .= ' — ' . __( 'Inactive', 'core-blueprint-crm' );
+			$rate_id   = (int) $rate['id'];
+			$label     = TaxRates::display_label( $rate );
+			$available = TaxRates::is_available( $rate );
+			if ( ! $available ) {
+				$label .= ' — ' . ( empty( $rate['is_active'] )
+					? __( 'Inactive', 'core-blueprint-crm' )
+					: __( 'Outside validity period', 'core-blueprint-crm' ) );
 			}
-			echo '<option value="' . esc_attr( (string) $rate_id ) . '" ' . selected( $selected, $rate_id, false ) . ( $inactive && $selected !== $rate_id ? ' disabled' : '' ) . '>' . esc_html( $label ) . '</option>';
+			echo '<option value="' . esc_attr( (string) $rate_id ) . '" ' . selected( $selected, $rate_id, false ) . ( ! $available && $selected !== $rate_id ? ' disabled' : '' ) . '>' . esc_html( $label ) . '</option>';
 		}
 		echo '</select>';
 	}
