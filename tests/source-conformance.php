@@ -67,6 +67,8 @@ $schema      = file_get_contents( $root . '/src/Database/Schema.php' );
 $entity      = file_get_contents( $root . '/src/Content/Entity.php' );
 $post_types  = file_get_contents( $root . '/src/Content/PostTypes.php' );
 $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
+$agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
+$agreementUi = file_get_contents( $root . '/src/Admin/ServiceAgreements.php' );
 $panels      = file_get_contents( $root . '/src/Admin/Panels.php' );
 $adminJs     = file_get_contents( $root . '/assets/admin.js' );
 $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/DynamicData.php' )
@@ -96,6 +98,8 @@ $checks = [
 	'CRM no longer owns Service post type' => ! str_contains( $post_types, 'cb_crm_service' ) && ! str_contains( $entity, 'SERVICE' ),
 	'CRM schema owns agreements but no old assignments or VAT table' => str_contains( $schema, 'cb_crm_service_agreements' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
 	'Work provider preserves agreement reference' => str_contains( $workPricing, "'reference_type' => 'service_agreement'" ) && str_contains( $workPricing, 'pricing_projection' ),
+	'Agreement editor posts stable row IDs' => str_contains( $agreementUi, '[id]' ) && str_contains( $agreementUi, '$agreement_id' ),
+	'Agreement repository preserves retained IDs' => str_contains( $agreements, '$wpdb->update(' ) && str_contains( $agreements, '$retained_ids' ) && str_contains( $agreements, "'id' => \$row['id']" ),
 	'Contact user-picker markup still matches admin.js contract' => str_contains( $panels, 'data-cb-crm-user-selected' ) && str_contains( $panels, 'data-cb-crm-user-selected-name' ) && str_contains( $panels, 'data-cb-crm-user-selected-email' ) && str_contains( $panels, 'data-cb-crm-user-remove' ) && str_contains( $panels, 'data-cb-crm-email-mode' ) && str_contains( $adminJs, 'data-cb-crm-user-selected' ),
 	'Work coupling uses public API only' => 0 === preg_match( '/CB\\\\Work\\\\(?!PublicApi\\\\)/', $source ),
 	'Bricks exposes agreements not CRM Service catalog' => str_contains( $bricks, 'cb_crm_service_agreements' ) && str_contains( $bricks, 'cb_crm_contact_has_service_agreement' ) && ! str_contains( $bricks, 'cb_crm_services' ) && ! str_contains( $bricks, 'cb_crm_service_name' ),
