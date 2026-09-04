@@ -15,6 +15,7 @@ final class Bootstrap {
 		self::$booted = true;
 
 		DynamicData::init();
+		IntegrationData::init();
 		GroupOrder::init();
 		Queries::init();
 		Conditions::init();
