@@ -3,17 +3,25 @@ declare(strict_types=1);
 
 namespace CB\CRM\Integration\Builders\Bricks;
 
+use CB\CRM\Content\Entity;
 use CB\CRM\Frontend\Queries\Contacts;
+use CB\CRM\Frontend\Queries\DocumentLinks;
+use CB\CRM\Frontend\Queries\HelpdeskTickets;
 use CB\CRM\Frontend\Queries\Organizations;
 use CB\CRM\Frontend\Queries\Services;
+use CB\Docs\Frontend\Data\Document;
+use CB\Helpdesk\Frontend\Queries\Tickets as HelpdeskProvider;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Queries {
-	public const CURRENT_CONTACT = 'cb_crm_current_contact';
-	public const CONTACTS        = 'cb_crm_contacts';
-	public const ORGANIZATIONS   = 'cb_crm_organizations';
-	public const SERVICES        = 'cb_crm_services';
+	public const CURRENT_CONTACT  = 'cb_crm_current_contact';
+	public const CONTACTS         = 'cb_crm_contacts';
+	public const ORGANIZATIONS    = 'cb_crm_organizations';
+	public const SERVICES         = 'cb_crm_services';
+	public const LINKED_DOCUMENTS = 'cb_crm_linked_documents';
+	public const DOCUMENT_RECORDS = 'cb_crm_document_records';
+	public const CONTACT_TICKETS  = 'cb_crm_contact_helpdesk_tickets';
 
 	public static function init(): void {
 		add_filter( 'bricks/setup/control_options', [ self::class, 'register_query_types' ] );
@@ -33,6 +41,14 @@ final class Queries {
 		$options['queryTypes'][ self::CONTACTS ]        = $crm . ': ' . __( 'Contacts', 'core-blueprint-crm' );
 		$options['queryTypes'][ self::ORGANIZATIONS ]   = $crm . ': ' . __( 'Organizations', 'core-blueprint-crm' );
 		$options['queryTypes'][ self::SERVICES ]        = $crm . ': ' . __( 'Services', 'core-blueprint-crm' );
+
+		if ( class_exists( Document::class ) ) {
+			$options['queryTypes'][ self::LINKED_DOCUMENTS ] = $crm . ': ' . __( 'Linked documentation', 'core-blueprint-crm' );
+			$options['queryTypes'][ self::DOCUMENT_RECORDS ] = $crm . ': ' . __( 'Records linked to document', 'core-blueprint-crm' );
+		}
+		if ( class_exists( HelpdeskProvider::class ) ) {
+			$options['queryTypes'][ self::CONTACT_TICKETS ] = $crm . ': ' . __( 'Contact tickets', 'core-blueprint-crm' );
+		}
 		return $options;
 	}
 
@@ -60,7 +76,67 @@ final class Queries {
 			$query = Services::query( [ 'per_page' => self::limit( $query_obj, 30 ) ] );
 			return is_wp_error( $query ) ? [] : $query['items'];
 		}
+		if ( self::LINKED_DOCUMENTS === $object_type ) {
+			$current = RecordContext::current();
+			if ( is_wp_error( $current ) || ! in_array( $current['type'], [ Entity::CONTACT, Entity::ORGANIZATION ], true ) ) {
+				return [];
+			}
+			$owner_id = absint( $current['data']['id'] ?? 0 );
+			$links    = DocumentLinks::for_owner( $current['type'], $owner_id, self::limit( $query_obj, 30 ) );
+			if ( is_wp_error( $links ) ) {
+				return [];
+			}
+			$documents = [];
+			foreach ( $links as $link ) {
+				if ( isset( $link['document'] ) && is_array( $link['document'] ) ) {
+					$documents[] = $link['document'];
+				}
+			}
+			return $documents;
+		}
+		if ( self::DOCUMENT_RECORDS === $object_type ) {
+			$document_id = self::current_document_id();
+			if ( null === $document_id ) {
+				return [];
+			}
+			$links = DocumentLinks::for_document( $document_id, self::limit( $query_obj, 30 ) );
+			return is_wp_error( $links ) ? [] : $links;
+		}
+		if ( self::CONTACT_TICKETS === $object_type ) {
+			$contact_id = RecordContext::identifier( Entity::CONTACT );
+			if ( null === $contact_id ) {
+				return [];
+			}
+			$tickets = HelpdeskTickets::for_contact( $contact_id, self::limit( $query_obj, 30 ) );
+			return is_wp_error( $tickets ) ? [] : $tickets;
+		}
 		return $results;
+	}
+
+	private static function current_document_id(): ?int {
+		if ( ! class_exists( Document::class ) ) {
+			return null;
+		}
+
+		$loop = null;
+		if ( class_exists( '\\Bricks\\Query' ) && method_exists( '\\Bricks\\Query', 'get_loop_object' ) ) {
+			$loop = \Bricks\Query::get_loop_object();
+		}
+
+		$document = null;
+		if ( is_array( $loop ) && isset( $loop['id'] ) ) {
+			$document = Document::get( absint( $loop['id'] ) );
+		} elseif ( $loop instanceof \WP_Post ) {
+			$document = Document::get( (int) $loop->ID );
+		}
+		if ( is_wp_error( $document ) || null === $document ) {
+			$document = Document::current();
+		}
+		if ( is_wp_error( $document ) ) {
+			return null;
+		}
+		$id = absint( $document['id'] ?? 0 );
+		return $id > 0 ? $id : null;
 	}
 
 	private static function limit( mixed $query_obj, int $default ): int {

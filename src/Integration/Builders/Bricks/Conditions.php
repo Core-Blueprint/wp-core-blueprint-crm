@@ -4,23 +4,28 @@ declare(strict_types=1);
 namespace CB\CRM\Integration\Builders\Bricks;
 
 use CB\CRM\Content\Entity;
-use CB\CRM\Content\PostTypes;
 use CB\CRM\Content\RecordStatus;
 use CB\CRM\Frontend\Conditions\Records;
 use CB\CRM\Frontend\Data\Organization;
 use CB\CRM\Frontend\Data\Service;
+use CB\CRM\Frontend\Queries\DocumentLinks;
+use CB\CRM\Frontend\Queries\HelpdeskTickets;
 use CB\CRM\Frontend\Queries\Organizations;
 use CB\CRM\Frontend\Queries\Services;
+use CB\Docs\Frontend\Data\Document;
+use CB\Helpdesk\Frontend\Queries\Tickets as HelpdeskProvider;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Conditions {
-	private const GROUP            = 'cb_crm';
-	private const CURRENT_CONTACT  = 'cb_crm_current_user_has_contact';
-	private const CONTACT_SERVICE  = 'cb_crm_contact_has_service';
-	private const CONTACT_ORG      = 'cb_crm_contact_organization';
-	private const ORG_SERVICE      = 'cb_crm_organization_has_service';
-	private const RECORD_STATUS    = 'cb_crm_record_status';
+	private const GROUP                = 'cb_crm';
+	private const CURRENT_CONTACT      = 'cb_crm_current_user_has_contact';
+	private const CONTACT_SERVICE      = 'cb_crm_contact_has_service';
+	private const CONTACT_ORG          = 'cb_crm_contact_organization';
+	private const ORG_SERVICE          = 'cb_crm_organization_has_service';
+	private const RECORD_STATUS        = 'cb_crm_record_status';
+	private const RECORD_DOCS          = 'cb_crm_record_has_linked_docs';
+	private const CONTACT_OPEN_TICKETS = 'cb_crm_contact_has_open_helpdesk_tickets';
 
 	public static function init(): void {
 		add_filter( 'bricks/conditions/groups', [ self::class, 'register_group' ] );
@@ -49,18 +54,61 @@ final class Conditions {
 		$options[] = self::select_condition( self::CONTACT_ORG, $contact . ' · ' . $organization, self::organization_options() );
 		$options[] = self::select_condition( self::ORG_SERVICE, $organization . ' · ' . $service, self::service_options() );
 		$options[] = self::select_condition( self::RECORD_STATUS, __( 'Status', 'core-blueprint-crm' ), RecordStatus::labels() );
+
+		if ( class_exists( Document::class ) ) {
+			$options[] = [
+				'key'   => self::RECORD_DOCS,
+				'label' => __( 'Documentation', 'core-blueprint-crm' ),
+				'group' => self::GROUP,
+			];
+		}
+		if ( class_exists( HelpdeskProvider::class ) ) {
+			$options[] = [
+				'key'   => self::CONTACT_OPEN_TICKETS,
+				'label' => $contact . ' · ' . __( 'Open Helpdesk tickets', 'core-blueprint-crm' ),
+				'group' => self::GROUP,
+			];
+		}
 		return $options;
 	}
 
 	public static function result( bool $result, string $condition_key, array $condition ): bool {
-		if ( ! in_array( $condition_key, [ self::CURRENT_CONTACT, self::CONTACT_SERVICE, self::CONTACT_ORG, self::ORG_SERVICE, self::RECORD_STATUS ], true ) ) {
+		$supported = [
+			self::CURRENT_CONTACT,
+			self::CONTACT_SERVICE,
+			self::CONTACT_ORG,
+			self::ORG_SERVICE,
+			self::RECORD_STATUS,
+			self::RECORD_DOCS,
+			self::CONTACT_OPEN_TICKETS,
+		];
+		if ( ! in_array( $condition_key, $supported, true ) ) {
 			return $result;
 		}
 		if ( self::CURRENT_CONTACT === $condition_key ) {
 			return Records::current_user_has_contact();
 		}
+		if ( self::RECORD_DOCS === $condition_key ) {
+			if ( ! class_exists( Document::class ) ) {
+				return false;
+			}
+			$current = RecordContext::current();
+			if ( is_wp_error( $current ) || ! in_array( $current['type'], [ Entity::CONTACT, Entity::ORGANIZATION ], true ) ) {
+				return false;
+			}
+			$id    = absint( $current['data']['id'] ?? 0 );
+			$links = DocumentLinks::for_owner( $current['type'], $id, 1 );
+			return ! is_wp_error( $links ) && [] !== $links;
+		}
+		if ( self::CONTACT_OPEN_TICKETS === $condition_key ) {
+			if ( ! class_exists( HelpdeskProvider::class ) ) {
+				return false;
+			}
+			$contact_id = RecordContext::identifier( Entity::CONTACT );
+			return null !== $contact_id && HelpdeskTickets::has_open_for_contact( $contact_id );
+		}
 
-		$value = isset( $condition['value'] ) && is_scalar( $condition['value'] ) ? (string) $condition['value'] : '';
+		$value   = isset( $condition['value'] ) && is_scalar( $condition['value'] ) ? (string) $condition['value'] : '';
 		$compare = isset( $condition['compare'] ) && is_scalar( $condition['compare'] ) ? (string) $condition['compare'] : '==';
 		if ( ! in_array( $compare, [ '==', '!=' ], true ) ) {
 			return false;
@@ -75,7 +123,7 @@ final class Conditions {
 			if ( is_wp_error( $current ) ) {
 				return false;
 			}
-			$id = absint( $current['data']['id'] ?? 0 );
+			$id      = absint( $current['data']['id'] ?? 0 );
 			$matches = $id > 0 && Records::record_status_is( $current['type'], $id, $status );
 			return '!=' === $compare ? ! $matches : $matches;
 		}
@@ -141,7 +189,7 @@ final class Conditions {
 		}
 		$options = [];
 		foreach ( $query['items'] as $item ) {
-			$id = absint( $item['id'] ?? 0 );
+			$id   = absint( $item['id'] ?? 0 );
 			$name = isset( $item['name'] ) && is_scalar( $item['name'] ) ? sanitize_text_field( (string) $item['name'] ) : '';
 			if ( $id > 0 && '' !== $name ) {
 				$options[ $id ] = $name;
@@ -158,7 +206,7 @@ final class Conditions {
 		}
 		$options = [];
 		foreach ( $query['items'] as $item ) {
-			$id = absint( $item['id'] ?? 0 );
+			$id   = absint( $item['id'] ?? 0 );
 			$name = isset( $item['name'] ) && is_scalar( $item['name'] ) ? sanitize_text_field( (string) $item['name'] ) : '';
 			if ( $id > 0 && '' !== $name ) {
 				$options[ $id ] = $name;
