@@ -93,7 +93,7 @@ foreach ( $forbidden_tokens as $token ) {
 }
 
 $checks = [
-	'candidate version is rc1.1' => str_contains( $bootstrap, 'Version:           1.0.0-rc1.1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.3'" ),
+	'candidate version is rc1' => str_contains( $bootstrap, 'Version:           1.0.0-rc1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.3'" ),
 	'CRM targets Core API without Base RC pin' => str_contains( $bootstrap, "CB_CRM_REQUIRED_API', '1.0'" ) && ! str_contains( $bootstrap, 'CB_CRM_REQUIRED_BASE' ),
 	'CRM no longer owns Service post type' => ! str_contains( $post_types, 'cb_crm_service' ) && ! str_contains( $entity, 'SERVICE' ),
 	'CRM schema owns agreements but no old assignments or VAT table' => str_contains( $schema, 'cb_crm_service_agreements' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
