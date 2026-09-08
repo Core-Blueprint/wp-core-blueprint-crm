@@ -70,6 +70,7 @@ $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
 $agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
 $agreementUi = file_get_contents( $root . '/src/Admin/ServiceAgreements.php' );
 $panels      = file_get_contents( $root . '/src/Admin/Panels.php' );
+$adminCss    = file_get_contents( $root . '/assets/admin.css' );
 $adminJs     = file_get_contents( $root . '/assets/admin.js' );
 $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/DynamicData.php' )
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Queries.php' )
@@ -101,6 +102,7 @@ $checks = [
 	'Agreement editor posts stable row IDs' => str_contains( $agreementUi, '[id]' ) && str_contains( $agreementUi, '$agreement_id' ),
 	'Agreement repository preserves retained IDs' => str_contains( $agreements, '$wpdb->update(' ) && str_contains( $agreements, '$retained_ids' ) && str_contains( $agreements, "'id' => \$row['id']" ),
 	'Contact user-picker markup still matches admin.js contract' => str_contains( $panels, 'data-cb-crm-user-selected' ) && str_contains( $panels, 'data-cb-crm-user-selected-name' ) && str_contains( $panels, 'data-cb-crm-user-selected-email' ) && str_contains( $panels, 'data-cb-crm-user-remove' ) && str_contains( $panels, 'data-cb-crm-email-mode' ) && str_contains( $adminJs, 'data-cb-crm-user-selected' ),
+	'CRM timeline presentation uses semantic Base tokens' => str_contains( $panels, 'cb-crm-timeline-entry' ) && str_contains( $panels, 'cb-crm-timeline-body' ) && ! str_contains( $panels, '#dcdcde' ) && str_contains( $adminCss, '.cb-crm-timeline-entry' ) && str_contains( $adminCss, 'var(--cb-border)' ) && str_contains( $adminCss, 'var(--cb-text-muted)' ),
 	'Work coupling uses public API only' => 0 === preg_match( '/CB\\\\Work\\\\(?!PublicApi\\\\)/', $source ),
 	'Bricks exposes agreements not CRM Service catalog' => str_contains( $bricks, 'cb_crm_service_agreements' ) && str_contains( $bricks, 'cb_crm_contact_has_service_agreement' ) && ! str_contains( $bricks, 'cb_crm_services' ) && ! str_contains( $bricks, 'cb_crm_service_name' ),
 ];

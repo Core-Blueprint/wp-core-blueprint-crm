@@ -161,14 +161,14 @@ final class Panels {
 		}
 		foreach ( $notes as $note ) {
 			$author = get_userdata( (int) $note['author_user_id'] );
-			echo '<div style="border-top:1px solid #dcdcde;padding:10px 0;"><p style="margin:0 0 6px;">' . nl2br( esc_html( (string) $note['body'] ) ) . '</p><small>' . esc_html( $author ? $author->display_name : __( 'System', 'core-blueprint-crm' ) ) . ' · ' . esc_html( (string) $note['created_at'] ) . '</small></div>';
+			echo '<div class="cb-crm-timeline-entry"><p class="cb-crm-timeline-body">' . nl2br( esc_html( (string) $note['body'] ) ) . '</p><small>' . esc_html( $author ? $author->display_name : __( 'System', 'core-blueprint-crm' ) ) . ' · ' . esc_html( (string) $note['created_at'] ) . '</small></div>';
 		}
 		echo '<h3>' . esc_html__( 'Activity', 'core-blueprint-crm' ) . '</h3>';
 		if ( ! $activity ) {
 			echo '<p class="description">' . esc_html__( 'No activity yet.', 'core-blueprint-crm' ) . '</p>';
 		}
 		foreach ( $activity as $event ) {
-			echo '<div style="border-top:1px solid #dcdcde;padding:8px 0;"><strong>' . esc_html( (string) $event['summary'] ) . '</strong><br><small>' . esc_html( (string) $event['source'] ) . ' · ' . esc_html( (string) $event['created_at'] ) . '</small></div>';
+			echo '<div class="cb-crm-timeline-entry"><strong>' . esc_html( (string) $event['summary'] ) . '</strong><br><small>' . esc_html( (string) $event['source'] ) . ' · ' . esc_html( (string) $event['created_at'] ) . '</small></div>';
 		}
 	}
 
