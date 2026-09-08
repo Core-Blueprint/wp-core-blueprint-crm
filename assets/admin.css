@@ -199,6 +199,20 @@
 	margin-top: 12px;
 }
 
+.cb-crm-timeline-entry {
+	padding: 10px 0;
+	border-top: 1px solid var(--cb-border);
+	color: var(--cb-text);
+}
+
+.cb-crm-timeline-entry small {
+	color: var(--cb-text-muted);
+}
+
+.cb-crm-timeline-body {
+	margin: 0 0 6px;
+}
+
 @media (max-width: 1440px) {
 	.cb-crm-settings-grid {
 		grid-template-columns: 1fr;
