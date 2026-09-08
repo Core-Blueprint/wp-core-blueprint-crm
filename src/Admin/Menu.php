@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CB\CRM\Admin;
 
+use CB\Core\UI\AdminTheme;
 use CB\CRM\Capabilities;
 use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;
@@ -21,7 +22,10 @@ final class Menu {
 	}
 
 	public static function register(): void {
-		add_menu_page( __( 'CRM', 'core-blueprint-crm' ), __( 'CRM', 'core-blueprint-crm' ), Capabilities::MANAGE, self::TOP_LEVEL_SLUG, [ __CLASS__, 'render_dashboard' ], 'dashicons-groups', 26.4 );
+		$overview_hook = add_menu_page( __( 'CRM', 'core-blueprint-crm' ), __( 'CRM', 'core-blueprint-crm' ), Capabilities::MANAGE, self::TOP_LEVEL_SLUG, [ __CLASS__, 'render_dashboard' ], 'dashicons-groups', 26.4 );
+		if ( is_string( $overview_hook ) && class_exists( AdminTheme::class ) ) {
+			AdminTheme::register_screen( $overview_hook );
+		}
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Overview', 'core-blueprint-crm' ), __( 'Overview', 'core-blueprint-crm' ), Capabilities::MANAGE, self::TOP_LEVEL_SLUG, [ __CLASS__, 'render_dashboard' ] );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Contacts', 'core-blueprint-crm' ), __( 'Contacts', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::CONTACT );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organizations', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::ORGANIZATION );

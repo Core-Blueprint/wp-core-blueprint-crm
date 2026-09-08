@@ -75,8 +75,8 @@
 	gap: 10px;
 	margin: 0 0 8px;
 	padding: 8px 10px;
-	border: 1px solid #c3c4c7;
-	background: #fff;
+	border: 1px solid var(--cb-border);
+	background: var(--cb-surface-1);
 }
 
 .cb-crm-user-selected[hidden] {
@@ -91,7 +91,7 @@
 }
 
 .cb-crm-user-selected-copy span {
-	color: #646970;
+	color: var(--cb-text-muted);
 }
 
 .cb-crm-user-results {
@@ -101,9 +101,9 @@
 	right: 0;
 	max-height: 260px;
 	overflow: auto;
-	border: 1px solid #c3c4c7;
-	background: #fff;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+	border: 1px solid var(--cb-border);
+	background: var(--cb-surface-1);
+	box-shadow: var(--cb-shadow-md);
 }
 
 .cb-crm-user-result {
@@ -114,20 +114,22 @@
 	gap: 2px;
 	padding: 9px 12px;
 	border: 0;
-	border-bottom: 1px solid #f0f0f1;
+	border-bottom: 1px solid var(--cb-border);
 	background: transparent;
+	color: var(--cb-text);
 	cursor: pointer;
 	text-align: left;
 }
 
 .cb-crm-user-result:hover,
 .cb-crm-user-result:focus {
-	background: #f6f7f7;
+	background: var(--cb-interactive-hover);
+	color: var(--cb-text-strong);
 }
 
 .cb-crm-user-result span,
 .cb-crm-user-result-empty {
-	color: #646970;
+	color: var(--cb-text-muted);
 }
 
 .cb-crm-user-result-empty {
@@ -154,8 +156,9 @@
 
 .cb-crm-address-card {
 	padding: 12px;
-	border: 1px solid #c3c4c7;
-	background: #fff;
+	border: 1px solid var(--cb-border);
+	background: var(--cb-surface-1);
+	color: var(--cb-text);
 }
 
 .cb-crm-address-grid {
