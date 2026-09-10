@@ -17,6 +17,7 @@ final class Schema {
 				[ __CLASS__, 'contact_methods_table' ],
 				[ __CLASS__, 'addresses_table' ],
 				[ __CLASS__, 'names_table' ],
+				[ __CLASS__, 'business_identifiers_table' ],
 				[ __CLASS__, 'organization_relations_table' ],
 				[ __CLASS__, 'service_agreements_table' ],
 				[ __CLASS__, 'document_links_table' ],
@@ -30,6 +31,7 @@ final class Schema {
 	public static function contact_methods_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_contact_methods'; }
 	public static function addresses_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_addresses'; }
 	public static function names_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_names'; }
+	public static function business_identifiers_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_business_identifiers'; }
 	public static function organization_relations_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_org_relations'; }
 	public static function service_agreements_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_service_agreements'; }
 	public static function document_links_table(): string { global $wpdb; return $wpdb->prefix . 'cb_crm_document_links'; }
@@ -62,6 +64,14 @@ final class Schema {
 			name varchar(255) NOT NULL, name_type varchar(32) NOT NULL DEFAULT 'alias', is_primary tinyint(1) unsigned NOT NULL DEFAULT 0,
 			started_at date NULL, ended_at date NULL, sort_order int unsigned NOT NULL DEFAULT 0, created_at datetime NOT NULL, updated_at datetime NOT NULL,
 			PRIMARY KEY  (id), KEY owner (owner_type,owner_id), KEY name_lookup (name(191))
+		) {$charset};" );
+
+		dbDelta( 'CREATE TABLE ' . self::business_identifiers_table() . " (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT, organization_id bigint(20) unsigned NOT NULL,
+			identifier_type varchar(32) NOT NULL, value varchar(190) NOT NULL, country varchar(2) NOT NULL DEFAULT '', label varchar(100) NOT NULL DEFAULT '',
+			is_primary tinyint(1) unsigned NOT NULL DEFAULT 0, sort_order int unsigned NOT NULL DEFAULT 0,
+			created_at datetime NOT NULL, updated_at datetime NOT NULL,
+			PRIMARY KEY  (id), KEY organization (organization_id), KEY organization_type (organization_id,identifier_type), KEY value (value(100))
 		) {$charset};" );
 
 		dbDelta( 'CREATE TABLE ' . self::organization_relations_table() . " (
