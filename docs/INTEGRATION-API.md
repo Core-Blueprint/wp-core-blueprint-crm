@@ -2,9 +2,9 @@
 
 ## Ownership
 
-CRM owns Contacts, Organizations, customer identity/context and customer-specific Service Agreements. Core Blueprint Work owns Services, default pricing and VAT/tax data.
+CRM owns Contacts, Organizations, customer identity/context, organization Business Identifiers and customer-specific Service Agreements. Core Blueprint Work owns Services, default pricing and VAT/tax data.
 
-There is no CRM Service CPT, CRM ServicePricing authority, CRM VAT repository/table or compatibility facade for the removed catalog architecture.
+There is no CRM Service CPT, CRM ServicePricing authority, CRM VAT repository/table or compatibility facade for the removed catalog architecture. CRM Business Identifiers are organization identity data; they do not make CRM the authority for tax rates or tax calculation.
 
 ## Builder-neutral read contracts
 
@@ -16,6 +16,13 @@ There is no CRM Service CPT, CRM ServicePricing authority, CRM VAT repository/ta
 - the existing optional Docs/Helpdesk integration providers
 
 `Contact` and `Organization` projections expose `service_agreements`. Agreement items reference Work Service IDs and names. Sensitive pricing/notes remain staff-only.
+
+`Organization` additionally exposes two Business Identifier projections:
+
+- `business_identifiers`: a compact canonical map for `vat`, `registration_number` and `eori`. An explicitly primary value wins; otherwise the first stored value of that type is used.
+- `business_identifier_records`: the full structured records with `type`, `value`, optional two-letter `country`, optional `label` and `is_primary`.
+
+Business Identifier storage accepts the standard types `vat`, `registration_number`, `eori` and `other`. `other` requires a descriptive label. CRM stores identity values but does not claim that a supplied registration number is externally or legally verified.
 
 ## Service Agreement storage
 
