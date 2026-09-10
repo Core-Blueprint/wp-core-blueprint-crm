@@ -103,6 +103,7 @@ add_action( 'plugins_loaded', static function (): void {
 			add_action( 'admin_notices', static function (): void {
 				if ( current_user_can( 'activate_plugins' ) ) {
 					printf( '<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>', esc_html__( 'Core Blueprint CRM:', 'core-blueprint-crm' ), esc_html( cb_crm_dependency_message() ) );
+				}
 			} );
 		}
 		return;
