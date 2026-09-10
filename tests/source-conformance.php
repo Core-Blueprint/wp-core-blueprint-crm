@@ -11,6 +11,7 @@ $required = [
 	'src/Database/Schema.php',
 	'src/Repository/BusinessIdentifiers.php',
 	'src/Repository/ServiceAgreements.php',
+	'src/Admin/Admin.php',
 	'src/Admin/BusinessIdentifiersPanel.php',
 	'src/Integration/WorkPricing.php',
 	'src/Frontend/Data/Organization.php',
@@ -69,6 +70,7 @@ $bootstrap   = file_get_contents( $root . '/core-blueprint-crm.php' );
 $schema      = file_get_contents( $root . '/src/Database/Schema.php' );
 $entity      = file_get_contents( $root . '/src/Content/Entity.php' );
 $post_types  = file_get_contents( $root . '/src/Content/PostTypes.php' );
+$admin       = file_get_contents( $root . '/src/Admin/Admin.php' );
 $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
 $agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
 $identifiers = file_get_contents( $root . '/src/Repository/BusinessIdentifiers.php' );
@@ -107,7 +109,7 @@ $checks = [
 	'CRM schema owns agreements and business identifiers but no old assignments or VAT catalog' => str_contains( $schema, 'cb_crm_service_agreements' ) && str_contains( $schema, 'cb_crm_business_identifiers' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
 	'Business identifiers are organization-owned and transactional' => str_contains( $identifiers, 'Entity::ORGANIZATION' ) && str_contains( $identifiers, "START TRANSACTION" ) && str_contains( $identifiers, "ROLLBACK" ) && str_contains( $identifiers, "COMMIT" ),
 	'Organization projection exposes identifier map and records' => str_contains( $organizationData, "'business_identifiers'" ) && str_contains( $organizationData, "'business_identifier_records'" ) && str_contains( $organizationData, 'BusinessIdentifiers::canonical_map' ),
-	'Identifier admin is organization-only' => str_contains( $identifierUi, "'post_types' => [ Entity::ORGANIZATION ]" ) && str_contains( $identifierUi, 'cb_crm_business_identifiers_present' ),
+	'Identifier admin is wired and organization-only' => str_contains( $admin, 'BusinessIdentifiersPanel::init()' ) && str_contains( $identifierUi, "'post_types' => [ Entity::ORGANIZATION ]" ) && str_contains( $identifierUi, 'cb_crm_business_identifiers_present' ),
 	'Organization deletion cleans identifier rows' => str_contains( $lifecycle, 'business_identifiers_table()' ) && str_contains( $lifecycle, "'organization_id' => \$owner_id" ),
 	'Work provider preserves agreement reference' => str_contains( $workPricing, "'reference_type' => 'service_agreement'" ) && str_contains( $workPricing, 'pricing_projection' ),
 	'Agreement editor posts stable row IDs' => str_contains( $agreementUi, '[id]' ) && str_contains( $agreementUi, '$agreement_id' ),
