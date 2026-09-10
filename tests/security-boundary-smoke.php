@@ -32,7 +32,7 @@ namespace {
 	function get_the_title( WP_Post $post ): string { return 42 === $post->ID ? 'Example BV' : ''; }
 	function get_post_meta( int $id, string $key, bool $single = false ): string { unset( $id, $key, $single ); return ''; }
 	function is_wp_error( mixed $value ): bool { return $value instanceof WP_Error; }
-	function check_ajax_referer( string $action, string $query_arg = false ): bool {
+	function check_ajax_referer( string $action, string|false $query_arg = false ): bool {
 		unset( $action, $query_arg );
 		++$GLOBALS['crm_g2_nonce_checks'];
 		throw new CRM_G2_NonceReached();
