@@ -10,6 +10,7 @@ final class Admin {
 	public static function init(): void {
 		Menu::init();
 		Panels::init();
+		BusinessIdentifiersPanel::init();
 		ServiceAgreements::init();
 		Save::init();
 		UserSearch::init();

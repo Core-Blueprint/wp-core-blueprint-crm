@@ -49,7 +49,7 @@ final class Save {
 		if ( ! $screen || ! in_array( (string) $screen->post_type, [ \CB\CRM\Content\PostTypes::CONTACT, \CB\CRM\Content\PostTypes::ORGANIZATION ], true ) ) { return; }
 		$areas = array_filter( array_map( 'sanitize_key', explode( ',', (string) wp_unslash( $_GET['cb_crm_save_error'] ) ) ) );
 		if ( ! $areas ) { return; }
-		$labels = [ 'wordpress_user' => __( 'WordPress account link', 'core-blueprint-crm' ), 'contact_methods' => __( 'contact methods', 'core-blueprint-crm' ), 'addresses' => __( 'addresses', 'core-blueprint-crm' ), 'names' => __( 'names and aliases', 'core-blueprint-crm' ), 'organizations' => __( 'organization relationships', 'core-blueprint-crm' ), 'service_agreements' => __( 'service agreements', 'core-blueprint-crm' ), 'tags' => __( 'CRM Tags', 'core-blueprint-crm' ), 'note' => __( 'note', 'core-blueprint-crm' ), 'details' => __( 'details', 'core-blueprint-crm' ) ];
+		$labels = [ 'wordpress_user' => __( 'WordPress account link', 'core-blueprint-crm' ), 'contact_methods' => __( 'contact methods', 'core-blueprint-crm' ), 'addresses' => __( 'addresses', 'core-blueprint-crm' ), 'names' => __( 'names and aliases', 'core-blueprint-crm' ), 'organizations' => __( 'organization relationships', 'core-blueprint-crm' ), 'business_identifiers' => __( 'business identifiers', 'core-blueprint-crm' ), 'service_agreements' => __( 'service agreements', 'core-blueprint-crm' ), 'tags' => __( 'CRM Tags', 'core-blueprint-crm' ), 'note' => __( 'note', 'core-blueprint-crm' ), 'details' => __( 'details', 'core-blueprint-crm' ) ];
 		$failed = []; foreach ( $areas as $area ) { $failed[] = $labels[ $area ] ?? $area; }
 		printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html( sprintf( __( 'The post was saved, but CRM could not save: %s. Review the record and try again.', 'core-blueprint-crm' ), implode( ', ', $failed ) ) ) );
 	}
@@ -66,6 +66,7 @@ final class Save {
 		if ( isset( $_POST['cb_crm_addresses_present'] ) ) { $input['addresses'] = isset( $_POST['cb_crm_addresses'] ) && is_array( $_POST['cb_crm_addresses'] ) ? wp_unslash( $_POST['cb_crm_addresses'] ) : []; }
 		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_names_present'] ) ) { $input['names'] = isset( $_POST['cb_crm_names'] ) && is_array( $_POST['cb_crm_names'] ) ? wp_unslash( $_POST['cb_crm_names'] ) : []; }
 		if ( Entity::CONTACT === $owner_type && isset( $_POST['cb_crm_organizations_present'] ) ) { $input['organizations'] = isset( $_POST['cb_crm_organizations'] ) && is_array( $_POST['cb_crm_organizations'] ) ? wp_unslash( $_POST['cb_crm_organizations'] ) : []; }
+		if ( Entity::ORGANIZATION === $owner_type && isset( $_POST['cb_crm_business_identifiers_present'] ) ) { $input['business_identifiers'] = isset( $_POST['cb_crm_business_identifiers'] ) && is_array( $_POST['cb_crm_business_identifiers'] ) ? wp_unslash( $_POST['cb_crm_business_identifiers'] ) : []; }
 		if ( isset( $_POST['cb_crm_service_agreements_present'] ) ) { $input['service_agreements'] = isset( $_POST['cb_crm_service_agreements'] ) && is_array( $_POST['cb_crm_service_agreements'] ) ? wp_unslash( $_POST['cb_crm_service_agreements'] ) : []; }
 		return $input;
 	}
