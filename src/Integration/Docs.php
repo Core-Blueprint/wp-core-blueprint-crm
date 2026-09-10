@@ -361,9 +361,17 @@ final class Docs {
 	}
 
 	private static function authorize_ajax(): void {
+		self::require_post_request();
 		check_ajax_referer( self::NONCE, 'nonce' );
 		if ( ! self::available() || ! current_user_can( Capabilities::MANAGE ) ) {
 			wp_send_json_error( [ 'code' => 'crm_forbidden' ], 403 );
+		}
+	}
+
+	private static function require_post_request(): void {
+		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : '';
+		if ( 'POST' !== $method ) {
+			wp_send_json_error( [ 'code' => 'crm_method_not_allowed' ], 405 );
 		}
 	}
 
