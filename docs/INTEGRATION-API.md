@@ -17,6 +17,10 @@ There is no CRM Service CPT, CRM ServicePricing authority, CRM VAT repository/ta
 
 `Contact` and `Organization` projections expose `service_agreements`. Agreement items reference Work Service IDs and names. Sensitive pricing/notes remain staff-only.
 
+`Organization` also exposes a canonical `business_identifiers` map for reusable legal/customer identifiers such as VAT, company-registration or EORI references. CRM owns the identifier values; downstream document/payment extensions must copy the values they need into their own immutable snapshots rather than live-reading CRM for historical documents.
+
+Business identifier keys are canonical lowercase tokens and values are bounded strings. `CB\CRM\Application\Actions\UpdateOrganization` accepts `business_identifiers` as either an associative map or the organization-admin repeatable row shape (`key` + `value`). CRM does not assign tax meaning or calculation behavior to these identifiers.
+
 ## Service Agreement storage
 
 CRM stores agreements in `cb_crm_service_agreements` with customer type/id, `work_service_id`, status, validity window, pricing mode, optional custom amount/currency/VAT override and notes. There is deliberately no cross-plugin SQL foreign key.

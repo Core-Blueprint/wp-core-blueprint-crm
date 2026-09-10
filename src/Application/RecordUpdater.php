@@ -11,6 +11,7 @@ use CB\CRM\Content\RecordStatus;
 use CB\CRM\Governance;
 use CB\CRM\Repository\Activity;
 use CB\CRM\Repository\Addresses;
+use CB\CRM\Repository\BusinessIdentifiers;
 use CB\CRM\Repository\ContactMethods;
 use CB\CRM\Repository\Names;
 use CB\CRM\Repository\Organizations;
@@ -39,6 +40,9 @@ final class RecordUpdater {
 		if ( Entity::CONTACT === $owner_type ) {
 			self::replace_area( 'names', $input, $areas, $failures, static fn( array $rows ): bool => Names::replace( $owner_type, $record_id, $rows ), $owner_type, $record_id );
 			self::replace_area( 'organizations', $input, $areas, $failures, static fn( array $rows ): bool => Organizations::replace_for_contact( $record_id, $rows ), $owner_type, $record_id );
+		}
+		if ( Entity::ORGANIZATION === $owner_type ) {
+			self::replace_area( 'business_identifiers', $input, $areas, $failures, static fn( array $rows ): bool => BusinessIdentifiers::replace( $record_id, $rows ), $owner_type, $record_id );
 		}
 		self::replace_area( 'service_agreements', $input, $areas, $failures, static fn( array $rows ): bool => ServiceAgreements::replace( $owner_type, $record_id, $rows ), $owner_type, $record_id );
 		if ( array_key_exists( 'tags', $input ) ) {

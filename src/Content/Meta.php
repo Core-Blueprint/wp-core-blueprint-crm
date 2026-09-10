@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 namespace CB\CRM\Content;
+
+use CB\CRM\Repository\BusinessIdentifiers;
 defined( 'ABSPATH' ) || exit;
 
 final class Meta {
@@ -11,6 +13,7 @@ final class Meta {
 	public const LAST_NAME = '_cb_crm_last_name';
 	public const JOB_TITLE = '_cb_crm_job_title';
 	public const LEGAL_NAME = '_cb_crm_legal_name';
+	public const BUSINESS_IDENTIFIERS = '_cb_crm_business_identifiers';
 
 	public static function register(): void {
 		foreach ( [ PostTypes::CONTACT, PostTypes::ORGANIZATION ] as $post_type ) {
@@ -22,6 +25,13 @@ final class Meta {
 		register_post_meta( PostTypes::CONTACT, self::LAST_NAME, self::args( 'string', 'sanitize_text_field' ) );
 		register_post_meta( PostTypes::CONTACT, self::JOB_TITLE, self::args( 'string', 'sanitize_text_field' ) );
 		register_post_meta( PostTypes::ORGANIZATION, self::LEGAL_NAME, self::args( 'string', 'sanitize_text_field' ) );
+		register_post_meta( PostTypes::ORGANIZATION, self::BUSINESS_IDENTIFIERS, [
+			'type'              => 'array',
+			'single'            => true,
+			'show_in_rest'      => false,
+			'sanitize_callback' => [ BusinessIdentifiers::class, 'sanitize_meta' ],
+			'auth_callback'     => static fn(): bool => current_user_can( \CB\CRM\Capabilities::MANAGE ),
+		] );
 	}
 
 	/** @return array<string,mixed> */
