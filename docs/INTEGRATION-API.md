@@ -17,10 +17,12 @@ There is no CRM Service CPT, CRM ServicePricing authority, CRM VAT repository/ta
 
 `Contact` and `Organization` projections expose `service_agreements`. Agreement items reference Work Service IDs and names. Sensitive pricing/notes remain staff-only.
 
-`Organization` additionally exposes two Business Identifier projections:
+`Organization` additionally defines two staff-only Business Identifier projections:
 
 - `business_identifiers`: a compact canonical map for `vat`, `registration_number` and `eori`. An explicitly primary value wins; otherwise the first stored value of that type is used.
 - `business_identifier_records`: the full structured records with `type`, `value`, optional two-letter `country`, optional `label` and `is_primary`.
+
+Both Business Identifier fields return an empty array for non-staff Organization readers, even when that reader is otherwise authorized to see the Organization. Administrative consumers that need business identity must use an authorized staff context such as `CB\CRM\Frontend\Queries\Organizations::staff()`.
 
 Business Identifier storage accepts the standard types `vat`, `registration_number`, `eori` and `other`. `other` requires a descriptive label. CRM stores identity values but does not claim that a supplied registration number is externally or legally verified.
 
