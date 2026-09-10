@@ -9,8 +9,11 @@ $required = [
 	'src/Content/Entity.php',
 	'src/Content/PostTypes.php',
 	'src/Database/Schema.php',
+	'src/Repository/BusinessIdentifiers.php',
 	'src/Repository/ServiceAgreements.php',
+	'src/Admin/BusinessIdentifiersPanel.php',
 	'src/Integration/WorkPricing.php',
+	'src/Frontend/Data/Organization.php',
 	'src/Frontend/Queries/ServiceAgreements.php',
 	'src/Integration/Builders/Bricks/Queries.php',
 	'src/Integration/Builders/Bricks/Conditions.php',
@@ -68,6 +71,10 @@ $entity      = file_get_contents( $root . '/src/Content/Entity.php' );
 $post_types  = file_get_contents( $root . '/src/Content/PostTypes.php' );
 $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
 $agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
+$identifiers = file_get_contents( $root . '/src/Repository/BusinessIdentifiers.php' );
+$organizationData = file_get_contents( $root . '/src/Frontend/Data/Organization.php' );
+$identifierUi = file_get_contents( $root . '/src/Admin/BusinessIdentifiersPanel.php' );
+$lifecycle   = file_get_contents( $root . '/src/Lifecycle.php' );
 $agreementUi = file_get_contents( $root . '/src/Admin/ServiceAgreements.php' );
 $panels      = file_get_contents( $root . '/src/Admin/Panels.php' );
 $adminCss    = file_get_contents( $root . '/assets/admin.css' );
@@ -94,10 +101,14 @@ foreach ( $forbidden_tokens as $token ) {
 }
 
 $checks = [
-	'candidate version is rc1' => str_contains( $bootstrap, 'Version:           1.0.0-rc1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.3'" ),
+	'candidate version is rc1 with schema 1.4' => str_contains( $bootstrap, 'Version:           1.0.0-rc1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.4'" ),
 	'CRM targets Core API without Base RC pin' => str_contains( $bootstrap, "CB_CRM_REQUIRED_API', '1.0'" ) && ! str_contains( $bootstrap, 'CB_CRM_REQUIRED_BASE' ),
 	'CRM no longer owns Service post type' => ! str_contains( $post_types, 'cb_crm_service' ) && ! str_contains( $entity, 'SERVICE' ),
-	'CRM schema owns agreements but no old assignments or VAT table' => str_contains( $schema, 'cb_crm_service_agreements' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
+	'CRM schema owns agreements and business identifiers but no old assignments or VAT catalog' => str_contains( $schema, 'cb_crm_service_agreements' ) && str_contains( $schema, 'cb_crm_business_identifiers' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
+	'Business identifiers are organization-owned and transactional' => str_contains( $identifiers, 'Entity::ORGANIZATION' ) && str_contains( $identifiers, "START TRANSACTION" ) && str_contains( $identifiers, "ROLLBACK" ) && str_contains( $identifiers, "COMMIT" ),
+	'Organization projection exposes identifier map and records' => str_contains( $organizationData, "'business_identifiers'" ) && str_contains( $organizationData, "'business_identifier_records'" ) && str_contains( $organizationData, 'BusinessIdentifiers::canonical_map' ),
+	'Identifier admin is organization-only' => str_contains( $identifierUi, "'post_types' => [ Entity::ORGANIZATION ]" ) && str_contains( $identifierUi, 'cb_crm_business_identifiers_present' ),
+	'Organization deletion cleans identifier rows' => str_contains( $lifecycle, 'business_identifiers_table()' ) && str_contains( $lifecycle, "'organization_id' => \$owner_id" ),
 	'Work provider preserves agreement reference' => str_contains( $workPricing, "'reference_type' => 'service_agreement'" ) && str_contains( $workPricing, 'pricing_projection' ),
 	'Agreement editor posts stable row IDs' => str_contains( $agreementUi, '[id]' ) && str_contains( $agreementUi, '$agreement_id' ),
 	'Agreement repository preserves retained IDs' => str_contains( $agreements, '$wpdb->update(' ) && str_contains( $agreements, '$retained_ids' ) && str_contains( $agreements, "'id' => \$row['id']" ),
