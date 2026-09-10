@@ -21,7 +21,7 @@ declare(strict_types=1);
 defined( 'ABSPATH' ) || exit;
 
 define( 'CB_CRM_VERSION', '1.0.0-rc1' );
-define( 'CB_CRM_SCHEMA_VERSION', '1.3' );
+define( 'CB_CRM_SCHEMA_VERSION', '1.4' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
 define( 'CB_CRM_FILE', __FILE__ );
 define( 'CB_CRM_DIR', plugin_dir_path( __FILE__ ) );
@@ -103,7 +103,6 @@ add_action( 'plugins_loaded', static function (): void {
 			add_action( 'admin_notices', static function (): void {
 				if ( current_user_can( 'activate_plugins' ) ) {
 					printf( '<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>', esc_html__( 'Core Blueprint CRM:', 'core-blueprint-crm' ), esc_html( cb_crm_dependency_message() ) );
-				}
 			} );
 		}
 		return;
