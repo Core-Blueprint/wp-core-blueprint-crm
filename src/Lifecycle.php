@@ -74,6 +74,9 @@ final class Lifecycle {
 					throw new \RuntimeException( 'owner_cleanup_failed' );
 				}
 			}
+			if ( Entity::ORGANIZATION === $owner_type && false === $wpdb->delete( Schema::business_identifiers_table(), [ 'organization_id' => $owner_id ], [ '%d' ] ) ) {
+				throw new \RuntimeException( 'business_identifier_cleanup_failed' );
+			}
 			if ( Entity::CONTACT === $owner_type && false === $wpdb->delete( Schema::organization_relations_table(), [ 'contact_id' => $owner_id ], [ '%d' ] ) ) {
 				throw new \RuntimeException( 'contact_relation_cleanup_failed' );
 			}
