@@ -82,7 +82,14 @@ $organizationData = file_get_contents( $root . '/src/Frontend/Data/Organization.
 $identifierUi = file_get_contents( $root . '/src/Admin/BusinessIdentifiersPanel.php' );
 $lifecycle   = file_get_contents( $root . '/src/Lifecycle.php' );
 $agreementUi = file_get_contents( $root . '/src/Admin/ServiceAgreements.php' );
-$panels      = file_get_contents( $root . '/src/Admin/Panels.php' );
+$panels      = file_get_contents( $root . '/src/Admin/Panels.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/DetailsPanel.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/ContactMethodsPanel.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/AddressesPanel.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/NamesPanel.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/OrganizationsPanel.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/NotesActivityPanel.php' )
+	. file_get_contents( $root . '/src/Admin/Panels/RepeatableTable.php' );
 $adminCss    = file_get_contents( $root . '/assets/admin.css' );
 $adminJs     = file_get_contents( $root . '/assets/admin.js' );
 $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/DynamicData.php' )
