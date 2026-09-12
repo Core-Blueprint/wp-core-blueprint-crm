@@ -44,7 +44,7 @@ final class ContactIdentity {
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID
 				WHERE p.post_type = %s
-				AND p.post_status <> 'auto-draft'
+				AND p.post_status NOT IN ('auto-draft','trash')
 				AND pm.meta_key = %s
 				AND pm.meta_value = %d
 				ORDER BY p.ID ASC",
@@ -82,12 +82,21 @@ final class ContactIdentity {
 		if ( ! is_email( $email ) ) {
 			return [];
 		}
+		$table = \CB\CRM\Database\Schema::contact_methods_table();
 		$ids = $wpdb->get_col(
 			$wpdb->prepare(
-				'SELECT DISTINCT owner_id FROM ' . \CB\CRM\Database\Schema::contact_methods_table() . ' WHERE owner_type = %s AND method_type = %s AND LOWER(value) = %s',
+				"SELECT DISTINCT cm.owner_id
+				FROM {$table} cm
+				INNER JOIN {$wpdb->posts} p ON p.ID = cm.owner_id
+				WHERE cm.owner_type = %s
+				AND cm.method_type = %s
+				AND LOWER(cm.value) = %s
+				AND p.post_type = %s
+				AND p.post_status NOT IN ('auto-draft','trash')",
 				Entity::CONTACT,
 				'email',
-				$email
+				$email,
+				PostTypes::CONTACT
 			)
 		);
 		$user = get_user_by( 'email', $email );
