@@ -21,6 +21,7 @@ final class UserSearch {
 	}
 
 	public static function search(): void {
+		self::require_post_request();
 		check_ajax_referer( self::NONCE, 'nonce' );
 
 		if ( ! current_user_can( Capabilities::MANAGE ) ) {
@@ -60,5 +61,12 @@ final class UserSearch {
 		}
 
 		wp_send_json_success( $results );
+	}
+
+	private static function require_post_request(): void {
+		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : '';
+		if ( 'POST' !== $method ) {
+			wp_send_json_error( [ 'code' => 'crm_method_not_allowed' ], 405 );
+		}
 	}
 }

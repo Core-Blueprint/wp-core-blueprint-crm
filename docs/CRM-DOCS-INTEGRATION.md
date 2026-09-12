@@ -69,7 +69,7 @@ When Core Blueprint Docs is active, CRM adds an optional Docs panel to Contact a
 
 When both plugins are active, CRM can also add a CRM panel to a Docs edit screen. That reverse panel searches the public CRM staff query contracts and links Contacts or Organizations to the current document.
 
-The admin transport is vanilla JavaScript. AJAX nonces protect the transport only; canonical action methods still enforce capability and object-level authorization server-side.
+The admin transport is vanilla JavaScript and all CRM/Docs AJAX endpoints are POST-only. Non-POST requests are rejected before nonce processing. AJAX nonces protect the transport only; canonical action methods still enforce capability and object-level authorization server-side.
 
 If Docs is inactive, the integration UI and actions become unavailable but stored CRM relations remain intact.
 

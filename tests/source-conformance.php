@@ -13,6 +13,8 @@ $required = [
 	'src/Repository/ServiceAgreements.php',
 	'src/Admin/Admin.php',
 	'src/Admin/BusinessIdentifiersPanel.php',
+	'src/Admin/UserSearch.php',
+	'src/Integration/Docs.php',
 	'src/Integration/WorkPricing.php',
 	'src/Frontend/Data/Organization.php',
 	'src/Frontend/Queries/ServiceAgreements.php',
@@ -71,6 +73,8 @@ $schema      = file_get_contents( $root . '/src/Database/Schema.php' );
 $entity      = file_get_contents( $root . '/src/Content/Entity.php' );
 $post_types  = file_get_contents( $root . '/src/Content/PostTypes.php' );
 $admin       = file_get_contents( $root . '/src/Admin/Admin.php' );
+$userSearch  = file_get_contents( $root . '/src/Admin/UserSearch.php' );
+$docsIntegration = file_get_contents( $root . '/src/Integration/Docs.php' );
 $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
 $agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
 $identifiers = file_get_contents( $root . '/src/Repository/BusinessIdentifiers.php' );
@@ -109,6 +113,8 @@ $checks = [
 	'CRM schema owns agreements and business identifiers but no old assignments or VAT catalog' => str_contains( $schema, 'cb_crm_service_agreements' ) && str_contains( $schema, 'cb_crm_business_identifiers' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
 	'Business identifiers are organization-owned and transactional' => str_contains( $identifiers, 'Entity::ORGANIZATION' ) && str_contains( $identifiers, "START TRANSACTION" ) && str_contains( $identifiers, "ROLLBACK" ) && str_contains( $identifiers, "COMMIT" ),
 	'Organization projection exposes identifier map and records' => str_contains( $organizationData, "'business_identifiers'" ) && str_contains( $organizationData, "'business_identifier_records'" ) && str_contains( $organizationData, 'BusinessIdentifiers::canonical_map' ),
+	'Business identifier projections are staff-only' => str_contains( $organizationData, '$staff = Access::is_staff()' ) && str_contains( $organizationData, '$staff ? BusinessIdentifiers::for_organization' ) && str_contains( $organizationData, "'business_identifiers' => \$staff ?" ) && str_contains( $organizationData, "'business_identifier_records' => \$staff ?" ),
+	'CRM AJAX contracts reject non-POST before nonce processing' => str_contains( $userSearch, 'self::require_post_request();' ) && str_contains( $userSearch, "\$_SERVER['REQUEST_METHOD']" ) && str_contains( $userSearch, "'crm_method_not_allowed'" ) && str_contains( $docsIntegration, 'self::require_post_request();' ) && str_contains( $docsIntegration, "\$_SERVER['REQUEST_METHOD']" ) && str_contains( $docsIntegration, "'crm_method_not_allowed'" ),
 	'Identifier admin is wired and organization-only' => str_contains( $admin, 'BusinessIdentifiersPanel::init()' ) && str_contains( $identifierUi, "'post_types' => [ Entity::ORGANIZATION ]" ) && str_contains( $identifierUi, 'cb_crm_business_identifiers_present' ),
 	'Organization deletion cleans identifier rows' => str_contains( $lifecycle, 'business_identifiers_table()' ) && str_contains( $lifecycle, "'organization_id' => \$owner_id" ),
 	'Work provider preserves agreement reference' => str_contains( $workPricing, "'reference_type' => 'service_agreement'" ) && str_contains( $workPricing, 'pricing_projection' ),
