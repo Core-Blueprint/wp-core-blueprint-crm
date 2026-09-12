@@ -12,6 +12,7 @@ final class Menu {
 	public const TOP_LEVEL_SLUG = 'core-blueprint-crm';
 	public const CONTEXT_OVERVIEW = 'overview';
 	public const CONTEXT_CONTACTS = 'contacts';
+	public const CONTEXT_USERS = 'users';
 	public const CONTEXT_ORGANIZATIONS = 'organizations';
 	public const CONTEXT_TAGS = 'tags';
 
@@ -28,6 +29,10 @@ final class Menu {
 		}
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Overview', 'core-blueprint-crm' ), __( 'Overview', 'core-blueprint-crm' ), Capabilities::MANAGE, self::TOP_LEVEL_SLUG, [ __CLASS__, 'render_dashboard' ] );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Contacts', 'core-blueprint-crm' ), __( 'Contacts', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::CONTACT );
+		$users_hook = add_submenu_page( self::TOP_LEVEL_SLUG, __( 'WordPress account', 'core-blueprint-crm' ), __( 'Users' ), Capabilities::MANAGE, UserLinks::PAGE_SLUG, [ UserLinks::class, 'render' ] );
+		if ( is_string( $users_hook ) && class_exists( AdminTheme::class ) ) {
+			AdminTheme::register_screen( $users_hook );
+		}
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organizations', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::ORGANIZATION );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Tags', 'core-blueprint-crm' ), __( 'Tags', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT );
 	}
@@ -37,6 +42,7 @@ final class Menu {
 		if ( ! $screen ) { return ''; }
 		$page = isset( $_GET['page'] ) ? sanitize_key( (string) wp_unslash( $_GET['page'] ) ) : '';
 		if ( self::TOP_LEVEL_SLUG === $page ) { return self::CONTEXT_OVERVIEW; }
+		if ( UserLinks::PAGE_SLUG === $page ) { return self::CONTEXT_USERS; }
 		if ( '' !== (string) $screen->taxonomy ) { return PostTypes::TAG === (string) $screen->taxonomy ? self::CONTEXT_TAGS : ''; }
 		return match ( (string) $screen->post_type ) {
 			PostTypes::CONTACT => self::CONTEXT_CONTACTS,
@@ -66,7 +72,7 @@ final class Menu {
 	}
 
 	private static function submenu_slug( string $context ): string {
-		return match ( $context ) { self::CONTEXT_OVERVIEW => self::TOP_LEVEL_SLUG, self::CONTEXT_CONTACTS => 'edit.php?post_type=' . PostTypes::CONTACT, self::CONTEXT_ORGANIZATIONS => 'edit.php?post_type=' . PostTypes::ORGANIZATION, self::CONTEXT_TAGS => 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT, default => '' };
+		return match ( $context ) { self::CONTEXT_OVERVIEW => self::TOP_LEVEL_SLUG, self::CONTEXT_CONTACTS => 'edit.php?post_type=' . PostTypes::CONTACT, self::CONTEXT_USERS => UserLinks::PAGE_SLUG, self::CONTEXT_ORGANIZATIONS => 'edit.php?post_type=' . PostTypes::ORGANIZATION, self::CONTEXT_TAGS => 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT, default => '' };
 	}
 	private static function count( string $post_type ): int { $counts = wp_count_posts( $post_type ); $total = 0; foreach ( get_object_vars( $counts ) as $status => $count ) { if ( ! in_array( $status, [ 'trash', 'auto-draft' ], true ) ) { $total += (int) $count; } } return $total; }
 }
