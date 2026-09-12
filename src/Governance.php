@@ -11,6 +11,8 @@ use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;
 
 final class Governance {
+	private const ORDER_PROVISION_FAILURE_DEDUP_TTL = 300;
+
 	public const RECORD_CREATED  = 'crm.record.created';
 	public const RECORD_UPDATED  = 'crm.record.updated';
 	public const RECORD_DELETED  = 'crm.record.deleted';
@@ -78,6 +80,33 @@ final class Governance {
 			return;
 		}
 		Audit::record( self::ORDER_ACTIVITY, 'info', [ 'contact_id' => $contact_id, 'order_id' => $order_id, 'status_from' => sanitize_key( $from ), 'status_to' => sanitize_key( $to ), 'actor_user_id' => get_current_user_id() ] );
+	}
+
+	public static function record_order_provision_failed( int $order_id, int $user_id, string $reason, string $source ): void {
+		if ( $order_id <= 0 || $user_id <= 0 ) {
+			return;
+		}
+		$reason = substr( sanitize_key( $reason ), 0, 64 );
+		$source = substr( sanitize_key( $source ), 0, 64 );
+		$fingerprint = 'cb_crm_order_provision_failure_' . substr( hash( 'sha256', $order_id . '|' . $user_id . '|' . $reason ), 0, 40 );
+		if ( false !== get_transient( $fingerprint ) ) {
+			return;
+		}
+		set_transient( $fingerprint, '1', self::ORDER_PROVISION_FAILURE_DEDUP_TTL );
+
+		Audit::record(
+			self::ORDER_ACTIVITY,
+			'warning',
+			[
+				'contact_id'       => 0,
+				'order_id'         => $order_id,
+				'customer_user_id' => $user_id,
+				'action'           => 'identity_provision_failed',
+				'reason'           => $reason,
+				'source'           => $source,
+				'actor_user_id'    => get_current_user_id(),
+			]
+		);
 	}
 
 	public static function record_ticket_activity( int $contact_id, int $ticket_id, string $action ): void {

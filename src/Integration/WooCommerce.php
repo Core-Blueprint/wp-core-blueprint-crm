@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CB\CRM\Integration;
 
+use CB\CRM\Application\ContactProvisioner;
 use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\Governance;
@@ -12,9 +13,13 @@ use CB\CRM\Repository\Activity;
 defined( 'ABSPATH' ) || exit;
 
 final class WooCommerce {
+	private const PROVISION_STATUSES = [ 'processing', 'completed' ];
+
 	public static function init(): void {
 		add_action( 'cb_crm_register_panels', [ __CLASS__, 'register_panel' ], 20 );
 		add_action( 'woocommerce_order_status_changed', [ __CLASS__, 'order_status_changed' ], 20, 4 );
+		add_action( 'woocommerce_payment_complete', [ __CLASS__, 'payment_complete' ], 20, 1 );
+		add_action( 'woocommerce_update_order', [ __CLASS__, 'order_updated' ], 20, 1 );
 	}
 
 	public static function register_panel(): void {
@@ -63,18 +68,12 @@ final class WooCommerce {
 	}
 
 	public static function order_status_changed( int $order_id, string $from, string $to, $order ): void {
-		if ( ! $order instanceof \WC_Order ) {
+		unset( $order );
+		$contact_id = self::reconcile_order( $order_id, 'order_status' );
+		if ( $contact_id <= 0 ) {
 			return;
 		}
-		$user_id = (int) $order->get_customer_id();
-		if ( $user_id <= 0 ) {
-			return;
-		}
-		$linked = ContactIdentity::find_by_user_id( $user_id );
-		if ( ! $linked || ! empty( $linked['ambiguous'] ) ) {
-			return;
-		}
-		$contact_id = (int) $linked['contact_id'];
+
 		Activity::record(
 			Entity::CONTACT,
 			$contact_id,
@@ -87,5 +86,56 @@ final class WooCommerce {
 			[ 'from' => $from, 'to' => $to ]
 		);
 		Governance::record_order_activity( $contact_id, $order_id, $from, $to );
+	}
+
+	public static function payment_complete( int $order_id ): void {
+		self::reconcile_order( $order_id, 'payment_complete' );
+	}
+
+	public static function order_updated( int $order_id ): void {
+		self::reconcile_order( $order_id, 'order_update' );
+	}
+
+	private static function reconcile_order( int $order_id, string $source ): int {
+		if ( $order_id <= 0 || ! function_exists( 'wc_get_order' ) ) {
+			return 0;
+		}
+		$order = wc_get_order( $order_id );
+		if ( ! $order instanceof \WC_Order ) {
+			return 0;
+		}
+
+		$status = sanitize_key( str_replace( 'wc-', '', (string) $order->get_status() ) );
+		if ( ! in_array( $status, self::PROVISION_STATUSES, true ) ) {
+			return 0;
+		}
+
+		$user_id = (int) $order->get_customer_id();
+		if ( $user_id <= 0 ) {
+			return 0;
+		}
+
+		$linked = ContactIdentity::find_by_user_id( $user_id );
+		if ( $linked && empty( $linked['ambiguous'] ) ) {
+			return (int) $linked['contact_id'];
+		}
+		if ( $linked && ! empty( $linked['ambiguous'] ) ) {
+			Governance::record_order_provision_failed( $order_id, $user_id, 'crm_identity_conflict', $source );
+			return 0;
+		}
+
+		return self::provision_for_user( $user_id, $order_id, $source );
+	}
+
+	private static function provision_for_user( int $user_id, int $order_id, string $source ): int {
+		$result = ContactProvisioner::ensure_for_user( $user_id, 0 );
+		if ( is_wp_error( $result ) ) {
+			$reason = method_exists( $result, 'get_error_code' ) ? (string) $result->get_error_code() : 'crm_identity_provision_failed';
+			if ( 'crm_identity_provision_busy' !== $reason ) {
+				Governance::record_order_provision_failed( $order_id, $user_id, $reason, $source );
+			}
+			return 0;
+		}
+		return (int) ( $result['contact_id'] ?? 0 );
 	}
 }

@@ -57,6 +57,25 @@ The Subscriptions integration is read-only and resolves the Contact's linked Wor
 
 WooCommerce orders and Helpdesk tickets follow the same ownership rule: CRM may display or reference their customer context, while WooCommerce and Helpdesk remain authoritative for order/ticket state.
 
+## WooCommerce identity provisioning
+
+WooCommerce remains authority for customers, orders, checkout and billing data. CRM does not mirror WooCommerce orders or treat checkout fields as CRM master data.
+
+For registered customers, `CB\CRM\Integration\WooCommerce` reconciles CRM identity from three converging WooCommerce lifecycle signals: order-status changes, payment completion and durable order updates. Every path reloads the order from WooCommerce and only provisions once the order is `processing` or `completed` and has a real registered customer ID. This covers payment-provider flows where account binding becomes durable after the earliest payment/status callbacks.
+
+Provisioning policy:
+
+1. an existing canonical WordPress User → Contact link is reused;
+2. ambiguous existing links fail closed;
+3. an existing CRM email candidate requires operator review and is never silently claimed;
+4. only when no canonical link or email collision exists may CRM create a new Contact and link that WordPress user.
+
+Guest orders do not create CRM Contacts. Organization creation from WooCommerce billing/company data is deliberately outside this provisioning path. Operators can review and repair identity links through `CRM → Users`.
+
+`CB\CRM\Application\ContactProvisioner` owns this internal provisioning policy so commerce integrations do not write canonical identity metadata directly. New-contact creation is protected by an atomic, non-autoloaded WordPress option lease keyed by WordPress user ID, with stale-lease recovery and shutdown/finally release. The service re-checks identity after acquiring the lease and rolls back only the Contact created by its own request if post-write reconciliation is not uniquely canonical.
+
+Failed automatic provisioning is recorded as warning-level WooCommerce activity in the Base audit log with the order, user, source and fail-closed reason. Repeated identical failures for the same order, user and reason are deduplicated for a short window across the converging Woo signals; transient lock contention is treated as expected concurrency and does not generate warning noise.
+
 ## Builder adapters
 
 Builder adapters may only call these builder-neutral/public contracts. No adapter reads CRM or Work tables directly. Bricks is the first supported adapter, not a dependency or architectural special case.
