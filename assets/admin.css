@@ -213,6 +213,25 @@
 	margin: 0 0 6px;
 }
 
+.cb-crm-user-links-page .wp-list-table {
+	table-layout: auto;
+}
+
+.cb-crm-user-links-page .wp-list-table .column-name,
+.cb-crm-user-links-page .wp-list-table .column-email {
+	min-width: 220px;
+}
+
+.cb-crm-user-login,
+.cb-crm-user-email {
+	overflow-wrap: anywhere;
+	word-break: normal;
+}
+
+.cb-crm-user-login {
+	white-space: normal;
+}
+
 @media (max-width: 1440px) {
 	.cb-crm-settings-grid {
 		grid-template-columns: 1fr;

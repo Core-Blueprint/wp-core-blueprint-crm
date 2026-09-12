@@ -14,6 +14,7 @@ final class Admin {
 		ServiceAgreements::init();
 		Save::init();
 		UserSearch::init();
+		UserLinks::init();
 		Assets::init();
 		add_filter( 'plugin_action_links_' . CB_CRM_BASENAME, [ __CLASS__, 'action_links' ] );
 		add_filter( 'enter_title_here', [ __CLASS__, 'title_placeholder' ], 10, 2 );
