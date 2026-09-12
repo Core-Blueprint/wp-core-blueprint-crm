@@ -7,6 +7,7 @@ use CB\CRM\Content\PostTypes;
 use CB\CRM\Integration\Builders\Bootstrap as BuildersBootstrap;
 use CB\CRM\Integration\Docs;
 use CB\CRM\Integration\Helpdesk;
+use CB\CRM\Integration\Subscriptions;
 use CB\CRM\Integration\Suite;
 use CB\CRM\Integration\WooCommerce;
 use CB\CRM\Integration\WorkPricing;
@@ -34,6 +35,7 @@ final class Plugin {
 		BuildersBootstrap::init();
 		Docs::init();
 		Helpdesk::init();
+		Subscriptions::init();
 		WooCommerce::init();
 	}
 }

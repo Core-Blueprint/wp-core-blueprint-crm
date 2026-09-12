@@ -49,6 +49,14 @@ Work's canonical `CB\Work\PublicApi\Pricing` contract owns final precedence:
 
 An agreement using `inherit` returns an empty pricing override but still retains its agreement reference/provenance for later commercial snapshots.
 
+## Optional sibling context
+
+CRM may project sibling-module context into a Contact or Organization editor, but the sibling module remains the authority for its domain state.
+
+The Subscriptions integration is read-only and resolves the Contact's linked WordPress user through CRM identity. It then reads subscription presentation data only through `CB\Subscriptions\Frontend\Queries::for_user()`. CRM does not copy subscription status, renewal dates, plan data or payment state into CRM storage, and the panel is shown only to operators who satisfy Subscriptions' own `manage_woocommerce` / `manage_options` staff boundary.
+
+WooCommerce orders and Helpdesk tickets follow the same ownership rule: CRM may display or reference their customer context, while WooCommerce and Helpdesk remain authoritative for order/ticket state.
+
 ## Builder adapters
 
 Builder adapters may only call these builder-neutral/public contracts. No adapter reads CRM or Work tables directly. Bricks is the first supported adapter, not a dependency or architectural special case.
