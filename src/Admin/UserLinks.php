@@ -24,6 +24,25 @@ final class UserLinks {
 		add_action( 'admin_post_' . self::ACTION_LINK, [ __CLASS__, 'link_contact_to_user' ] );
 	}
 
+	public static function register_screen( string $screen_id ): void {
+		if ( '' === $screen_id ) {
+			return;
+		}
+		add_filter( 'manage_' . $screen_id . '_columns', [ __CLASS__, 'columns' ] );
+	}
+
+	/** @return array<string,string> */
+	public static function columns(): array {
+		return [
+			'name'    => __( 'Name', 'core-blueprint-crm' ),
+			'email'   => __( 'Email', 'core-blueprint-crm' ),
+			'role'    => __( 'Role', 'core-blueprint-crm' ),
+			'status'  => __( 'Status', 'core-blueprint-crm' ),
+			'contact' => __( 'Contact', 'core-blueprint-crm' ),
+			'actions' => __( 'Actions', 'core-blueprint-crm' ),
+		];
+	}
+
 	public static function render(): void {
 		if ( ! current_user_can( Capabilities::MANAGE ) ) {
 			wp_die( esc_html__( 'You do not have permission to manage CRM data.', 'core-blueprint-crm' ) );
@@ -69,6 +88,9 @@ final class UserLinks {
 		$users = array_values( array_filter( $query->get_results(), static fn( mixed $user ): bool => $user instanceof \WP_User ) );
 		$user_ids = array_map( static fn( \WP_User $user ): int => (int) $user->ID, $users );
 		$link_map = UserLinkDirectory::links_for_users( $user_ids );
+		$columns = self::columns();
+		$screen = get_current_screen();
+		$hidden_columns = $screen instanceof \WP_Screen ? get_hidden_columns( $screen ) : [];
 
 		?>
 		<div class="wrap cb-crm-user-links-page">
@@ -101,27 +123,24 @@ final class UserLinks {
 
 			<table class="wp-list-table widefat fixed striped table-view-list users">
 				<thead><tr>
-					<th scope="col"><?php esc_html_e( 'Name', 'core-blueprint-crm' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Email', 'core-blueprint-crm' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Role', 'core-blueprint-crm' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Contact', 'core-blueprint-crm' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Actions', 'core-blueprint-crm' ); ?></th>
+					<?php foreach ( $columns as $column_key => $column_label ) : ?>
+						<th scope="col" id="<?php echo esc_attr( $column_key ); ?>" class="<?php echo esc_attr( self::column_classes( $column_key, $hidden_columns, true ) ); ?>"><?php echo esc_html( $column_label ); ?></th>
+					<?php endforeach; ?>
 				</tr></thead>
 				<tbody>
 				<?php if ( [] === $users ) : ?>
-					<tr class="no-items"><td colspan="6"><?php esc_html_e( 'No matching WordPress users found.', 'core-blueprint-crm' ); ?></td></tr>
+					<tr class="no-items"><td colspan="<?php echo esc_attr( (string) count( $columns ) ); ?>"><?php esc_html_e( 'No matching WordPress users found.', 'core-blueprint-crm' ); ?></td></tr>
 				<?php else : foreach ( $users as $user ) :
 					$contact_ids = $link_map[ (int) $user->ID ] ?? [];
 					$link_status = UserLinkDirectory::classify( $contact_ids );
 					?>
 					<tr>
-						<td><strong><?php echo esc_html( (string) $user->display_name ); ?></strong><br><code><?php echo esc_html( (string) $user->user_login ); ?></code></td>
-						<td><?php echo esc_html( (string) $user->user_email ); ?></td>
-						<td><?php echo esc_html( implode( ', ', array_map( static fn( string $item ): string => translate_user_role( wp_roles()->roles[ $item ]['name'] ?? $item ), (array) $user->roles ) ) ); ?></td>
-						<td><?php self::render_status( $link_status, $contact_ids ); ?></td>
-						<td><?php self::render_contacts( $contact_ids ); ?></td>
-						<td><?php self::render_actions( $user, $link_status, $contact_ids ); ?></td>
+						<td class="<?php echo esc_attr( self::column_classes( 'name', $hidden_columns ) ); ?>" data-colname="<?php echo esc_attr( $columns['name'] ); ?>"><strong><?php echo esc_html( (string) $user->display_name ); ?></strong><br><code class="cb-crm-user-login"><?php echo esc_html( (string) $user->user_login ); ?></code></td>
+						<td class="<?php echo esc_attr( self::column_classes( 'email', $hidden_columns ) ); ?>" data-colname="<?php echo esc_attr( $columns['email'] ); ?>"><span class="cb-crm-user-email"><?php echo esc_html( (string) $user->user_email ); ?></span></td>
+						<td class="<?php echo esc_attr( self::column_classes( 'role', $hidden_columns ) ); ?>" data-colname="<?php echo esc_attr( $columns['role'] ); ?>"><?php echo esc_html( implode( ', ', array_map( static fn( string $item ): string => translate_user_role( wp_roles()->roles[ $item ]['name'] ?? $item ), (array) $user->roles ) ) ); ?></td>
+						<td class="<?php echo esc_attr( self::column_classes( 'status', $hidden_columns ) ); ?>" data-colname="<?php echo esc_attr( $columns['status'] ); ?>"><?php self::render_status( $link_status, $contact_ids ); ?></td>
+						<td class="<?php echo esc_attr( self::column_classes( 'contact', $hidden_columns ) ); ?>" data-colname="<?php echo esc_attr( $columns['contact'] ); ?>"><?php self::render_contacts( $contact_ids ); ?></td>
+						<td class="<?php echo esc_attr( self::column_classes( 'actions', $hidden_columns ) ); ?>" data-colname="<?php echo esc_attr( $columns['actions'] ); ?>"><?php self::render_actions( $user, $link_status, $contact_ids ); ?></td>
 					</tr>
 				<?php endforeach; endif; ?>
 				</tbody>
@@ -345,6 +364,18 @@ final class UserLinks {
 		if ( ! current_user_can( Capabilities::MANAGE ) ) {
 			wp_die( esc_html__( 'You do not have permission to manage CRM data.', 'core-blueprint-crm' ) );
 		}
+	}
+
+	/** @param string[] $hidden_columns */
+	private static function column_classes( string $column, array $hidden_columns, bool $header = false ): string {
+		$classes = [ 'column-' . sanitize_html_class( $column ) ];
+		if ( $header ) {
+			array_unshift( $classes, 'manage-column' );
+		}
+		if ( in_array( $column, $hidden_columns, true ) ) {
+			$classes[] = 'hidden';
+		}
+		return implode( ' ', $classes );
 	}
 
 	private static function nonce_action( string $action, int $user_id, int $contact_id = 0 ): string {

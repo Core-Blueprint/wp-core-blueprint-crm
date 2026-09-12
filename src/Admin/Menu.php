@@ -30,8 +30,11 @@ final class Menu {
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Overview', 'core-blueprint-crm' ), __( 'Overview', 'core-blueprint-crm' ), Capabilities::MANAGE, self::TOP_LEVEL_SLUG, [ __CLASS__, 'render_dashboard' ] );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Contacts', 'core-blueprint-crm' ), __( 'Contacts', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::CONTACT );
 		$users_hook = add_submenu_page( self::TOP_LEVEL_SLUG, __( 'WordPress account', 'core-blueprint-crm' ), __( 'Users' ), Capabilities::MANAGE, UserLinks::PAGE_SLUG, [ UserLinks::class, 'render' ] );
-		if ( is_string( $users_hook ) && class_exists( AdminTheme::class ) ) {
-			AdminTheme::register_screen( $users_hook );
+		if ( is_string( $users_hook ) ) {
+			UserLinks::register_screen( $users_hook );
+			if ( class_exists( AdminTheme::class ) ) {
+				AdminTheme::register_screen( $users_hook );
+			}
 		}
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organizations', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::ORGANIZATION );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Tags', 'core-blueprint-crm' ), __( 'Tags', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT );
