@@ -1,760 +1,546 @@
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: Core Blueprint CRM 1.0.0-rc1\n"
-"PO-Revision-Date: 2026-09-03 00:13+0000\n"
-"Last-Translator: Core Blueprint\n"
-"Language-Team: nl_NL\n"
 "Language: nl_NL\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 
-#: src/Integration/Suite.php:53
-#, php-format
-msgid "%1$d contacts · %2$d organizations"
-msgstr "%1$d contacts · %2$dorganisaties"
+msgid "%d contact"
+msgid_plural "%d contacts"
+msgstr[0] "%d contact"
+msgstr[1] "%d contacten"
 
-#: src/Admin/TaxRatesPage.php:109 src/Admin/Panels.php:104
-#: src/Admin/Panels.php:131 src/Admin/Panels.php:146 src/Admin/Panels.php:160
+msgid "%d organization"
+msgid_plural "%d organizations"
+msgstr[0] "%d organisatie"
+msgstr[1] "%d organisaties"
+
 msgid "Actions"
-msgstr "Actions"
+msgstr "Acties"
 
-#: src/Admin/TaxRatesPage.php:123
-msgid "Activate"
-msgstr "Activate"
-
-#: src/Admin/TaxRatesPage.php:118 src/Admin/Panels.php:318
-#: src/Repository/Services.php:18 src/Content/RecordStatus.php:27
 msgid "Active"
-msgstr "Active"
+msgstr "Actief"
 
-#: src/Admin/Panels.php:182
 msgid "Activity"
-msgstr "Activity"
+msgstr "Activiteit"
 
-#: src/Content/PostTypes.php:40 src/Content/PostTypes.php:41
-#, php-format
-msgid "Add %s"
-msgstr "Toevoegen%s"
+msgid "Add Contact"
+msgstr "Contact Toevoegen"
 
-#: src/Admin/Panels.php:123
+msgid "Add Organization"
+msgstr "Organisatie Toevoegen"
+
 msgid "Add address"
-msgstr "Add address"
+msgstr "Adres toevoegen"
 
-#: src/Admin/Panels.php:111
+msgid "Add business identifier"
+msgstr "Bedrijfsidentificatie toevoegen"
+
 msgid "Add contact method"
-msgstr "Add contact method"
+msgstr "Contactmethode toevoegen"
 
-#: src/Admin/Panels.php:138
+msgid "Add document"
+msgstr "Document toevoegen"
+
 msgid "Add name or alias"
-msgstr "Add name or alias"
+msgstr "Naam of alias toevoegen"
 
-#: src/Admin/Panels.php:173
 msgid "Add note"
-msgstr "Add note"
+msgstr "Notitie toevoegen"
 
-#: src/Admin/Panels.php:153
 msgid "Add organization"
-msgstr "Add organization"
+msgstr "Organisatie toevoegen"
 
-#: src/Admin/PricingUi.php:157 src/Admin/Panels.php:167
-msgid "Add service"
-msgstr "Add service"
+msgid "Add service agreement"
+msgstr "Serviceovereenkomst toevoegen"
 
-#: src/Admin/TaxRatesPage.php:85 src/Admin/TaxRatesPage.php:97
-#: src/Admin/PricingUi.php:102
-msgid "Add tax rate"
-msgstr "Add tax rate"
-
-#: src/Admin/Panels.php:230
 msgid "Address line 1"
-msgstr "Address line 1"
+msgstr "Adresregel 1"
 
-#: src/Admin/Panels.php:231
 msgid "Address line 2"
-msgstr "Address line 2"
+msgstr "Adresregel 2"
 
-#: src/Admin/Panels.php:30
 msgid "Addresses"
-msgstr "Addresses"
+msgstr "Adressen"
 
-#: src/Admin/PricingUi.php:226
-msgid "Agreement notes"
-msgstr "Agreement notes"
-
-#: src/Admin/Panels.php:310
 msgid "Alias"
 msgstr "Alias"
 
-#: src/Content/RecordStatus.php:29
-msgid "Archived"
-msgstr "Archived"
+msgid "All Contacts"
+msgstr "Alle contacten"
 
-#: src/Integration/Suite.php:36 src/Admin/Menu.php:21 src/Admin/Menu.php:22
-#: src/Admin/Admin.php:31
+msgid "All Organizations"
+msgstr "Alle organisaties"
+
+msgid "Archived"
+msgstr "Gearchiveerd"
+
+msgid "Business Identifiers"
+msgstr "Bedrijfsidentificaties"
+
 msgid "CRM"
 msgstr "CRM"
 
-#: src/Admin/Panels.php:28
 msgid "CRM Details"
-msgstr "CRM Details"
+msgstr "CRM-details"
 
-#: src/Governance.php:33
 msgid "CRM Helpdesk activity recorded"
-msgstr "CRM Helpdesk activity recorded"
+msgstr "CRM Helpdesk-activiteit vastgelegd"
 
-#: src/Content/PostTypes.php:25
 msgid "CRM Tag"
-msgstr "CRM Tag"
+msgstr "CRM-tag"
 
-#: src/Content/PostTypes.php:25
 msgid "CRM Tags"
-msgstr "CRM Tags"
+msgstr "CRM-tags"
 
-#: src/Governance.php:32
 msgid "CRM WooCommerce activity recorded"
-msgstr "CRM WooCommerce activity recorded"
+msgstr "CRM WooCommerce-activiteit vastgelegd"
 
-#: src/Admin/Panels.php:88
 msgid "CRM contact methods"
-msgstr "CRM contact methods"
+msgstr "CRM-contactmethoden"
 
-#: src/Admin/Save.php:79
-msgid "CRM note added"
-msgstr "CRM note added"
+msgid "CRM database schema is newer than this plugin build."
+msgstr "Het CRM-databaseschema is nieuwer dan deze pluginbuild."
 
-#: src/Governance.php:31
+msgid "CRM database upgrade pending."
+msgstr "CRM-database-upgrade in afwachting."
+
 msgid "CRM note created"
-msgstr "CRM note created"
+msgstr "CRM-notitie aangemaakt"
 
-#: src/Governance.php:28
+msgid "CRM record cleanup failed"
+msgstr "Opschonen van CRM-record mislukt"
+
 msgid "CRM record created"
-msgstr "CRM record created"
+msgstr "CRM-record aangemaakt"
 
-#: src/Governance.php:30
 msgid "CRM record data updated"
-msgstr "CRM record data updated"
+msgstr "CRM-recordgegevens bijgewerkt"
 
-#: src/Admin/Save.php:88
-msgid "CRM record details updated"
-msgstr "CRM record details updated"
+msgid "CRM record deleted"
+msgstr "CRM-record verwijderd"
 
-#: src/Governance.php:29
 msgid "CRM record updated"
-msgstr "CRM record updated"
+msgstr "CRM-record bijgewerkt"
 
-#: src/Governance.php:34
-msgid "CRM tax rate changed"
-msgstr "CRM tax rate changed"
+msgid "CRM: Edit Contact"
+msgstr "CRM: Contact bewerken"
 
-#: src/Admin/PricingUi.php:175
-msgid "Choose a service to see its standard pricing."
-msgstr "Choose a service to see its standard pricing."
+msgid "CRM: Edit Organization"
+msgstr "CRM: Organisatie bewerken"
 
-#: src/Admin/PricingUi.php:182
-msgid "Choose a service…"
-msgstr "Choose a service…"
+msgid "Choose which email address CRM should prefer. WordPress account linking itself remains optional."
+msgstr "Kies welk e-mailadres CRM bij voorkeur gebruikt. Het koppelen van een WordPress-account blijft optioneel."
 
-#: src/Admin/Panels.php:91
-msgid ""
-"Choose which email address CRM should prefer. WordPress account linking "
-"itself remains optional."
-msgstr ""
-"Choose which email address CRM should prefer. WordPress account linking "
-"itself remains optional."
-
-#: src/Admin/Panels.php:233
 msgid "City"
-msgstr "City"
+msgstr "Plaats"
 
-#: src/Admin/TaxRatesPage.php:91 src/Admin/TaxRatesPage.php:109
-msgid "Code"
-msgstr "Code"
+msgid "Companies, institutions and customer relationships."
+msgstr "Bedrijven, instellingen en klantrelaties."
 
-#: src/Admin/Menu.php:43
-msgid "Companies, institutions and other organizations."
-msgstr "Companies, institutions and other organizations."
+msgid "Company registration"
+msgstr "Bedrijfsregistratie"
 
-#: src/Admin/Menu.php:64
-msgid "Configuration"
-msgstr "Configuration"
-
-#: src/Admin/TaxRatesPage.php:104
-msgid "Configured rates"
-msgstr "Configured rates"
-
-#: src/Content/PostTypes.php:20
 msgid "Contact"
 msgstr "Contact"
 
-#: src/Admin/Panels.php:29
 msgid "Contact Methods"
-msgstr "Contact Methods"
+msgstr "Contactmethoden"
 
-#: src/Admin/Menu.php:31 src/Admin/Menu.php:42 src/Content/PostTypes.php:20
+msgid "Contact tickets"
+msgstr "Contacttickets"
+
 msgid "Contacts"
-msgstr "Contacts"
+msgstr "Contacten"
 
-#: src/Admin/Panels.php:160
 msgid "Context"
 msgstr "Context"
 
-#: src/Admin/Menu.php:49 src/Capabilities.php:25
 msgid "Core Blueprint CRM"
 msgstr "Core Blueprint CRM"
 
-#: core-blueprint-crm.php:69
-#, php-format
-msgid ""
-"Core Blueprint CRM requires Core API %1$s or a newer compatible minor "
-"version. This site provides %2$s."
-msgstr ""
-"Core Blueprint CRM vereist Core API%1$s or a newer compatible minor version."
-" This site provides %2$s."
+msgid "Core Blueprint CRM could not access one or more required public Core Blueprint Base services."
+msgstr "Core Blueprint CRM kon één of meer vereiste publieke services van Core Blueprint Base niet bereiken."
 
-#: core-blueprint-crm.php:65
+msgid "Core Blueprint CRM requires Core API %1$s or a newer compatible minor version. This site provides %2$s."
+msgstr "Core Blueprint CRM vereist Core API %1$s of een nieuwere compatibele minorversie. Deze site biedt %2$s."
+
 msgid "Core Blueprint CRM requires an active Core Blueprint Base plugin."
-msgstr "Core Blueprint CRM requires an active Core Blueprint Base plugin."
+msgstr "Core Blueprint CRM vereist een actieve Core Blueprint Base-plugin."
 
-#: core-blueprint-crm.php:103
 msgid "Core Blueprint CRM:"
 msgstr "Core Blueprint CRM:"
 
-#: src/Admin/TaxRatesPage.php:109
+msgid "Core Blueprint Work is not available. Service agreements remain inactive because CRM never provides a fallback service or VAT catalog."
+msgstr "Core Blueprint Work is niet beschikbaar. Serviceovereenkomsten blijven inactief omdat CRM nooit een alternatieve service- of btw-catalogus aanbiedt."
+
+msgid "Core Blueprint dependency required"
+msgstr "Core Blueprint-afhankelijkheid vereist"
+
+msgid "Count"
+msgstr "Aantal"
+
 msgid "Country"
-msgstr "Country"
+msgstr "Land"
 
-#: src/Admin/TaxRatesPage.php:92 src/Admin/Panels.php:235
 msgid "Country code"
-msgstr "Country code"
+msgstr "Landcode"
 
-#: src/Admin/PricingUi.php:145
-msgid "Create and save a Service before assigning it to this record."
-msgstr "Create and save a Service before assigning it to this record."
+msgid "Custom amount"
+msgstr "Aangepast bedrag"
 
-#: src/Admin/PricingUi.php:146
-msgid "Create service"
-msgstr "Create service"
+msgid "Customer identity, organizations, context and customer-specific service agreements. The service catalog and VAT are managed by Core Blueprint Work."
+msgstr "Klantidentiteit, organisaties, context en klantspecifieke serviceovereenkomsten. De servicecatalogus en btw worden beheerd door Core Blueprint Work."
 
-#: src/Admin/PricingUi.php:82 src/Admin/PricingUi.php:219
-msgid "Currency"
-msgstr "Currency"
+msgid "Customer-specific override"
+msgstr "Klantspecifieke afwijking"
 
-#: src/Admin/PricingUi.php:218
-msgid "Custom price"
-msgstr "Custom price"
-
-#: src/Admin/PricingUi.php:210
-msgid "Custom pricing"
-msgstr "Custom pricing"
-
-#: src/Admin/TaxRatesPage.php:123
-msgid "Deactivate"
-msgstr "Deactivate"
-
-#: src/Admin/Admin.php:38
 msgid "Display name"
-msgstr "Display name"
+msgstr "Weergavenaam"
 
-#: src/Content/PostTypes.php:42
-#, php-format
-msgid "Edit %s"
-msgstr "Bewerking%s"
+msgid "Documentation"
+msgstr "Documentatie"
 
-#: src/Admin/Panels.php:295
+msgid "EORI"
+msgstr "EORI"
+
+msgid "Edit Contact"
+msgstr "Contact bewerken"
+
+msgid "Edit Organization"
+msgstr "Organisatie bewerken"
+
 msgid "Email"
-msgstr "Email"
+msgstr "E-mail"
 
-#: src/Admin/Panels.php:317 src/Repository/Services.php:20
 msgid "Ended"
-msgstr "Ended"
+msgstr "Beëindigd"
 
-#: src/Content/ServicePricing.php:106
 msgid "Excluding VAT"
-msgstr "Excluding VAT"
+msgstr "Exclusief btw"
 
-#: src/Admin/Panels.php:63
 msgid "First name"
-msgstr "First name"
+msgstr "Voornaam"
 
-#: src/Admin/Panels.php:309
 msgid "Former"
-msgstr "Former"
+msgstr "Voormalig"
 
-#: src/Admin/PricingUi.php:204 src/Admin/Panels.php:131
-#: src/Admin/Panels.php:146 src/Admin/Panels.php:160
 msgid "From"
-msgstr "From"
+msgstr "Van"
 
-#: src/Admin/TaxRatesPage.php:174
-#, php-format
-msgid "From %s"
-msgstr "From %s"
-
-#: src/Admin/TaxRatesPage.php:91
-msgid ""
-"Generated automatically from the label. Change it only when you need a "
-"different stable internal code."
-msgstr ""
-"Generated automatically from the label. Change it only when you need a "
-"different stable internal code."
-
-#: src/Integration/Helpdesk.php:23
 msgid "Helpdesk"
 msgstr "Helpdesk"
 
-#: src/Admin/TaxRatesPage.php:118 src/Admin/PricingUi.php:243
-#: src/Content/RecordStatus.php:28
 msgid "Inactive"
-msgstr "Inactive"
+msgstr "Inactief"
 
-#: src/Content/ServicePricing.php:107
 msgid "Including VAT"
-msgstr "Including VAT"
+msgstr "Inclusief btw"
 
-#: src/Admin/Panels.php:65
 msgid "Job title"
-msgstr "Job title"
+msgstr "Functie"
 
-#: src/Admin/TaxRatesPage.php:90 src/Admin/TaxRatesPage.php:109
-#: src/Admin/Panels.php:104 src/Admin/Panels.php:229
 msgid "Label"
 msgstr "Label"
 
-#: src/Admin/Panels.php:64
 msgid "Last name"
-msgstr "Last name"
+msgstr "Achternaam"
 
-#: src/Admin/PricingUi.php:79
-msgid "Leave empty when this service has no standard price."
-msgstr "Leave empty when this service has no standard price."
-
-#: src/Admin/Panels.php:306
 msgid "Legal"
-msgstr "Legal"
+msgstr "Juridisch"
 
-#: src/Admin/Panels.php:95
 msgid "Legal name"
-msgstr "Legal name"
+msgstr "Juridische naam"
 
-#: src/Integration/WooCommerce.php:38
-msgid ""
-"Link this contact to a WordPress user to show their WooCommerce orders."
-msgstr ""
-"Link this contact to a WordPress user to show their WooCommerce orders."
+msgid "Link this contact to a WordPress user to show their WooCommerce orders."
+msgstr "Koppel dit contact aan een WordPress-gebruiker om de WooCommerce-bestellingen te tonen."
 
-#: src/Integration/Helpdesk.php:35
 msgid "Link this contact to a WordPress user to show their support tickets."
-msgstr "Link this contact to a WordPress user to show their support tickets."
+msgstr "Koppel dit contact aan een WordPress-gebruiker om de supporttickets te tonen."
 
-#: src/Admin/Panels.php:89
+msgid "Linked CRM record"
+msgstr "Gekoppeld CRM-record"
+
 msgid "Linked WordPress account"
-msgstr "Linked WordPress account"
+msgstr "Gekoppeld WordPress-account"
 
-#: src/Admin/Menu.php:58 src/Admin/Menu.php:71
+msgid "Linked documentation"
+msgstr "Gekoppelde documentatie"
+
 msgid "Manage"
-msgstr "Manage"
+msgstr "Beheren"
 
-#: src/Capabilities.php:24
 msgid "Manage CRM"
-msgstr "Manage CRM"
+msgstr "CRM beheren"
 
-#: src/Admin/TaxRatesPage.php:79
-msgid ""
-"Manage reusable VAT/tax rates for CRM service pricing. Existing rates are "
-"deactivated rather than deleted so historical references remain intact."
-msgstr ""
-"Manage reusable VAT/tax rates for CRM service pricing. Existing rates are "
-"deactivated rather than deleted so historical references remain intact."
-
-#: src/Admin/PricingUi.php:97
-msgid "Manage tax rates"
-msgstr "Manage tax rates"
-
-#: src/Admin/Panels.php:297
 msgid "Mobile"
-msgstr "Mobile"
+msgstr "Mobiel"
 
-#: src/Admin/Panels.php:131
 msgid "Name"
-msgstr "Name"
+msgstr "Naam"
 
-#: src/Admin/Panels.php:31
 msgid "Names & Aliases"
-msgstr "Names & Aliases"
+msgstr "Namen & aliassen"
 
-#: src/Content/PostTypes.php:43
-#, php-format
-msgid "New %s"
-msgstr "Nieuw%s"
+msgid "New Contact"
+msgstr "Nieuw contact"
 
-#: src/Content/PostTypes.php:46
-#, php-format
-msgid "No %s found."
-msgstr "Nee%sgevonden."
+msgid "New Organization"
+msgstr "Nieuwe organisatie"
 
-#: src/Integration/Helpdesk.php:41
+msgid "No CRM records found."
+msgstr "Geen CRM-records gevonden."
+
 msgid "No Helpdesk tickets for this user."
-msgstr "No Helpdesk tickets for this user."
+msgstr "Geen Helpdesk-tickets voor deze gebruiker."
 
-#: src/Integration/WooCommerce.php:50
 msgid "No WooCommerce orders for this user."
-msgstr "No WooCommerce orders for this user."
+msgstr "Geen WooCommerce-bestellingen voor deze gebruiker."
 
-#: src/Admin/Panels.php:184
 msgid "No activity yet."
-msgstr "No activity yet."
+msgstr "Nog geen activiteit."
 
-#: src/Admin/TaxRatesPage.php:169
-msgid "No date limit"
-msgstr "No date limit"
+msgid "No contacts found in Trash."
+msgstr "Geen contacten gevonden in de prullenbak."
 
-#: src/Admin/Assets.php:42
+msgid "No contacts found."
+msgstr "Geen contacten gevonden."
+
+msgid "No documents found."
+msgstr "Geen documenten gevonden."
+
 msgid "No matching WordPress users found."
-msgstr "No matching WordPress users found."
+msgstr "Geen overeenkomende WordPress-gebruikers gevonden."
 
-#: src/Admin/Panels.php:176
 msgid "No notes yet."
-msgstr "No notes yet."
+msgstr "Nog geen notities."
 
-#: src/Admin/PricingUi.php:144
-msgid "No services are available yet."
-msgstr "No services are available yet."
+msgid "No organizations found in Trash."
+msgstr "Geen organisaties gevonden in de prullenbak."
 
-#: src/Content/ServicePricing.php:153
-msgid "No standard price configured."
-msgstr "No standard price configured."
+msgid "No organizations found."
+msgstr "Geen organisaties gevonden."
 
-#: src/Admin/PricingUi.php:102
-msgid ""
-"No tax rates are configured yet. Add a tax rate before using VAT-inclusive "
-"or VAT-exclusive pricing."
-msgstr ""
-"No tax rates are configured yet. Add a tax rate before using VAT-inclusive "
-"or VAT-exclusive pricing."
+msgid "Notes"
+msgstr "Notities"
 
-#: src/Admin/TaxRatesPage.php:106
-msgid "No tax rates configured yet."
-msgstr "No tax rates configured yet."
-
-#: src/Admin/Panels.php:34
 msgid "Notes & Activity"
-msgstr "Notes & Activity"
+msgstr "Notities & activiteit"
 
-#: src/Admin/TaxRatesPage.php:92
-msgid "Optional ISO 3166-1 alpha-2 country code."
-msgstr "Optional ISO 3166-1 alpha-2 country code."
+msgid "Open Helpdesk tickets"
+msgstr "Open Helpdesk-tickets"
 
-#: src/Admin/PricingUi.php:227
-msgid "Optional context about this service or price agreement."
-msgstr "Optional context about this service or price agreement."
-
-#: src/Admin/Panels.php:81
 msgid "Optional. Link this CRM contact to an existing WordPress account."
-msgstr "Optional. Link this CRM contact to an existing WordPress account."
+msgstr "Optioneel. Koppel dit CRM-contact aan een bestaand WordPress-account."
 
-#: src/Admin/Panels.php:146 src/Content/PostTypes.php:21
 msgid "Organization"
-msgstr "Organization"
+msgstr "Organisatie"
 
-#: src/Admin/Admin.php:39
 msgid "Organization name"
-msgstr "Organization name"
+msgstr "Organisatienaam"
 
-#: src/Admin/Menu.php:32 src/Admin/Menu.php:43 src/Admin/Panels.php:32
-#: src/Content/PostTypes.php:21
 msgid "Organizations"
-msgstr "Organizations"
+msgstr "Organisaties"
 
-#: src/Admin/Panels.php:300
 msgid "Other"
-msgstr "Other"
+msgstr "Overig"
 
-#: src/Admin/Menu.php:30
 msgid "Overview"
-msgstr "Overview"
+msgstr "Overzicht"
 
-#: src/Admin/Panels.php:316 src/Repository/Services.php:19
 msgid "Paused"
-msgstr "Paused"
+msgstr "Gepauzeerd"
 
-#: src/Admin/Menu.php:42
-msgid "People and their customer context."
-msgstr "People and their customer context."
+msgid "People, identity and customer context."
+msgstr "Personen, identiteit en klantcontext."
 
-#: src/Admin/Panels.php:296
 msgid "Phone"
-msgstr "Phone"
+msgstr "Telefoon"
 
-#: src/Admin/Panels.php:232
 msgid "Postal code"
-msgstr "Postal code"
+msgstr "Postcode"
 
-#: src/Admin/Panels.php:307
 msgid "Preferred"
-msgstr "Preferred"
+msgstr "Voorkeur"
 
-#: src/Admin/Panels.php:85
 msgid "Preferred email source"
-msgstr "Preferred email source"
+msgstr "Voorkeursbron voor e-mail"
 
-#: src/Admin/PricingUi.php:86 src/Admin/PricingUi.php:220
-msgid "Price is"
-msgstr "Price is"
-
-#: src/Admin/PricingUi.php:207
 msgid "Pricing"
-msgstr "Pricing"
+msgstr "Prijsstelling"
 
-#: src/Admin/Panels.php:104 src/Admin/Panels.php:146
 msgid "Primary"
-msgstr "Primary"
+msgstr "Primair"
 
-#: src/Admin/Panels.php:238
 msgid "Primary address"
-msgstr "Primary address"
+msgstr "Primair adres"
 
-#: src/Admin/Panels.php:217
 msgid "Primary contact method"
-msgstr "Primary contact method"
+msgstr "Primaire contactmethode"
 
-#: src/Admin/Panels.php:270
+msgid "Primary identifier of this type"
+msgstr "Primaire identificatie van dit type"
+
 msgid "Primary organization"
-msgstr "Primary organization"
+msgstr "Primaire organisatie"
 
-#: src/Admin/TaxRatesPage.php:93 src/Admin/TaxRatesPage.php:109
-msgid "Rate"
-msgstr "Rate"
-
-#: src/Admin/Panels.php:174
 msgid "Recent notes"
-msgstr "Recent notes"
+msgstr "Recente notities"
 
-#: src/Admin/Panels.php:234
+msgid "Records linked to document"
+msgstr "Records gekoppeld aan document"
+
 msgid "Region"
-msgstr "Region"
+msgstr "Regio"
 
-#: src/Admin/Panels.php:76 src/Admin/Panels.php:218 src/Admin/Panels.php:254
-#: src/Admin/Panels.php:271 src/Admin/Panels.php:288
+msgid "Relation"
+msgstr "Relatie"
+
 msgid "Remove"
-msgstr "Remove"
+msgstr "Verwijderen"
 
-#: src/Admin/Panels.php:239
 msgid "Remove address"
-msgstr "Remove address"
+msgstr "Adres verwijderen"
 
-#: src/Admin/PricingUi.php:229
-msgid "Remove service"
-msgstr "Remove service"
+msgid "Remove agreement"
+msgstr "Overeenkomst verwijderen"
 
-#: src/Admin/Menu.php:70
-msgid "Reusable VAT/tax rates for service pricing."
-msgstr "Reusable VAT/tax rates for service pricing."
-
-#: src/Admin/Panels.php:146
 msgid "Role"
-msgstr "Role"
+msgstr "Rol"
 
-#: src/Content/PostTypes.php:45
-#, php-format
-msgid "Search %s"
-msgstr "Zoekopdracht%s"
+msgid "Search CRM"
+msgstr "CRM zoeken"
 
-#: src/Admin/Panels.php:78
+msgid "Search Contacts"
+msgstr "Contacten zoeken"
+
+msgid "Search Organizations"
+msgstr "Organisaties zoeken"
+
 msgid "Search by name or email…"
-msgstr "Search by name or email…"
+msgstr "Zoeken op naam of e-mailadres…"
 
-#: src/Admin/Assets.php:43
+msgid "Search documents"
+msgstr "Documenten zoeken"
+
 msgid "Searching…"
-msgstr "Searching…"
+msgstr "Zoeken…"
 
-#: src/Admin/PricingUi.php:237
-msgid "Select tax rate…"
-msgstr "Select tax rate…"
+msgid "Service Agreement"
+msgstr "Serviceovereenkomst"
 
-#: src/Admin/Menu.php:50
-msgid ""
-"Self-hosted customer relationship management for contacts, organizations, "
-"services and customer context."
-msgstr ""
-"Self-hosted customer relationship management for contacts, organizations, "
-"services and customer context."
+msgid "Service Agreements"
+msgstr "Serviceovereenkomsten"
 
-#: src/Admin/PricingUi.php:180 src/Admin/Panels.php:160
-#: src/Content/PostTypes.php:22
-msgid "Service"
-msgstr "Service"
-
-#: src/Admin/Admin.php:40
-msgid "Service name"
-msgstr "Service name"
-
-#: src/Admin/PricingUi.php:121
-msgid "Service pricing updated"
-msgstr "Service pricing updated"
-
-#: src/Admin/Menu.php:33 src/Admin/Menu.php:44 src/Admin/PricingUi.php:44
-#: src/Admin/Panels.php:33 src/Content/PostTypes.php:22
-msgid "Services"
-msgstr "Services"
-
-#: src/Admin/Menu.php:44
-msgid "Services that can be linked to contacts and organizations."
-msgstr "Services that can be linked to contacts and organizations."
-
-#: src/Admin/PricingUi.php:29
-msgid "Standard Pricing"
-msgstr "Standard Pricing"
-
-#: src/Admin/PricingUi.php:77
-msgid "Standard price"
-msgstr "Standard price"
-
-#: src/Admin/TaxRatesPage.php:109 src/Admin/PricingUi.php:197
-#: src/Admin/Panels.php:43 src/Admin/Panels.php:160
 msgid "Status"
 msgstr "Status"
 
-#: src/Admin/Panels.php:180
-msgid "System"
-msgstr "System"
+msgid "Store legal and commercial identifiers for this organization. Country uses a two-letter country code; Other identifiers require a descriptive label."
+msgstr "Sla juridische en commerciële identificaties voor deze organisatie op. Gebruik voor land een landcode van twee letters; overige identificaties vereisen een beschrijvend label."
 
-#: src/Admin/Menu.php:34
+msgid "System"
+msgstr "Systeem"
+
 msgid "Tags"
 msgstr "Tags"
 
-#: src/Admin/TaxRatesPage.php:26 src/Admin/TaxRatesPage.php:27
-#: src/Admin/TaxRatesPage.php:78 src/Admin/Menu.php:68
-msgid "Tax Rates"
-msgstr "Tax Rates"
+msgid "The post was saved, but CRM could not save: %s. Review the record and try again."
+msgstr "Het bericht is opgeslagen, maar CRM kon het volgende niet opslaan: %s. Controleer het record en probeer het opnieuw."
 
-#: src/Admin/PricingUi.php:94 src/Admin/PricingUi.php:221
-msgid "Tax rate"
-msgstr "Tax rate"
+msgid "Ticket count"
+msgstr "Aantal tickets"
 
-#: src/Admin/TaxRatesPage.php:153
-msgid "Tax rate activated."
-msgstr "Tax rate activated."
-
-#: src/Admin/TaxRatesPage.php:152
-msgid "Tax rate added."
-msgstr "Tax rate added."
-
-#: src/Admin/TaxRatesPage.php:154
-msgid "Tax rate deactivated. Existing references remain intact."
-msgstr "Tax rate deactivated. Existing references remain intact."
-
-#: src/Admin/TaxRatesPage.php:155
-msgid ""
-"The tax rate could not be saved. Check the code, percentage and validity "
-"dates."
-msgstr ""
-"The tax rate could not be saved. Check the code, percentage and validity "
-"dates."
-
-#: src/Admin/Panels.php:308
 msgid "Trading"
-msgstr "Trading"
+msgstr "Handelsnaam"
 
-#: src/Admin/Panels.php:104 src/Admin/Panels.php:131
 msgid "Type"
 msgstr "Type"
 
-#: src/Admin/PricingUi.php:192
-#, php-format
-msgid "Unavailable service #%d"
-msgstr "Niet beschikbare dienst #%d"
+msgid "Unavailable Work service #%d"
+msgstr "Niet-beschikbare Work-service #%d"
 
-#: src/Admin/PricingUi.php:205 src/Admin/Panels.php:131
-#: src/Admin/Panels.php:146 src/Admin/Panels.php:160
 msgid "Until"
-msgstr "Until"
+msgstr "Tot"
 
-#: src/Admin/TaxRatesPage.php:174
-#, php-format
-msgid "Until %s"
-msgstr "Tot%s"
+msgid "Use Work service default"
+msgstr "Standaard van Work-service gebruiken"
 
-#: src/Admin/PricingUi.php:209
-msgid "Use service pricing"
-msgstr "Use service pricing"
+msgid "VAT / tax registration"
+msgstr "Btw-/belastingregistratie"
 
-#: src/Content/ServicePricing.php:108
-msgid "VAT exempt / no VAT"
-msgstr "VAT exempt / no VAT"
+msgid "VAT exempt"
+msgstr "Vrijgesteld van btw"
 
-#: src/Admin/TaxRatesPage.php:94
-msgid "Valid from"
-msgstr "Valid from"
+msgid "VAT override"
+msgstr "Btw-afwijking"
 
-#: src/Admin/TaxRatesPage.php:95
-msgid "Valid until"
-msgstr "Valid until"
-
-#: src/Admin/TaxRatesPage.php:109
 msgid "Validity"
-msgstr "Validity"
+msgstr "Geldigheid"
 
-#: src/Admin/Panels.php:104
 msgid "Value"
-msgstr "Value"
+msgstr "Waarde"
 
-#: src/Content/PostTypes.php:44
-#, php-format
-msgid "View %s"
-msgstr "Weergave%s"
+msgid "View Contact"
+msgstr "Contact bekijken"
 
-#: src/Capabilities.php:27
-msgid ""
-"View and manage CRM contacts, organizations, services, relationships, notes "
-"and activity."
-msgstr ""
-"View and manage CRM contacts, organizations, services, relationships, notes "
-"and activity."
+msgid "View Organization"
+msgstr "Organisatie bekijken"
 
-#: src/Admin/Panels.php:298
+msgid "View and manage CRM contacts, organizations, relationships, service agreements, notes and activity."
+msgstr "CRM-contacten, organisaties, relaties, serviceovereenkomsten, notities en activiteit bekijken en beheren."
+
 msgid "Website"
 msgstr "Website"
 
-#: src/Admin/Panels.php:299
 msgid "WhatsApp"
 msgstr "WhatsApp"
 
-#: src/Integration/WooCommerce.php:26
 msgid "WooCommerce Orders"
-msgstr "WooCommerce Orders"
+msgstr "WooCommerce-bestellingen"
 
-#: src/Integration/WooCommerce.php:82
-#, php-format
 msgid "WooCommerce order #%1$d changed from %2$s to %3$s"
-msgstr "WooCommerce-bestelling #%1$dveranderd van%2$snaar%3$s"
+msgstr "WooCommerce-bestelling #%1$d gewijzigd van %2$s naar %3$s"
 
-#: src/Admin/Panels.php:67
 msgid "WordPress account"
-msgstr "WordPress account"
+msgstr "WordPress-account"
 
-#: src/Admin/Assets.php:44
+msgid "WordPress account link"
+msgstr "WordPress-accountkoppeling"
+
 msgid "WordPress user search failed. Try again."
-msgstr "WordPress user search failed. Try again."
+msgstr "Zoeken naar WordPress-gebruikers mislukt. Probeer het opnieuw."
 
-#: src/Admin/UserSearch.php:25
+msgid "Work service"
+msgstr "Work-service"
+
 msgid "You are not allowed to search WordPress users."
-msgstr "You are not allowed to search WordPress users."
+msgstr "Je hebt geen toestemming om WordPress-gebruikers te zoeken."
 
-#: src/Admin/Menu.php:39
 msgid "You do not have permission to manage CRM data."
-msgstr "U heeft geen toestemming om CRM-gegevens te beheren."
+msgstr "Je hebt geen toestemming om CRM-gegevens te beheren."
 
-#: src/Admin/TaxRatesPage.php:72 src/Admin/TaxRatesPage.php:140
-msgid "You do not have permission to manage CRM tax rates."
-msgstr "U heeft geen toestemming om de CRM-belastingtarieven te beheren."
+msgid "addresses"
+msgstr "adressen"
 
-#: src/Admin/Menu.php:69
-msgid "active"
-msgstr "actief"
+msgid "business identifiers"
+msgstr "bedrijfsidentificaties"
 
-#: src/Admin/Panels.php:229
+msgid "contact methods"
+msgstr "contactmethoden"
+
+msgid "details"
+msgstr "details"
+
 msgid "e.g. Work or Home"
-msgstr "b.v. Werk of thuis"
+msgstr "bijv. Werk of Thuis"
+
+msgid "names and aliases"
+msgstr "namen en aliassen"
+
+msgid "note"
+msgstr "notitie"
+
+msgid "organization relationships"
+msgstr "organisatierelaties"
+
+msgid "service agreements"
+msgstr "serviceovereenkomsten"

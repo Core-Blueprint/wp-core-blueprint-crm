@@ -24,7 +24,7 @@ final class Capabilities {
 			'label' => $ready ? __( 'Manage CRM', 'core-blueprint-crm' ) : 'Manage CRM',
 			'group' => $ready ? __( 'Core Blueprint CRM', 'core-blueprint-crm' ) : 'Core Blueprint CRM',
 			'source' => 'Core Blueprint CRM',
-			'description' => $ready ? __( 'View and manage CRM contacts, organizations, services, relationships, notes and activity.', 'core-blueprint-crm' ) : 'View and manage CRM contacts, organizations, services, relationships, notes and activity.',
+			'description' => $ready ? __( 'View and manage CRM contacts, organizations, relationships, service agreements, notes and activity.', 'core-blueprint-crm' ) : 'View and manage CRM contacts, organizations, relationships, service agreements, notes and activity.',
 			'policy_grant' => false,
 		];
 		return $catalog;

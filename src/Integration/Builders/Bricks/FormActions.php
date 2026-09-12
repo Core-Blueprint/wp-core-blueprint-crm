@@ -30,8 +30,8 @@ final class FormActions {
 			return $controls;
 		}
 
-		$controls['actions']['options'][ self::UPDATE_CONTACT ]      = self::action_label( __( 'Contact', 'core-blueprint-crm' ) );
-		$controls['actions']['options'][ self::UPDATE_ORGANIZATION ] = self::action_label( __( 'Organization', 'core-blueprint-crm' ) );
+		$controls['actions']['options'][ self::UPDATE_CONTACT ]      = __( 'CRM: Edit Contact', 'core-blueprint-crm' );
+		$controls['actions']['options'][ self::UPDATE_ORGANIZATION ] = __( 'CRM: Edit Organization', 'core-blueprint-crm' );
 
 		$contact = __( 'Contact', 'core-blueprint-crm' );
 		$controls['cbCrmUpdateContactId']        = self::field_control( self::CONTACT_GROUP, $contact . ' · ID' );
@@ -54,11 +54,11 @@ final class FormActions {
 	 */
 	public static function control_groups( array $groups ): array {
 		$groups[ self::CONTACT_GROUP ] = [
-			'title'    => self::action_label( __( 'Contact', 'core-blueprint-crm' ) ),
+			'title'    => __( 'CRM: Edit Contact', 'core-blueprint-crm' ),
 			'required' => [ 'actions', '=', self::UPDATE_CONTACT ],
 		];
 		$groups[ self::ORGANIZATION_GROUP ] = [
-			'title'    => self::action_label( __( 'Organization', 'core-blueprint-crm' ) ),
+			'title'    => __( 'CRM: Edit Organization', 'core-blueprint-crm' ),
 			'required' => [ 'actions', '=', self::UPDATE_ORGANIZATION ],
 		];
 		return $groups;
@@ -73,7 +73,7 @@ final class FormActions {
 			'cbCrmUpdateContactJobTitle'  => 'job_title',
 			'cbCrmUpdateContactStatus'    => 'status',
 		] );
-		self::apply_result( $form, self::UPDATE_CONTACT, UpdateContact::execute( $contact_id, $input ), __( 'Contacts', 'core-blueprint-crm' ) );
+		self::apply_result( $form, self::UPDATE_CONTACT, UpdateContact::execute( $contact_id, $input ), __( 'No contacts found.', 'core-blueprint-crm' ) );
 	}
 
 	public static function update_organization( object $form ): void {
@@ -83,7 +83,7 @@ final class FormActions {
 			'cbCrmUpdateOrganizationLegalName' => 'legal_name',
 			'cbCrmUpdateOrganizationStatus'    => 'status',
 		] );
-		self::apply_result( $form, self::UPDATE_ORGANIZATION, UpdateOrganization::execute( $organization_id, $input ), __( 'Organizations', 'core-blueprint-crm' ) );
+		self::apply_result( $form, self::UPDATE_ORGANIZATION, UpdateOrganization::execute( $organization_id, $input ), __( 'No organizations found.', 'core-blueprint-crm' ) );
 	}
 
 	/** @param array<string,string> $mapping
@@ -104,15 +104,11 @@ final class FormActions {
 		return [ 'group' => $group, 'label' => $label, 'type' => 'select', 'options' => [], 'map_fields' => true ];
 	}
 
-	private static function action_label( string $entity ): string {
-		return __( 'CRM', 'core-blueprint-crm' ) . ': ' . sprintf( __( 'Edit %s', 'core-blueprint-crm' ), $entity );
-	}
-
 	private static function record_id( mixed $value ): int {
 		return is_scalar( $value ) && is_numeric( $value ) ? absint( $value ) : 0;
 	}
 
-	private static function apply_result( object $form, string $action, array|\WP_Error $result, string $plural ): void {
+	private static function apply_result( object $form, string $action, array|\WP_Error $result, string $not_found_message ): void {
 		if ( ! is_wp_error( $result ) || ! method_exists( $form, 'set_result' ) ) {
 			return;
 		}
@@ -121,7 +117,7 @@ final class FormActions {
 		if ( 'crm_forbidden' === $code ) {
 			$message = __( 'You do not have permission to manage CRM data.', 'core-blueprint-crm' );
 		} elseif ( in_array( $code, [ 'crm_contact_not_found', 'crm_organization_not_found', 'crm_record_not_found' ], true ) ) {
-			$message = sprintf( __( 'No %s found.', 'core-blueprint-crm' ), strtolower( $plural ) );
+			$message = $not_found_message;
 		} else {
 			$data = $result->get_error_data();
 			$failed = is_array( $data ) && isset( $data['failed_areas'] ) && is_array( $data['failed_areas'] )
