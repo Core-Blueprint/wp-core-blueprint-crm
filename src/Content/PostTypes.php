@@ -16,8 +16,41 @@ final class PostTypes {
 	}
 
 	public static function register(): void {
-		self::register_type( self::CONTACT, __( 'Contacts', 'core-blueprint-crm' ), __( 'Contact', 'core-blueprint-crm' ), 'dashicons-businessperson' );
-		self::register_type( self::ORGANIZATION, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organization', 'core-blueprint-crm' ), 'dashicons-building' );
+		self::register_type(
+			self::CONTACT,
+			[
+				'name'               => __( 'Contacts', 'core-blueprint-crm' ),
+				'singular_name'      => __( 'Contact', 'core-blueprint-crm' ),
+				'all_items'          => __( 'All Contacts', 'core-blueprint-crm' ),
+				'add_new'            => __( 'Add Contact', 'core-blueprint-crm' ),
+				'add_new_item'       => __( 'Add Contact', 'core-blueprint-crm' ),
+				'edit_item'          => __( 'Edit Contact', 'core-blueprint-crm' ),
+				'new_item'           => __( 'New Contact', 'core-blueprint-crm' ),
+				'view_item'          => __( 'View Contact', 'core-blueprint-crm' ),
+				'search_items'       => __( 'Search Contacts', 'core-blueprint-crm' ),
+				'not_found'          => __( 'No contacts found.', 'core-blueprint-crm' ),
+				'not_found_in_trash' => __( 'No contacts found in Trash.', 'core-blueprint-crm' ),
+			],
+			'dashicons-businessperson'
+		);
+
+		self::register_type(
+			self::ORGANIZATION,
+			[
+				'name'               => __( 'Organizations', 'core-blueprint-crm' ),
+				'singular_name'      => __( 'Organization', 'core-blueprint-crm' ),
+				'all_items'          => __( 'All Organizations', 'core-blueprint-crm' ),
+				'add_new'            => __( 'Add Organization', 'core-blueprint-crm' ),
+				'add_new_item'       => __( 'Add Organization', 'core-blueprint-crm' ),
+				'edit_item'          => __( 'Edit Organization', 'core-blueprint-crm' ),
+				'new_item'           => __( 'New Organization', 'core-blueprint-crm' ),
+				'view_item'          => __( 'View Organization', 'core-blueprint-crm' ),
+				'search_items'       => __( 'Search Organizations', 'core-blueprint-crm' ),
+				'not_found'          => __( 'No organizations found.', 'core-blueprint-crm' ),
+				'not_found_in_trash' => __( 'No organizations found in Trash.', 'core-blueprint-crm' ),
+			],
+			'dashicons-building'
+		);
 
 		register_taxonomy( self::TAG, [ self::CONTACT, self::ORGANIZATION ], [
 			'labels' => [ 'name' => __( 'CRM Tags', 'core-blueprint-crm' ), 'singular_name' => __( 'CRM Tag', 'core-blueprint-crm' ) ],
@@ -31,18 +64,10 @@ final class PostTypes {
 		] );
 	}
 
-	private static function register_type( string $type, string $plural, string $singular, string $icon ): void {
+	/** @param array<string,string> $labels */
+	private static function register_type( string $type, array $labels, string $icon ): void {
 		register_post_type( $type, [
-			'labels' => [
-				'name' => $plural, 'singular_name' => $singular,
-				'add_new' => sprintf( __( 'Add %s', 'core-blueprint-crm' ), $singular ),
-				'add_new_item' => sprintf( __( 'Add %s', 'core-blueprint-crm' ), $singular ),
-				'edit_item' => sprintf( __( 'Edit %s', 'core-blueprint-crm' ), $singular ),
-				'new_item' => sprintf( __( 'New %s', 'core-blueprint-crm' ), $singular ),
-				'view_item' => sprintf( __( 'View %s', 'core-blueprint-crm' ), $singular ),
-				'search_items' => sprintf( __( 'Search %s', 'core-blueprint-crm' ), $plural ),
-				'not_found' => sprintf( __( 'No %s found.', 'core-blueprint-crm' ), strtolower( $plural ) ),
-			],
+			'labels' => $labels,
 			'public' => false, 'publicly_queryable' => false, 'show_ui' => true, 'show_in_menu' => false, 'show_in_rest' => false,
 			'exclude_from_search' => true, 'has_archive' => false, 'rewrite' => false,
 			'supports' => [ 'title' ],

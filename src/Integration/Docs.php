@@ -125,13 +125,13 @@ final class Docs {
 				'unlink' => self::AJAX_UNLINK,
 			],
 			'i18n' => [
-				'addDocs'         => sprintf( __( 'Add %s', 'core-blueprint-crm' ), 'Docs' ),
-				'addContact'      => sprintf( __( 'Add %s', 'core-blueprint-crm' ), __( 'Contact', 'core-blueprint-crm' ) ),
-				'addOrganization' => sprintf( __( 'Add %s', 'core-blueprint-crm' ), __( 'Organization', 'core-blueprint-crm' ) ),
+				'addDocs'         => __( 'Add document', 'core-blueprint-crm' ),
+				'addContact'      => __( 'Add Contact', 'core-blueprint-crm' ),
+				'addOrganization' => __( 'Add Organization', 'core-blueprint-crm' ),
 				'remove'          => __( 'Remove', 'core-blueprint-crm' ),
 				'searching'       => __( 'Searching…', 'core-blueprint-crm' ),
-				'emptyDocs'       => sprintf( __( 'No %s found.', 'core-blueprint-crm' ), 'Docs' ),
-				'emptyCrm'        => sprintf( __( 'No %s found.', 'core-blueprint-crm' ), 'CRM' ),
+				'emptyDocs'       => __( 'No documents found.', 'core-blueprint-crm' ),
+				'emptyCrm'        => __( 'No CRM records found.', 'core-blueprint-crm' ),
 			],
 		] );
 	}
@@ -250,10 +250,9 @@ final class Docs {
 		echo '<p><label>' . esc_html__( 'Context', 'core-blueprint-crm' );
 		echo '<input type="text" class="widefat" maxlength="64" data-cb-crm-docs-context></label></p>';
 
-		$search_label = sprintf(
-			__( 'Search %s', 'core-blueprint-crm' ),
-			self::VIEW_OWNER === $view ? 'Docs' : __( 'CRM', 'core-blueprint-crm' )
-		);
+		$search_label = self::VIEW_OWNER === $view
+			? __( 'Search documents', 'core-blueprint-crm' )
+			: __( 'Search CRM', 'core-blueprint-crm' );
 		echo '<p><label><span class="screen-reader-text">' . esc_html( $search_label ) . '</span>';
 		echo '<input type="search" class="widefat" data-cb-crm-docs-search autocomplete="off" placeholder="' . esc_attr( $search_label ) . '"></label></p>';
 		echo '<p><button type="button" class="button" data-cb-crm-docs-search-button>' . esc_html( $search_label ) . '</button></p>';
@@ -264,7 +263,7 @@ final class Docs {
 	private static function render_owner_links( string $owner_type, int $owner_id ): void {
 		$links = DocumentLinks::for_owner( $owner_type, $owner_id, 100 );
 		if ( is_wp_error( $links ) || [] === $links ) {
-			echo '<p class="description">' . esc_html( sprintf( __( 'No %s found.', 'core-blueprint-crm' ), 'Docs' ) ) . '</p>';
+			echo '<p class="description">' . esc_html__( 'No documents found.', 'core-blueprint-crm' ) . '</p>';
 			return;
 		}
 
@@ -298,7 +297,7 @@ final class Docs {
 	private static function render_document_links( int $document_id ): void {
 		$links = DocumentLinks::for_document( $document_id, 100 );
 		if ( is_wp_error( $links ) || [] === $links ) {
-			echo '<p class="description">' . esc_html( sprintf( __( 'No %s found.', 'core-blueprint-crm' ), 'CRM' ) ) . '</p>';
+			echo '<p class="description">' . esc_html__( 'No CRM records found.', 'core-blueprint-crm' ) . '</p>';
 			return;
 		}
 

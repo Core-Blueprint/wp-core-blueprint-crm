@@ -50,15 +50,23 @@ final class Suite {
 			return [ 'state' => 'warn', 'detail' => __( 'CRM database schema is newer than this plugin build.', 'core-blueprint-crm' ), 'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ) ];
 		}
 
+		$contact_count      = self::record_count( PostTypes::CONTACT );
+		$organization_count = self::record_count( PostTypes::ORGANIZATION );
+		$contacts = sprintf(
+			/* translators: %d: number of contacts. */
+			_n( '%d contact', '%d contacts', $contact_count, 'core-blueprint-crm' ),
+			$contact_count
+		);
+		$organizations = sprintf(
+			/* translators: %d: number of organizations. */
+			_n( '%d organization', '%d organizations', $organization_count, 'core-blueprint-crm' ),
+			$organization_count
+		);
+
 		return [
 			'state'  => 'ok',
-			'detail' => sprintf(
-				/* translators: 1: contacts, 2: organizations. */
-				__( '%1$d contacts · %2$d organizations', 'core-blueprint-crm' ),
-				self::record_count( PostTypes::CONTACT ),
-				self::record_count( PostTypes::ORGANIZATION )
-			),
-			'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
+			'detail' => $contacts . ' · ' . $organizations,
+			'url'    => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
 		];
 	}
 
