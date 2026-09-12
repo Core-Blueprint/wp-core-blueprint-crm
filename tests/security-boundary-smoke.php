@@ -90,6 +90,8 @@ namespace CB\CRM\Frontend\Data {
 namespace {
 	require dirname( __DIR__ ) . '/src/Frontend/Data/Organization.php';
 	require dirname( __DIR__ ) . '/src/Admin/UserSearch.php';
+	require dirname( __DIR__ ) . '/src/Integration/DocsAdmin.php';
+	require dirname( __DIR__ ) . '/src/Integration/DocsAjax.php';
 	require dirname( __DIR__ ) . '/src/Integration/Docs.php';
 
 	$assert = static function ( bool $condition, string $message ): void {

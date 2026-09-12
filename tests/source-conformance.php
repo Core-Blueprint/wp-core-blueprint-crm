@@ -15,6 +15,8 @@ $required = [
 	'src/Admin/BusinessIdentifiersPanel.php',
 	'src/Admin/UserSearch.php',
 	'src/Integration/Docs.php',
+	'src/Integration/DocsAdmin.php',
+	'src/Integration/DocsAjax.php',
 	'src/Integration/WorkPricing.php',
 	'src/Frontend/Data/Organization.php',
 	'src/Frontend/Queries/ServiceAgreements.php',
@@ -74,7 +76,9 @@ $entity      = file_get_contents( $root . '/src/Content/Entity.php' );
 $post_types  = file_get_contents( $root . '/src/Content/PostTypes.php' );
 $admin       = file_get_contents( $root . '/src/Admin/Admin.php' );
 $userSearch  = file_get_contents( $root . '/src/Admin/UserSearch.php' );
-$docsIntegration = file_get_contents( $root . '/src/Integration/Docs.php' );
+$docsIntegration = file_get_contents( $root . '/src/Integration/Docs.php' )
+	. file_get_contents( $root . '/src/Integration/DocsAdmin.php' )
+	. file_get_contents( $root . '/src/Integration/DocsAjax.php' );
 $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
 $agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
 $identifiers = file_get_contents( $root . '/src/Repository/BusinessIdentifiers.php' );
