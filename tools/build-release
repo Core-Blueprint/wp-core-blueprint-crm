@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PACKAGE="core-blueprint-crm"
+DIST="${CB_RELEASE_DIST:-$ROOT/dist}"
+STAGE="$(mktemp -d)"
+trap 'rm -rf "$STAGE"' EXIT
+
+for command in zip unzip; do
+	if ! command -v "$command" >/dev/null 2>&1; then
+		echo "ERROR: ${command} is required." >&2
+		exit 1
+	fi
+done
+
+mkdir -p "$DIST" "$STAGE/$PACKAGE"
+rm -f "$DIST/$PACKAGE.zip" "$DIST/$PACKAGE.zip.sha256"
+
+for path in \
+	core-blueprint-crm.php \
+	README.md \
+	src \
+	assets \
+	languages; do
+	cp -R "$ROOT/$path" "$STAGE/$PACKAGE/"
+done
+
+# Stable mtimes + sorted input keep repeated builds byte-for-byte deterministic.
+find "$STAGE/$PACKAGE" -exec touch -t 202601010000 {} +
+(
+	cd "$STAGE"
+	zip -X -q "$DIST/$PACKAGE.zip" "$PACKAGE/"
+	find "$PACKAGE" -type f -print | LC_ALL=C sort | zip -X -q "$DIST/$PACKAGE.zip" -@
+)
+
+FIRST_ENTRY="$(unzip -Z1 "$DIST/$PACKAGE.zip" | head -n 1)"
+if [[ "$FIRST_ENTRY" != "$PACKAGE/" ]]; then
+	echo "ERROR: release ZIP root is not the canonical plugin folder." >&2
+	exit 1
+fi
+
+if unzip -Z1 "$DIST/$PACKAGE.zip" | grep -Eq '(^|/)(\.git|\.github|tests|tools|dist|docs)(/|$)'; then
+	echo "ERROR: development-only files leaked into the release ZIP." >&2
+	exit 1
+fi
+
+for required in \
+	"$PACKAGE/core-blueprint-crm.php" \
+	"$PACKAGE/src/Plugin.php" \
+	"$PACKAGE/assets/admin.js" \
+	"$PACKAGE/languages/core-blueprint-crm.pot"; do
+	if ! unzip -Z1 "$DIST/$PACKAGE.zip" | grep -Fxq "$required"; then
+		echo "ERROR: release ZIP is missing runtime file: $required" >&2
+		exit 1
+	fi
+done
+
+if command -v sha256sum >/dev/null 2>&1; then
+	(
+		cd "$DIST"
+		sha256sum "$PACKAGE.zip" > "$PACKAGE.zip.sha256"
+	)
+fi
+
+echo "Built: $DIST/$PACKAGE.zip"
+echo "Canonical root: $PACKAGE/"
