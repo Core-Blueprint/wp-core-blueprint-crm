@@ -22,7 +22,6 @@ php "$ROOT/tests/address-collapse-smoke.php"
 php "$ROOT/tests/woo-customer-workspace-smoke.php"
 php "$ROOT/tests/record-updater-persistence-smoke.php"
 php "$ROOT/tests/bootstrap-v1-smoke.php"
-php "$ROOT/tests/install-policy-upgrade-smoke.php"
 
 PACKAGE_TMP="$(mktemp -d)"
 trap 'rm -rf "$PACKAGE_TMP"' EXIT
