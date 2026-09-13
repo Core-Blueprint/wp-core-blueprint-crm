@@ -14,6 +14,7 @@ $required = [
 	'src/Admin/Admin.php',
 	'src/Admin/BusinessIdentifiersPanel.php',
 	'src/Admin/UserSearch.php',
+	'src/Admin/UserLinkActions.php',
 	'src/Integration/Docs.php',
 	'src/Integration/DocsAdmin.php',
 	'src/Integration/DocsAjax.php',
@@ -24,6 +25,9 @@ $required = [
 	'src/Integration/Builders/Bricks/Conditions.php',
 	'docs/INTEGRATION-API.md',
 	'tests/schema-reconciliation-smoke.php',
+	'tests/bootstrap-v1-smoke.php',
+	'tests/record-updater-persistence-smoke.php',
+	'tools/build-release',
 ];
 $forbidden_files = [
 	'src/Content/ServicePricing.php',
@@ -100,6 +104,7 @@ $adminJs     = file_get_contents( $root . '/assets/admin.js' );
 $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/DynamicData.php' )
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Queries.php' )
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Conditions.php' );
+$buildRelease = file_get_contents( $root . '/tools/build-release' );
 
 $forbidden_tokens = [
 	'PostTypes::SERVICE',
@@ -136,6 +141,7 @@ $checks = [
 	'CRM timeline presentation uses semantic Base tokens' => str_contains( $panels, 'cb-crm-timeline-entry' ) && str_contains( $panels, 'cb-crm-timeline-body' ) && ! str_contains( $panels, '#dcdcde' ) && str_contains( $adminCss, '.cb-crm-timeline-entry' ) && str_contains( $adminCss, 'var(--cb-border)' ) && str_contains( $adminCss, 'var(--cb-text-muted)' ),
 	'Work coupling uses public API only' => 0 === preg_match( '/CB\\\\Work\\\\(?!PublicApi\\\\)/', $source ),
 	'Bricks exposes agreements not CRM Service catalog' => str_contains( $bricks, 'cb_crm_service_agreements' ) && str_contains( $bricks, 'cb_crm_contact_has_service_agreement' ) && ! str_contains( $bricks, 'cb_crm_services' ) && ! str_contains( $bricks, 'cb_crm_service_name' ),
+	'release packaging preserves canonical CRM root and excludes development material' => str_contains( $buildRelease, 'PACKAGE="core-blueprint-crm"' ) && str_contains( $buildRelease, '.github|tests|tools|dist|docs' ),
 ];
 foreach ( $checks as $label => $passed ) {
 	if ( ! $passed ) {
