@@ -43,7 +43,7 @@ $checks = [
 	'failed activation explicitly deactivates the CRM plugin' => str_contains( $entry, 'deactivate_plugins( CB_CRM_BASENAME );' ),
 	'failed activation exposes canonical Plugins destination' => str_contains( $entry, "'link_url'  => admin_url( 'plugins.php' )" ),
 	'lightweight registration has its own ExtensionRegistry readiness boundary' => str_contains( $entry, 'function cb_crm_registration_contract_ready(): bool' ) && str_contains( $entry, "class_exists( '\\\\CB\\\\Core\\\\ExtensionRegistry' )" ),
-	'product contracts are separate from registration readiness' => str_contains( $entry, 'function cb_crm_product_contracts_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\Audit' ) && str_contains( $entry, 'Governance\\EventRegistry' ),
+	'product contracts are separate from registration readiness' => str_contains( $entry, 'function cb_crm_product_contracts_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\\\Audit' ) && str_contains( $entry, 'Governance\\\\EventRegistry' ),
 	'suite registration is attached before product boot' => false !== $suite_init && false !== $product_boot && $suite_init < $product_boot,
 	'Plugin boot no longer owns suite registration' => ! str_contains( $plugin, 'Suite::init();' ) && ! str_contains( $plugin, 'Integration\\Suite' ),
 	'schema registration keeps its priority-4 boundary' => str_contains( $entry, "}, 4 );" ) && str_contains( $entry, '\\CB\\CRM\\Database\\Schema::register();' ),
