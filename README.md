@@ -1,13 +1,7 @@
 # Core Blueprint CRM
 
-Self-hosted customer relationship management for contacts, organizations and customer-specific commercial agreements.
+Core Blueprint CRM owns customer identity and relationship context: Contacts, Organizations and customer-specific Service Agreements.
 
-## Requirements
+Core Blueprint Work is the authority for the Service catalog, default pricing and VAT/tax data. CRM references Work through public contracts only and never provides a fallback Service or VAT catalog.
 
-- WordPress 7.0+
-- PHP 8.4+
-- Core Blueprint Base
-
-## Development status
-
-The plugin is under active development. The current release line is `1.0.0-rc1`.
+The plugin remains builder-neutral. Optional builder adapters, including Bricks, sit on top of the public frontend contracts.
