@@ -57,8 +57,7 @@ $canonical_api       = 'Core API %1$s or a newer compatible minor version is req
 $canonical_contracts = 'Required Core Blueprint Base contracts are unavailable.';
 
 $checks = [
-	'Base-required plugin declares exact native WordPress dependency' => 1 === preg_match( '/^\s*\*\s*Requires Plugins:\s*core-blueprint\s*$/m', $entry ),
-	'native dependency does not encode a Base version' => ! preg_match( '/^\s*\*\s*Requires Plugins:\s*core-blueprint\s+.+$/m', $entry ),
+	'Base-required plugin declares exact versionless native WordPress dependency' => 1 === preg_match( '/^[ \t]*\*[ \t]*Requires Plugins:[ \t]*core-blueprint[ \t]*$/m', $entry ),
 	'API compatibility follows same-major sufficient-minor semantics' => $compatible,
 	'minimum PHP gate precedes product autoload' => false !== $php_gate && false !== $autoload && $php_gate < $autoload,
 	'root autoloader uses PHP-floor-safe prefix matching' => str_contains( $entry, 'strncmp( $class, $prefix, $length )' ) && ! str_contains( $entry, 'str_starts_with( $class' ),
