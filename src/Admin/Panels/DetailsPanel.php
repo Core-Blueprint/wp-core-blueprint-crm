@@ -44,6 +44,7 @@ final class DetailsPanel {
 			if ( ! ( $linked_user instanceof \WP_User ) ) {
 				$linked = 0;
 			}
+			$profile_url = $linked > 0 ? get_edit_user_link( $linked ) : '';
 			$email_mode = sanitize_key( (string) get_post_meta( $post_id, Meta::EMAIL_MODE, true ) );
 			if ( ! in_array( $email_mode, [ ContactIdentity::EMAIL_CRM, ContactIdentity::EMAIL_WP ], true ) || ( ContactIdentity::EMAIL_WP === $email_mode && 0 === $linked ) ) {
 				$email_mode = ContactIdentity::EMAIL_CRM;
@@ -59,7 +60,7 @@ final class DetailsPanel {
 					<input type="hidden" name="cb_crm_details[wp_user_id]" value="<?php echo esc_attr( (string) $linked ); ?>" data-cb-crm-user-id>
 					<div class="cb-crm-user-selected" data-cb-crm-user-selected <?php echo 0 === $linked ? 'hidden' : ''; ?>>
 						<div class="cb-crm-user-selected-copy">
-							<strong data-cb-crm-user-selected-name><?php echo esc_html( $linked_user instanceof \WP_User ? $linked_user->display_name : '' ); ?></strong>
+							<strong data-cb-crm-user-selected-name><?php if ( $linked_user instanceof \WP_User && is_string( $profile_url ) && '' !== $profile_url ) : ?><a href="<?php echo esc_url( $profile_url ); ?>"><?php echo esc_html( $linked_user->display_name ); ?></a><?php else : ?><?php echo esc_html( $linked_user instanceof \WP_User ? $linked_user->display_name : '' ); ?><?php endif; ?></strong>
 							<span data-cb-crm-user-selected-email><?php echo esc_html( $linked_user instanceof \WP_User ? $linked_user->user_email : '' ); ?></span>
 						</div>
 						<button type="button" class="button-link-delete" data-cb-crm-user-remove><?php esc_html_e( 'Remove', 'core-blueprint-crm' ); ?></button>
