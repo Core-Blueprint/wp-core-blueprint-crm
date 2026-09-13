@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Install {
 	private const OPTION_VERSION = 'cb_crm_install_version';
-	private const VERSION        = '2';
+	private const VERSION        = '1';
 
 	public static function activate(): void {
 		Capabilities::install();
