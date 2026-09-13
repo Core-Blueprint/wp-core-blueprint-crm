@@ -7,80 +7,35 @@ use CB\CRM\Capabilities;
 use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\Content\PostTypes;
-use CB\CRM\PanelRegistry;
 use CB\CRM\Repository\Activity;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Operator workspace for WooCommerce-owned customer profile data.
- *
- * CRM provides the workspace and canonical WP-user relation. WooCommerce
- * remains authority for billing/shipping data: reads and writes both travel
- * through WC_Customer. Historical WC_Order snapshots are never modified.
+ * Safe WooCommerce persistence for fields presented inside the unified CRM
+ * Contact workspace. WooCommerce remains the authority for customer data.
  */
 final class WooCustomerWorkspace {
 	/** @var array<int,bool> */
 	private static array $save_failed = [];
 
 	public static function init(): void {
-		add_action( 'cb_crm_register_panels', [ __CLASS__, 'register_panel' ], 20 );
 		// WordPress fires save_post_{post_type} before the generic save_post hook
 		// used by CRM identity persistence. The payload therefore remains bound
-		// to the user for which this workspace was actually rendered.
+		// to the user for which the unified workspace was actually rendered.
 		add_action( 'save_post_' . PostTypes::CONTACT, [ __CLASS__, 'save_customer' ], 15, 3 );
 		add_filter( 'redirect_post_location', [ __CLASS__, 'redirect_post_location' ], 100, 2 );
 		add_action( 'admin_notices', [ __CLASS__, 'admin_notice' ] );
 	}
 
-	public static function register_panel(): void {
-		if ( ! class_exists( '\\WC_Customer' ) ) {
-			return;
-		}
-		PanelRegistry::register( [
-			'id'         => 'woocommerce-customer',
-			'label'      => 'WooCommerce ' . __( 'Customer', 'woocommerce' ),
-			'post_types' => [ Entity::CONTACT ],
-			'render'     => [ __CLASS__, 'render' ],
-			'context'    => 'normal',
-			'priority'   => 'default',
-		] );
-	}
-
-	public static function render( string $owner_type, int $contact_id ): void {
-		unset( $owner_type );
+	public static function render_binding( int $contact_id ): void {
+		$customer = ContactDataSources::woo_customer( $contact_id );
 		$user_id = ContactIdentity::linked_user_id( $contact_id );
-		if ( $user_id <= 0 ) {
-			echo '<p class="description">' . esc_html__( 'Optional. Link this CRM contact to an existing WordPress account.', 'core-blueprint-crm' ) . '</p>';
+		if ( ! is_object( $customer ) || $user_id <= 0 ) {
 			return;
 		}
-		if ( ! class_exists( '\\WC_Customer' ) ) {
-			return;
-		}
-
-		try {
-			$customer = new \WC_Customer( $user_id );
-		} catch ( \Throwable ) {
-			return;
-		}
-		if ( (int) $customer->get_id() !== $user_id ) {
-			return;
-		}
-
-		$can_edit = self::can_edit_customer();
-		$countries = self::countries();
-		?>
-		<input type="hidden" name="cb_crm_woo_customer_present" value="1">
-		<input type="hidden" name="cb_crm_woo_customer_user_id" value="<?php echo esc_attr( (string) $user_id ); ?>">
-		<table class="form-table" role="presentation"><tbody>
-		<?php foreach ( self::field_groups( $customer ) as $group_label => $fields ) : ?>
-			<tr><th colspan="2"><strong><?php echo esc_html( $group_label ); ?></strong></th></tr>
-			<?php foreach ( $fields as $key => $field ) : ?>
-				<?php self::render_field( $customer, $key, $field, $countries, $can_edit ); ?>
-			<?php endforeach; ?>
-		<?php endforeach; ?>
-		</tbody></table>
-		<?php
+		echo '<input type="hidden" name="cb_crm_woo_customer_present" value="1">';
+		echo '<input type="hidden" name="cb_crm_woo_customer_user_id" value="' . esc_attr( (string) $user_id ) . '">';
 	}
 
 	public static function save_customer( int $post_id, \WP_Post $post, bool $update ): void {
@@ -193,86 +148,12 @@ final class WooCustomerWorkspace {
 		);
 	}
 
-	private static function can_edit_customer(): bool {
+	public static function can_edit_customer(): bool {
 		return current_user_can( 'manage_woocommerce' ) || current_user_can( 'manage_options' );
 	}
 
-	/** @return array<string,array<string,array{label:string,type:string}>> */
-	private static function field_groups( \WC_Customer $customer ): array {
-		$billing = [
-			'billing_first_name' => [ 'label' => __( 'First name', 'woocommerce' ), 'type' => 'text' ],
-			'billing_last_name'  => [ 'label' => __( 'Last name', 'woocommerce' ), 'type' => 'text' ],
-			'billing_company'    => [ 'label' => __( 'Company', 'woocommerce' ), 'type' => 'text' ],
-			'billing_email'      => [ 'label' => __( 'Email address', 'woocommerce' ), 'type' => 'email' ],
-			'billing_phone'      => [ 'label' => __( 'Phone', 'woocommerce' ), 'type' => 'tel' ],
-			'billing_address_1'  => [ 'label' => __( 'Address line 1', 'woocommerce' ), 'type' => 'text' ],
-			'billing_address_2'  => [ 'label' => __( 'Address line 2', 'woocommerce' ), 'type' => 'text' ],
-			'billing_city'       => [ 'label' => __( 'Town / City', 'woocommerce' ), 'type' => 'text' ],
-			'billing_state'      => [ 'label' => __( 'State / County', 'woocommerce' ), 'type' => 'text' ],
-			'billing_postcode'   => [ 'label' => __( 'Postcode / ZIP', 'woocommerce' ), 'type' => 'text' ],
-			'billing_country'    => [ 'label' => __( 'Country / Region', 'woocommerce' ), 'type' => 'country' ],
-		];
-		$shipping = [
-			'shipping_first_name' => [ 'label' => __( 'First name', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_last_name'  => [ 'label' => __( 'Last name', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_company'    => [ 'label' => __( 'Company', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_address_1'  => [ 'label' => __( 'Address line 1', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_address_2'  => [ 'label' => __( 'Address line 2', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_city'       => [ 'label' => __( 'Town / City', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_state'      => [ 'label' => __( 'State / County', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_postcode'   => [ 'label' => __( 'Postcode / ZIP', 'woocommerce' ), 'type' => 'text' ],
-			'shipping_country'    => [ 'label' => __( 'Country / Region', 'woocommerce' ), 'type' => 'country' ],
-		];
-		if ( is_callable( [ $customer, 'get_shipping_phone' ] ) && is_callable( [ $customer, 'set_shipping_phone' ] ) ) {
-			$shipping = array_merge(
-				array_slice( $shipping, 0, 3, true ),
-				[ 'shipping_phone' => [ 'label' => __( 'Phone', 'woocommerce' ), 'type' => 'tel' ] ],
-				array_slice( $shipping, 3, null, true )
-			);
-		}
-		return [
-			__( 'Billing address', 'woocommerce' )  => $billing,
-			__( 'Shipping address', 'woocommerce' ) => $shipping,
-		];
-	}
-
-	/** @return string[] */
-	private static function field_keys( \WC_Customer $customer ): array {
-		$keys = [];
-		foreach ( self::field_groups( $customer ) as $fields ) {
-			$keys = array_merge( $keys, array_keys( $fields ) );
-		}
-		return array_values( array_unique( $keys ) );
-	}
-
-	/** @param array{label:string,type:string} $field @param array<string,string> $countries */
-	private static function render_field( \WC_Customer $customer, string $key, array $field, array $countries, bool $can_edit ): void {
-		$getter = 'get_' . $key;
-		if ( ! is_callable( [ $customer, $getter ] ) ) {
-			return;
-		}
-		$value = (string) $customer->{$getter}( 'edit' );
-		$name = 'cb_crm_woo_customer[' . $key . ']';
-		$id = 'cb-crm-woo-' . str_replace( '_', '-', $key );
-		?>
-		<tr>
-			<th><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $field['label'] ); ?></label></th>
-			<td>
-			<?php if ( 'country' === $field['type'] && [] !== $countries ) : ?>
-				<select id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" <?php disabled( ! $can_edit ); ?>>
-					<option value=""></option>
-					<?php foreach ( $countries as $code => $label ) : ?><option value="<?php echo esc_attr( $code ); ?>" <?php selected( $value, $code ); ?>><?php echo esc_html( $label ); ?></option><?php endforeach; ?>
-				</select>
-			<?php else : ?>
-				<input type="<?php echo esc_attr( $field['type'] ); ?>" class="regular-text" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php disabled( ! $can_edit ); ?>>
-			<?php endif; ?>
-			</td>
-		</tr>
-		<?php
-	}
-
 	/** @return array<string,string> */
-	private static function countries(): array {
+	public static function countries(): array {
 		if ( ! function_exists( 'WC' ) ) {
 			return [];
 		}
@@ -282,6 +163,20 @@ final class WooCustomerWorkspace {
 		}
 		$countries = $woocommerce->countries->get_countries();
 		return is_array( $countries ) ? $countries : [];
+	}
+
+	/** @return string[] */
+	private static function field_keys( object $customer ): array {
+		$keys = [
+			'billing_first_name', 'billing_last_name', 'billing_company', 'billing_email', 'billing_phone',
+			'billing_address_1', 'billing_address_2', 'billing_city', 'billing_state', 'billing_postcode', 'billing_country',
+			'shipping_first_name', 'shipping_last_name', 'shipping_company',
+			'shipping_address_1', 'shipping_address_2', 'shipping_city', 'shipping_state', 'shipping_postcode', 'shipping_country',
+		];
+		if ( is_callable( [ $customer, 'get_shipping_phone' ] ) && is_callable( [ $customer, 'set_shipping_phone' ] ) ) {
+			$keys[] = 'shipping_phone';
+		}
+		return $keys;
 	}
 
 	private static function clean_value( string $key, string $value ): string {

@@ -6,6 +6,7 @@ namespace CB\CRM\Admin;
 use CB\CRM\Application\Actions\UpdateContact;
 use CB\CRM\Application\Actions\UpdateOrganization;
 use CB\CRM\Capabilities;
+use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\Content\RecordStatus;
 use CB\CRM\Repository\Notes;
@@ -29,8 +30,8 @@ final class Save {
 		if ( ! current_user_can( Capabilities::MANAGE ) || ! current_user_can( 'edit_post', $post_id ) || 'trash' === $post->post_status ) { return; }
 
 		$result = Entity::CONTACT === $owner_type
-			? UpdateContact::execute( $post_id, self::record_input( $owner_type ) )
-			: UpdateOrganization::execute( $post_id, self::record_input( $owner_type ) );
+			? UpdateContact::execute( $post_id, self::record_input( $owner_type, $post_id ) )
+			: UpdateOrganization::execute( $post_id, self::record_input( $owner_type, $post_id ) );
 		if ( is_wp_error( $result ) ) {
 			$data = $result->get_error_data();
 			$failures = is_array( $data ) && isset( $data['failed_areas'] ) && is_array( $data['failed_areas'] ) ? array_filter( array_map( 'sanitize_key', $data['failed_areas'] ) ) : [ 'details' ];
@@ -55,11 +56,30 @@ final class Save {
 	}
 
 	/** @return array<string,mixed> */
-	private static function record_input( string $owner_type ): array {
+	private static function record_input( string $owner_type, int $post_id ): array {
 		$details = isset( $_POST['cb_crm_details'] ) && is_array( $_POST['cb_crm_details'] ) ? wp_unslash( $_POST['cb_crm_details'] ) : [];
 		$input = [ 'status' => $details['status'] ?? RecordStatus::ACTIVE ];
 		if ( Entity::CONTACT === $owner_type ) {
-			$input['first_name'] = $details['first_name'] ?? ''; $input['last_name'] = $details['last_name'] ?? ''; $input['job_title'] = $details['job_title'] ?? ''; $input['wp_user_id'] = $details['wp_user_id'] ?? 0; $input['email_mode'] = $details['email_mode'] ?? 'crm';
+			$input['job_title'] = $details['job_title'] ?? '';
+			$input['wp_user_id'] = $details['wp_user_id'] ?? 0;
+			$input['email_mode'] = $details['email_mode'] ?? 'crm';
+
+			// Source-aware name fields are never copied into CRM merely because they
+			// were displayed. A checked override is explicit CRM relationship data;
+			// an unchecked override clears the CRM shadow and restores the live source.
+			$stored_user_id = ContactIdentity::linked_user_id( $post_id );
+			$requested_user_id = isset( $details['wp_user_id'] ) && is_scalar( $details['wp_user_id'] ) ? absint( $details['wp_user_id'] ) : $stored_user_id;
+			$identity_switch = $requested_user_id !== $stored_user_id;
+			if ( ! $identity_switch ) {
+				foreach ( [ 'first_name', 'last_name' ] as $field ) {
+					$override_key = $field . '_override';
+					if ( array_key_exists( $override_key, $details ) ) {
+						$input[ $field ] = ! empty( $details[ $override_key ] ) ? ( $details[ $field ] ?? '' ) : '';
+					} else {
+						$input[ $field ] = $details[ $field ] ?? '';
+					}
+				}
+			}
 		}
 		if ( Entity::ORGANIZATION === $owner_type ) { $input['legal_name'] = $details['legal_name'] ?? ''; }
 		if ( isset( $_POST['cb_crm_contact_methods_present'] ) ) { $input['contact_methods'] = isset( $_POST['cb_crm_contact_methods'] ) && is_array( $_POST['cb_crm_contact_methods'] ) ? wp_unslash( $_POST['cb_crm_contact_methods'] ) : []; }
