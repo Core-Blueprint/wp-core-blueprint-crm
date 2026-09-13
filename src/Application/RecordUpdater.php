@@ -67,15 +67,15 @@ final class RecordUpdater {
 	private static function update_details( string $owner_type, int $record_id, array $input, array &$failures ): bool {
 		$changed = false;
 		if ( array_key_exists( 'title', $input ) ) { if ( ! is_scalar( $input['title'] ) ) { $failures[] = 'details'; } else { $title = sanitize_text_field( (string) $input['title'] ); if ( get_the_title( $record_id ) !== $title ) { $result = wp_update_post( [ 'ID' => $record_id, 'post_title' => $title ], true ); if ( is_wp_error( $result ) ) { $failures[] = 'details'; } else { $changed = true; } } } }
-		if ( array_key_exists( 'status', $input ) ) { $status = is_scalar( $input['status'] ) ? sanitize_key( (string) $input['status'] ) : ''; if ( ! in_array( $status, RecordStatus::VALUES, true ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::STATUS, $status ) || $changed; } }
+		if ( array_key_exists( 'status', $input ) ) { $status = is_scalar( $input['status'] ) ? sanitize_key( (string) $input['status'] ) : ''; if ( ! in_array( $status, RecordStatus::VALUES, true ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::STATUS, $status, $failures ) || $changed; } }
 		if ( Entity::CONTACT === $owner_type ) {
 			$changed = self::update_contact_name( $record_id, 'first_name', Meta::FIRST_NAME, $input, $failures ) || $changed;
 			$changed = self::update_contact_name( $record_id, 'last_name', Meta::LAST_NAME, $input, $failures ) || $changed;
-			if ( array_key_exists( 'job_title', $input ) ) { if ( ! is_scalar( $input['job_title'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::JOB_TITLE, sanitize_text_field( (string) $input['job_title'] ) ) || $changed; } }
-			if ( array_key_exists( 'wp_user_id', $input ) ) { $changed = self::update_meta_if_changed( $record_id, Meta::WP_USER_ID, absint( $input['wp_user_id'] ) ) || $changed; }
-			if ( array_key_exists( 'email_mode', $input ) || array_key_exists( 'wp_user_id', $input ) ) { $user_id = array_key_exists( 'wp_user_id', $input ) ? absint( $input['wp_user_id'] ) : ContactIdentity::linked_user_id( $record_id ); $stored_mode = sanitize_key( (string) get_post_meta( $record_id, Meta::EMAIL_MODE, true ) ); $mode = $stored_mode; if ( array_key_exists( 'email_mode', $input ) ) { $candidate = is_scalar( $input['email_mode'] ) ? sanitize_key( (string) $input['email_mode'] ) : ''; if ( ! in_array( $candidate, [ ContactIdentity::EMAIL_CRM, ContactIdentity::EMAIL_WP ], true ) ) { $failures[] = 'details'; } else { $mode = $candidate; } } if ( ContactIdentity::EMAIL_WP === $mode && 0 === $user_id ) { $mode = ContactIdentity::EMAIL_CRM; } $changed = self::update_meta_if_changed( $record_id, Meta::EMAIL_MODE, $mode ) || $changed; }
+			if ( array_key_exists( 'job_title', $input ) ) { if ( ! is_scalar( $input['job_title'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::JOB_TITLE, sanitize_text_field( (string) $input['job_title'] ), $failures ) || $changed; } }
+			if ( array_key_exists( 'wp_user_id', $input ) ) { $changed = self::update_meta_if_changed( $record_id, Meta::WP_USER_ID, absint( $input['wp_user_id'] ), $failures ) || $changed; }
+			if ( array_key_exists( 'email_mode', $input ) || array_key_exists( 'wp_user_id', $input ) ) { $user_id = array_key_exists( 'wp_user_id', $input ) ? absint( $input['wp_user_id'] ) : ContactIdentity::linked_user_id( $record_id ); $stored_mode = sanitize_key( (string) get_post_meta( $record_id, Meta::EMAIL_MODE, true ) ); $mode = $stored_mode; if ( array_key_exists( 'email_mode', $input ) ) { $candidate = is_scalar( $input['email_mode'] ) ? sanitize_key( (string) $input['email_mode'] ) : ''; if ( ! in_array( $candidate, [ ContactIdentity::EMAIL_CRM, ContactIdentity::EMAIL_WP ], true ) ) { $failures[] = 'details'; } else { $mode = $candidate; } } if ( ContactIdentity::EMAIL_WP === $mode && 0 === $user_id ) { $mode = ContactIdentity::EMAIL_CRM; } $changed = self::update_meta_if_changed( $record_id, Meta::EMAIL_MODE, $mode, $failures ) || $changed; }
 		}
-		if ( Entity::ORGANIZATION === $owner_type && array_key_exists( 'legal_name', $input ) ) { if ( ! is_scalar( $input['legal_name'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::LEGAL_NAME, sanitize_text_field( (string) $input['legal_name'] ) ) || $changed; } }
+		if ( Entity::ORGANIZATION === $owner_type && array_key_exists( 'legal_name', $input ) ) { if ( ! is_scalar( $input['legal_name'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::LEGAL_NAME, sanitize_text_field( (string) $input['legal_name'] ), $failures ) || $changed; } }
 		return $changed;
 	}
 
@@ -97,7 +97,7 @@ final class RecordUpdater {
 		$candidates = ContactDataSources::name_candidates( $record_id, $field );
 		$before_override = '' !== $before && [] !== $candidates && ! self::matches_candidate( $before, $candidates );
 		$after_override = '' !== $value && [] !== $candidates && ! self::matches_candidate( $value, $candidates );
-		if ( ! self::update_meta_if_changed( $record_id, $meta_key, $value ) ) {
+		if ( ! self::update_meta_if_changed( $record_id, $meta_key, $value, $failures ) ) {
 			return false;
 		}
 		if ( $before_override || $after_override ) {
@@ -130,7 +130,20 @@ final class RecordUpdater {
 		return false;
 	}
 
-	private static function update_meta_if_changed( int $record_id, string $key, mixed $value ): bool { $before = get_post_meta( $record_id, $key, true ); if ( (string) $before === (string) $value ) { return false; } update_post_meta( $record_id, $key, $value ); return true; }
+	/** @param string[] $failures */
+	private static function update_meta_if_changed( int $record_id, string $key, mixed $value, array &$failures ): bool {
+		$before = get_post_meta( $record_id, $key, true );
+		if ( (string) $before === (string) $value ) {
+			return false;
+		}
+		$result = update_post_meta( $record_id, $key, $value );
+		if ( false === $result ) {
+			$failures[] = 'details';
+			return false;
+		}
+		return true;
+	}
+
 	/** @return array<int,int|string> */
 	private static function terms( mixed $raw ): array { $values = is_array( $raw ) ? array_slice( $raw, 0, 50 ) : ( is_scalar( $raw ) ? [ $raw ] : [] ); $terms = []; foreach ( $values as $value ) { if ( ! is_scalar( $value ) ) { continue; } $string = trim( (string) $value ); if ( '' === $string ) { continue; } $terms[] = ctype_digit( $string ) ? absint( $string ) : sanitize_title( $string ); } return array_values( array_unique( $terms, SORT_REGULAR ) ); }
 }
