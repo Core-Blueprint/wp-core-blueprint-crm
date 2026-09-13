@@ -46,23 +46,19 @@ final class Requirements {
 
 		switch ( $issue ) {
 			case 'php-version':
-				return sprintf(
-					/* translators: 1: required PHP version, 2: current PHP version. */
-					__( 'PHP %1$s or newer is required. This server runs PHP %2$s.', 'core-blueprint-crm' ),
-					CB_CRM_MIN_PHP,
-					PHP_VERSION
-				);
+				// The main plugin file handles this before product localization is safe.
+				return sprintf( 'PHP %s or newer is required. This server runs PHP %s.', CB_CRM_MIN_PHP, PHP_VERSION );
 			case 'base-missing':
-				return __( 'An active Core Blueprint Base installation is required.', 'core-blueprint-crm' );
+				return __( 'Core Blueprint CRM requires an active Core Blueprint Base plugin.', 'core-blueprint-crm' );
 			case 'base-api-incompatible':
 				return sprintf(
 					/* translators: 1: required Core API version, 2: available Core API version. */
-					__( 'Core API %1$s or a newer compatible minor version is required. This site provides %2$s.', 'core-blueprint-crm' ),
+					__( 'Core Blueprint CRM requires Core API %1$s or a newer compatible minor version. This site provides %2$s.', 'core-blueprint-crm' ),
 					CB_CRM_REQUIRED_API,
-					defined( 'CB_CORE_API_VERSION' ) ? (string) CB_CORE_API_VERSION : __( 'none', 'core-blueprint-crm' )
+					(string) CB_CORE_API_VERSION
 				);
 			default:
-				return __( 'Ready', 'core-blueprint-crm' );
+				return 'Ready';
 		}
 	}
 }
