@@ -24,11 +24,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
-      - name: Setup PHP 8.4
+      - name: Setup PHP 8.4 and WP-CLI
         uses: shivammathur/setup-php@2.37.2
         with:
           php-version: '8.4'
           coverage: none
+          tools: wp-cli
+      - name: Install gettext
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext
       - name: Run CRM checks
         shell: bash
         run: bash tools/check
