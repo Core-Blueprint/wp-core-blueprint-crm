@@ -34,13 +34,17 @@ find "$STAGE/$PACKAGE" -exec touch -t 202601010000 {} +
 	find "$PACKAGE" -type f -print | LC_ALL=C sort | zip -X -q "$DIST/$PACKAGE.zip" -@
 )
 
-FIRST_ENTRY="$(unzip -Z1 "$DIST/$PACKAGE.zip" | head -n 1)"
+# Materialize the ZIP listing once. This avoids SIGPIPE false failures from
+# `unzip -Z1 | head/grep -q` while `set -o pipefail` is active.
+ZIP_ENTRIES="$STAGE/zip-entries.txt"
+unzip -Z1 "$DIST/$PACKAGE.zip" > "$ZIP_ENTRIES"
+IFS= read -r FIRST_ENTRY < "$ZIP_ENTRIES"
 if [[ "$FIRST_ENTRY" != "$PACKAGE/" ]]; then
 	echo "ERROR: release ZIP root is not the canonical plugin folder." >&2
 	exit 1
 fi
 
-if unzip -Z1 "$DIST/$PACKAGE.zip" | grep -Eq '(^|/)(\.git|\.github|tests|tools|dist|docs)(/|$)'; then
+if grep -Eq '(^|/)(\.git|\.github|tests|tools|dist|docs)(/|$)' "$ZIP_ENTRIES"; then
 	echo "ERROR: development-only files leaked into the release ZIP." >&2
 	exit 1
 fi
@@ -50,7 +54,7 @@ for required in \
 	"$PACKAGE/src/Plugin.php" \
 	"$PACKAGE/assets/admin.js" \
 	"$PACKAGE/languages/core-blueprint-crm.pot"; do
-	if ! unzip -Z1 "$DIST/$PACKAGE.zip" | grep -Fxq "$required"; then
+	if ! grep -Fxq "$required" "$ZIP_ENTRIES"; then
 		echo "ERROR: release ZIP is missing runtime file: $required" >&2
 		exit 1
 	fi
