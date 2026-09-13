@@ -42,12 +42,21 @@ final class Suite {
 
 	/** @return array{state:string,detail:string,url:string} */
 	public static function status(): array {
+		$url = admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG );
+		if ( function_exists( 'cb_crm_product_contracts_ready' ) && ! cb_crm_product_contracts_ready() ) {
+			return [
+				'state'  => 'err',
+				'detail' => __( 'Required Core Blueprint Base contracts are unavailable.', 'core-blueprint-crm' ),
+				'url'    => $url,
+			];
+		}
+
 		$installed_schema = (string) get_option( Schema::OPTION, '0' );
 		if ( version_compare( $installed_schema, CB_CRM_SCHEMA_VERSION, '<' ) ) {
-			return [ 'state' => 'warn', 'detail' => __( 'CRM database upgrade pending.', 'core-blueprint-crm' ), 'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ) ];
+			return [ 'state' => 'warn', 'detail' => __( 'CRM database upgrade pending.', 'core-blueprint-crm' ), 'url' => $url ];
 		}
 		if ( version_compare( $installed_schema, CB_CRM_SCHEMA_VERSION, '>' ) ) {
-			return [ 'state' => 'warn', 'detail' => __( 'CRM database schema is newer than this plugin build.', 'core-blueprint-crm' ), 'url' => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ) ];
+			return [ 'state' => 'warn', 'detail' => __( 'CRM database schema is newer than this plugin build.', 'core-blueprint-crm' ), 'url' => $url ];
 		}
 
 		$contact_count      = self::record_count( PostTypes::CONTACT );
@@ -66,7 +75,7 @@ final class Suite {
 		return [
 			'state'  => 'ok',
 			'detail' => $contacts . ' · ' . $organizations,
-			'url'    => admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG ),
+			'url'    => $url,
 		];
 	}
 

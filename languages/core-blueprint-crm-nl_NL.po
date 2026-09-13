@@ -1,546 +1,903 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: Core Blueprint CRM 1.0.0-rc1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-core-blueprint-"
+"crm-audit\n"
+"POT-Creation-Date: 2026-09-13 19:32+0000\n"
+"PO-Revision-Date: 2026-09-13 19:32+0000\n"
+"Last-Translator: Core Blueprint\n"
+"Language-Team: nl_NL\n"
 "Language: nl_NL\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Core Blueprint i18n tooling 1.1.0\n"
 
+#. Plugin Name of the plugin
+#: core-blueprint-crm.php src/Admin/Menu.php:71 src/Capabilities.php:25
+#: src/Integration/Builders/Bricks/Conditions.php:28
+msgid "Core Blueprint CRM"
+msgstr "Core Blueprint CRM"
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: core-blueprint-crm.php
+msgid "https://coreblueprint.io"
+msgstr "https://coreblueprint.io"
+
+#. Description of the plugin
+#: core-blueprint-crm.php
+msgid ""
+"Self-hosted customer relationship management for contacts, organizations and "
+"customer-specific commercial agreements."
+msgstr ""
+"Zelfgehost klantrelatiebeheer voor contacten, organisaties en "
+"klantspecifieke commerciële overeenkomsten."
+
+#. Author of the plugin
+#: core-blueprint-crm.php
+msgid "Core Blueprint"
+msgstr "Core Blueprint"
+
+#: core-blueprint-crm.php:121 src/Integration/Suite.php:49
+msgid "Required Core Blueprint Base contracts are unavailable."
+msgstr "Vereiste Core Blueprint Base-contracten zijn niet beschikbaar."
+
+#: core-blueprint-crm.php:170 core-blueprint-crm.php:192
+msgid "Core Blueprint CRM:"
+msgstr "Core Blueprint CRM:"
+
+#: src/Admin/Admin.php:25 src/Admin/Menu.php:26 src/Admin/UserLinks.php:92
+#: src/Integration/Builders/Bricks/FormActions.php:128
+#: src/Integration/Builders/Bricks/Queries.php:29
+#: src/Integration/DocsAdmin.php:50 src/Integration/DocsAdmin.php:140
+#: src/Integration/Suite.php:37
+msgid "CRM"
+msgstr "CRM"
+
+#: src/Admin/Admin.php:31 src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:38
+msgid "Display name"
+msgstr "Weergavenaam"
+
+#: src/Admin/Admin.php:32 src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:46
+msgid "Organization name"
+msgstr "Organisatienaam"
+
+#: src/Admin/Assets.php:38 src/Admin/UserLinks.php:127
+msgid "No matching WordPress users found."
+msgstr "Geen overeenkomende WordPress-gebruikers gevonden."
+
+#: src/Admin/Assets.php:38 src/Integration/DocsAdmin.php:119
+msgid "Searching…"
+msgstr "Zoeken…"
+
+#: src/Admin/Assets.php:38
+msgid "WordPress user search failed. Try again."
+msgstr "Zoeken naar WordPress-gebruikers mislukt. Probeer het opnieuw."
+
+#: src/Admin/BusinessIdentifiersPanel.php:20
+msgid "Business Identifiers"
+msgstr "Bedrijfsidentificaties"
+
+#: src/Admin/BusinessIdentifiersPanel.php:36
+#: src/Admin/Panels/ContactMethodsPanel.php:29
+#: src/Admin/Panels/NamesPanel.php:25
+#: src/Integration/Builders/Bricks/IntegrationData.php:76
+msgid "Type"
+msgstr "Type"
+
+#: src/Admin/BusinessIdentifiersPanel.php:36
+#: src/Admin/Panels/ContactMethodsPanel.php:29
+msgid "Value"
+msgstr "Waarde"
+
+#: src/Admin/BusinessIdentifiersPanel.php:36
+msgid "Country"
+msgstr "Land"
+
+#: src/Admin/BusinessIdentifiersPanel.php:36
+#: src/Admin/Panels/AddressesPanel.php:49
+#: src/Admin/Panels/ContactMethodsPanel.php:29
+msgid "Label"
+msgstr "Label"
+
+#: src/Admin/BusinessIdentifiersPanel.php:36
+#: src/Admin/Panels/ContactMethodsPanel.php:29
+#: src/Admin/Panels/OrganizationsPanel.php:28
+msgid "Primary"
+msgstr "Primair"
+
+#: src/Admin/BusinessIdentifiersPanel.php:36
+#: src/Admin/Panels/ContactMethodsPanel.php:29
+#: src/Admin/Panels/NamesPanel.php:25
+#: src/Admin/Panels/OrganizationsPanel.php:28 src/Admin/UserLinks.php:37
+#: src/Admin/UserLinks.php:170
+msgid "Actions"
+msgstr "Acties"
+
+#: src/Admin/BusinessIdentifiersPanel.php:47
+msgid "Add business identifier"
+msgstr "Bedrijfsidentificatie toevoegen"
+
+#: src/Admin/BusinessIdentifiersPanel.php:48
+msgid ""
+"Store legal and commercial identifiers for this organization. Country uses a "
+"two-letter country code; Other identifiers require a descriptive label."
+msgstr ""
+"Sla juridische en commerciële identificaties voor deze organisatie op. "
+"Gebruik voor land een landcode van twee letters; overige identificaties "
+"vereisen een beschrijvend label."
+
+#: src/Admin/BusinessIdentifiersPanel.php:62
+msgid "Primary identifier of this type"
+msgstr "Primaire identificatie van dit type"
+
+#: src/Admin/BusinessIdentifiersPanel.php:63
+#: src/Admin/Panels/ContactMethodsPanel.php:60
+#: src/Admin/Panels/DetailsPanel.php:73 src/Admin/Panels/NamesPanel.php:44
+#: src/Admin/Panels/OrganizationsPanel.php:51 src/Integration/DocsAdmin.php:118
+#: src/Integration/DocsAdmin.php:187 src/Integration/DocsAdmin.php:220
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: src/Admin/BusinessIdentifiersPanel.php:70
+msgid "VAT / tax registration"
+msgstr "Btw-/belastingregistratie"
+
+#: src/Admin/BusinessIdentifiersPanel.php:71
+msgid "Company registration"
+msgstr "Bedrijfsregistratie"
+
+#: src/Admin/BusinessIdentifiersPanel.php:72
+msgid "EORI"
+msgstr "EORI"
+
+#: src/Admin/BusinessIdentifiersPanel.php:73
+#: src/Admin/Panels/ContactMethodsPanel.php:122
+msgid "Other"
+msgstr "Overig"
+
+#: src/Admin/ContactList.php:25 src/Admin/ContactList.php:30
+#: src/Admin/ContactList.php:61 src/Admin/ContactList.php:63
+#: src/Admin/Menu.php:32 src/Admin/Panels/DetailsPanel.php:63
+msgid "WordPress account"
+msgstr "WordPress-account"
+
+#: src/Admin/ContactList.php:64 src/Admin/Panels/DetailsPanel.php:86
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "Linked WordPress account"
+msgstr "Gekoppeld WordPress-account"
+
+#: src/Admin/Menu.php:30
+msgid "Overview"
+msgstr "Overzicht"
+
+#: src/Admin/Menu.php:31 src/Admin/Menu.php:67 src/Content/PostTypes.php:22
+#: src/Integration/Builders/Bricks/Queries.php:31
+#: src/Integration/DocsAdmin.php:142
+msgid "Contacts"
+msgstr "Contacten"
+
+#: src/Admin/Menu.php:39 src/Admin/Menu.php:68
+#: src/Admin/Panels/OrganizationsPanel.php:17 src/Content/PostTypes.php:40
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/Queries.php:32
+#: src/Integration/DocsAdmin.php:143
+msgid "Organizations"
+msgstr "Organisaties"
+
+#: src/Admin/Menu.php:40
+msgid "Tags"
+msgstr "Tags"
+
+#: src/Admin/Menu.php:65 src/Admin/UserLinkActions.php:85
+#: src/Admin/UserLinks.php:43
+#: src/Integration/Builders/Bricks/FormActions.php:118
+msgid "You do not have permission to manage CRM data."
+msgstr "Je hebt geen toestemming om CRM-gegevens te beheren."
+
+#: src/Admin/Menu.php:67
+msgid "People, identity and customer context."
+msgstr "Personen, identiteit en klantcontext."
+
+#: src/Admin/Menu.php:68
+msgid "Companies, institutions and customer relationships."
+msgstr "Bedrijven, instellingen en klantrelaties."
+
+#: src/Admin/Menu.php:72
+msgid ""
+"Customer identity, organizations, context and customer-specific service "
+"agreements. The service catalog and VAT are managed by Core Blueprint Work."
+msgstr ""
+"Klantidentiteit, organisaties, context en klantspecifieke "
+"serviceovereenkomsten. De servicecatalogus en btw worden beheerd door Core "
+"Blueprint Work."
+
+#: src/Admin/Menu.php:73
+msgid "Manage"
+msgstr "Beheren"
+
+#: src/Admin/Panels/AddressesPanel.php:18
+msgid "Addresses"
+msgstr "Adressen"
+
+#: src/Admin/Panels/AddressesPanel.php:33
+msgid "Add address"
+msgstr "Adres toevoegen"
+
+#: src/Admin/Panels/AddressesPanel.php:49
+msgid "e.g. Work or Home"
+msgstr "bijv. Werk of Thuis"
+
+#: src/Admin/Panels/AddressesPanel.php:50
+msgid "Address line 1"
+msgstr "Adresregel 1"
+
+#: src/Admin/Panels/AddressesPanel.php:51
+msgid "Address line 2"
+msgstr "Adresregel 2"
+
+#: src/Admin/Panels/AddressesPanel.php:52
+msgid "Postal code"
+msgstr "Postcode"
+
+#: src/Admin/Panels/AddressesPanel.php:53
+msgid "City"
+msgstr "Plaats"
+
+#: src/Admin/Panels/AddressesPanel.php:54
+msgid "Region"
+msgstr "Regio"
+
+#: src/Admin/Panels/AddressesPanel.php:55
+msgid "Country code"
+msgstr "Landcode"
+
+#: src/Admin/Panels/AddressesPanel.php:58
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "Primary address"
+msgstr "Primair adres"
+
+#: src/Admin/Panels/AddressesPanel.php:59
+msgid "Remove address"
+msgstr "Adres verwijderen"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:18
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "Contact Methods"
+msgstr "Contactmethoden"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:47
+msgid "Add contact method"
+msgstr "Contactmethode toevoegen"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:59
+msgid "Primary contact method"
+msgstr "Primaire contactmethode"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:117 src/Admin/UserLinks.php:33
+#: src/Admin/UserLinks.php:170
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "Email"
+msgstr "E-mail"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:118
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "Phone"
+msgstr "Telefoon"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:119
+msgid "Mobile"
+msgstr "Mobiel"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:120
+msgid "Website"
+msgstr "Website"
+
+#: src/Admin/Panels/ContactMethodsPanel.php:121
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: src/Admin/Panels/DetailsPanel.php:20
+msgid "CRM Details"
+msgstr "CRM-details"
+
+#: src/Admin/Panels/DetailsPanel.php:37 src/Admin/ServiceAgreements.php:82
+#: src/Admin/UserLinks.php:35 src/Admin/UserLinks.php:101
+#: src/Integration/Builders/Bricks/Conditions.php:30
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:42
+#: src/Integration/Builders/Bricks/FormActions.php:48
+msgid "Status"
+msgstr "Status"
+
+#: src/Admin/Panels/DetailsPanel.php:57
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:39
+msgid "First name"
+msgstr "Voornaam"
+
+#: src/Admin/Panels/DetailsPanel.php:58
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:40
+msgid "Last name"
+msgstr "Achternaam"
+
+#: src/Admin/Panels/DetailsPanel.php:60
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:41
+msgid "Job title"
+msgstr "Functie"
+
+#: src/Admin/Panels/DetailsPanel.php:75 src/Admin/UserLinks.php:96
+#: src/Admin/UserLinks.php:97 src/Admin/UserLinks.php:165
+#: src/Admin/UserLinks.php:166
+msgid "Search by name or email…"
+msgstr "Zoeken op naam of e-mailadres…"
+
+#: src/Admin/Panels/DetailsPanel.php:78 src/Integration/Subscriptions.php:41
+msgid "Optional. Link this CRM contact to an existing WordPress account."
+msgstr "Optioneel. Koppel dit CRM-contact aan een bestaand WordPress-account."
+
+#: src/Admin/Panels/DetailsPanel.php:82
+msgid "Preferred email source"
+msgstr "Voorkeursbron voor e-mail"
+
+#: src/Admin/Panels/DetailsPanel.php:85
+msgid "CRM contact methods"
+msgstr "CRM-contactmethoden"
+
+#: src/Admin/Panels/DetailsPanel.php:88
+msgid ""
+"Choose which email address CRM should prefer. WordPress account linking "
+"itself remains optional."
+msgstr ""
+"Kies welk e-mailadres CRM bij voorkeur gebruikt. Het koppelen van een "
+"WordPress-account blijft optioneel."
+
+#: src/Admin/Panels/DetailsPanel.php:92
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:47
+msgid "Legal name"
+msgstr "Juridische naam"
+
+#: src/Admin/Panels/DetailsPanel.php:132 src/Admin/ServiceAgreements.php:91
+#: src/Application/RecordUpdater.php:112
+msgid "Customer-specific override"
+msgstr "Klantspecifieke afwijking"
+
+#: src/Admin/Panels/NamesPanel.php:16
+msgid "Names & Aliases"
+msgstr "Namen & aliassen"
+
+#: src/Admin/Panels/NamesPanel.php:25 src/Admin/UserLinks.php:32
+#: src/Admin/UserLinks.php:170
+#: src/Integration/Builders/Bricks/IntegrationData.php:75
+msgid "Name"
+msgstr "Naam"
+
+#: src/Admin/Panels/NamesPanel.php:25
+#: src/Admin/Panels/OrganizationsPanel.php:28
+msgid "From"
+msgstr "Van"
+
+#: src/Admin/Panels/NamesPanel.php:25
+#: src/Admin/Panels/OrganizationsPanel.php:28
+msgid "Until"
+msgstr "Tot"
+
+#: src/Admin/Panels/NamesPanel.php:32
+msgid "Add name or alias"
+msgstr "Naam of alias toevoegen"
+
+#: src/Admin/Panels/NamesPanel.php:51
+msgid "Legal"
+msgstr "Juridisch"
+
+#: src/Admin/Panels/NamesPanel.php:52
+msgid "Preferred"
+msgstr "Voorkeur"
+
+#: src/Admin/Panels/NamesPanel.php:53
+msgid "Trading"
+msgstr "Handelsnaam"
+
+#: src/Admin/Panels/NamesPanel.php:54
+msgid "Former"
+msgstr "Voormalig"
+
+#: src/Admin/Panels/NamesPanel.php:55
+msgid "Alias"
+msgstr "Alias"
+
+#: src/Admin/Panels/NotesActivityPanel.php:17
+msgid "Notes & Activity"
+msgstr "Notities & activiteit"
+
+#: src/Admin/Panels/NotesActivityPanel.php:26
+msgid "Add note"
+msgstr "Notitie toevoegen"
+
+#: src/Admin/Panels/NotesActivityPanel.php:27
+msgid "Recent notes"
+msgstr "Recente notities"
+
+#: src/Admin/Panels/NotesActivityPanel.php:29
+msgid "No notes yet."
+msgstr "Nog geen notities."
+
+#: src/Admin/Panels/NotesActivityPanel.php:33
+msgid "System"
+msgstr "Systeem"
+
+#: src/Admin/Panels/NotesActivityPanel.php:35
+msgid "Activity"
+msgstr "Activiteit"
+
+#: src/Admin/Panels/NotesActivityPanel.php:37
+msgid "No activity yet."
+msgstr "Nog geen activiteit."
+
+#: src/Admin/Panels/OrganizationsPanel.php:28 src/Content/PostTypes.php:41
+#: src/Integration/Builders/Bricks/Conditions.php:30
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:44
+#: src/Integration/DocsAdmin.php:215
+msgid "Organization"
+msgstr "Organisatie"
+
+#: src/Admin/Panels/OrganizationsPanel.php:28 src/Admin/UserLinks.php:34
+#: src/Admin/UserLinks.php:108 src/Admin/UserLinks.php:110
+msgid "Role"
+msgstr "Rol"
+
+#: src/Admin/Panels/OrganizationsPanel.php:35
+msgid "Add organization"
+msgstr "Organisatie toevoegen"
+
+#: src/Admin/Panels/OrganizationsPanel.php:50
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "Primary organization"
+msgstr "Primaire organisatie"
+
+#: src/Admin/Save.php:53
+msgid "WordPress account link"
+msgstr "WordPress-accountkoppeling"
+
+#: src/Admin/Save.php:53
+msgid "contact methods"
+msgstr "contactmethoden"
+
+#: src/Admin/Save.php:53
+msgid "addresses"
+msgstr "adressen"
+
+#: src/Admin/Save.php:53
+msgid "names and aliases"
+msgstr "namen en aliassen"
+
+#: src/Admin/Save.php:53
+msgid "organization relationships"
+msgstr "organisatierelaties"
+
+#: src/Admin/Save.php:53
+msgid "business identifiers"
+msgstr "bedrijfsidentificaties"
+
+#: src/Admin/Save.php:53
+msgid "service agreements"
+msgstr "serviceovereenkomsten"
+
+#: src/Admin/Save.php:53 src/Content/PostTypes.php:56
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+msgid "CRM Tags"
+msgstr "CRM-tags"
+
+#: src/Admin/Save.php:53
+msgid "note"
+msgstr "notitie"
+
+#: src/Admin/Save.php:53
+msgid "details"
+msgstr "details"
+
+#: src/Admin/Save.php:55 src/Integration/Builders/Bricks/FormActions.php:127
+#, php-format
+msgid ""
+"The post was saved, but CRM could not save: %s. Review the record and try "
+"again."
+msgstr ""
+"Het bericht is opgeslagen, maar CRM kon het volgende niet opslaan: %s. "
+"Controleer het record en probeer het opnieuw."
+
+#: src/Admin/ServiceAgreements.php:22
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/Queries.php:33
+msgid "Service Agreements"
+msgstr "Serviceovereenkomsten"
+
+#: src/Admin/ServiceAgreements.php:32
+msgid ""
+"Core Blueprint Work is not available. Service agreements remain inactive "
+"because CRM never provides a fallback service or VAT catalog."
+msgstr ""
+"Core Blueprint Work is niet beschikbaar. Serviceovereenkomsten blijven "
+"inactief omdat CRM nooit een alternatieve service- of btw-catalogus aanbiedt."
+
+#: src/Admin/ServiceAgreements.php:47
+msgid "Add service agreement"
+msgstr "Serviceovereenkomst toevoegen"
+
+#: src/Admin/ServiceAgreements.php:64
+msgid "Work service"
+msgstr "Work-service"
+
+#: src/Admin/ServiceAgreements.php:78
+#, php-format
+msgid "Unavailable Work service #%d"
+msgstr "Niet-beschikbare Work-service #%d"
+
+#: src/Admin/ServiceAgreements.php:88
+msgid "Validity"
+msgstr "Geldigheid"
+
+#: src/Admin/ServiceAgreements.php:91
+msgid "Pricing"
+msgstr "Prijsstelling"
+
+#: src/Admin/ServiceAgreements.php:91 src/Admin/ServiceAgreements.php:99
+msgid "Use Work service default"
+msgstr "Standaard van Work-service gebruiken"
+
+#: src/Admin/ServiceAgreements.php:96
+msgid "Custom amount"
+msgstr "Aangepast bedrag"
+
+#: src/Admin/ServiceAgreements.php:99
+msgid "VAT override"
+msgstr "Btw-afwijking"
+
+#: src/Admin/ServiceAgreements.php:99
+msgid "Excluding VAT"
+msgstr "Exclusief btw"
+
+#: src/Admin/ServiceAgreements.php:99
+msgid "Including VAT"
+msgstr "Inclusief btw"
+
+#: src/Admin/ServiceAgreements.php:99
+msgid "VAT exempt"
+msgstr "Vrijgesteld van btw"
+
+#: src/Admin/ServiceAgreements.php:113
+msgid "Notes"
+msgstr "Notities"
+
+#: src/Admin/ServiceAgreements.php:114
+msgid "Remove agreement"
+msgstr "Overeenkomst verwijderen"
+
+#: src/Admin/UserLinks.php:36 src/Content/PostTypes.php:23
+#: src/Integration/Builders/Bricks/Conditions.php:30
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:36
+#: src/Integration/Builders/Bricks/IntegrationData.php:80
+#: src/Integration/Builders/Bricks/Queries.php:30
+#: src/Integration/DocsAdmin.php:215
+msgid "Contact"
+msgstr "Contact"
+
+#: src/Admin/UserLinks.php:104 src/Admin/UserLinks.php:198
+#: src/Admin/UserLinks.php:272
+#: src/Integration/Builders/Bricks/IntegrationData.php:74
+#: src/Integration/Builders/Bricks/IntegrationData.php:75
+#: src/Integration/Builders/Bricks/IntegrationData.php:76
+#: src/Integration/Builders/Bricks/IntegrationData.php:77
+msgid "Linked CRM record"
+msgstr "Gekoppeld CRM-record"
+
+#: src/Admin/UserLinks.php:105 src/Admin/UserLinks.php:202
+#: src/Integration/DocsAdmin.php:121 src/Integration/DocsAdmin.php:197
+msgid "No CRM records found."
+msgstr "Geen CRM-records gevonden."
+
+#: src/Admin/UserLinks.php:159 src/Admin/UserLinks.php:233
+#: src/Content/PostTypes.php:30
+msgid "Search Contacts"
+msgstr "Contacten zoeken"
+
+#: src/Admin/UserLinks.php:173 src/Content/PostTypes.php:31
+#: src/Integration/Builders/Bricks/FormActions.php:76
+msgid "No contacts found."
+msgstr "Geen contacten gevonden."
+
+#. translators: %d: number of contacts.
+#: src/Admin/UserLinks.php:206 src/Integration/Suite.php:66
+#, php-format
 msgid "%d contact"
 msgid_plural "%d contacts"
 msgstr[0] "%d contact"
 msgstr[1] "%d contacten"
 
+#: src/Admin/UserLinks.php:231 src/Content/PostTypes.php:25
+#: src/Content/PostTypes.php:26 src/Integration/DocsAdmin.php:116
+msgid "Add Contact"
+msgstr "Contact Toevoegen"
+
+#: src/Admin/UserLinks.php:238 src/Content/PostTypes.php:27
+msgid "Edit Contact"
+msgstr "Contact bewerken"
+
+#: src/Admin/UserLinks.php:271 src/Governance.php:31
+msgid "CRM record created"
+msgstr "CRM-record aangemaakt"
+
+#: src/Admin/UserSearch.php:28
+msgid "You are not allowed to search WordPress users."
+msgstr "Je hebt geen toestemming om WordPress-gebruikers te zoeken."
+
+#: src/Application/RecordUpdater.php:54
+msgid "CRM record details updated"
+msgstr "CRM-recorddetails bijgewerkt"
+
+#: src/Capabilities.php:24
+msgid "Manage CRM"
+msgstr "CRM beheren"
+
+#: src/Capabilities.php:27
+msgid ""
+"View and manage CRM contacts, organizations, relationships, service "
+"agreements, notes and activity."
+msgstr ""
+"CRM-contacten, organisaties, relaties, serviceovereenkomsten, notities en "
+"activiteit bekijken en beheren."
+
+#: src/Content/PostTypes.php:24
+msgid "All Contacts"
+msgstr "Alle contacten"
+
+#: src/Content/PostTypes.php:28
+msgid "New Contact"
+msgstr "Nieuw contact"
+
+#: src/Content/PostTypes.php:29
+msgid "View Contact"
+msgstr "Contact bekijken"
+
+#: src/Content/PostTypes.php:32
+msgid "No contacts found in Trash."
+msgstr "Geen contacten gevonden in de prullenbak."
+
+#: src/Content/PostTypes.php:42
+msgid "All Organizations"
+msgstr "Alle organisaties"
+
+#: src/Content/PostTypes.php:43 src/Content/PostTypes.php:44
+#: src/Integration/DocsAdmin.php:117
+msgid "Add Organization"
+msgstr "Organisatie Toevoegen"
+
+#: src/Content/PostTypes.php:45
+msgid "Edit Organization"
+msgstr "Organisatie bewerken"
+
+#: src/Content/PostTypes.php:46
+msgid "New Organization"
+msgstr "Nieuwe organisatie"
+
+#: src/Content/PostTypes.php:47
+msgid "View Organization"
+msgstr "Organisatie bekijken"
+
+#: src/Content/PostTypes.php:48
+msgid "Search Organizations"
+msgstr "Organisaties zoeken"
+
+#: src/Content/PostTypes.php:49
+#: src/Integration/Builders/Bricks/FormActions.php:86
+msgid "No organizations found."
+msgstr "Geen organisaties gevonden."
+
+#: src/Content/PostTypes.php:50
+msgid "No organizations found in Trash."
+msgstr "Geen organisaties gevonden in de prullenbak."
+
+#: src/Content/PostTypes.php:56
+msgid "CRM Tag"
+msgstr "CRM-tag"
+
+#: src/Content/RecordStatus.php:27 src/Repository/ServiceAgreements.php:22
+msgid "Active"
+msgstr "Actief"
+
+#: src/Content/RecordStatus.php:28
+msgid "Inactive"
+msgstr "Inactief"
+
+#: src/Content/RecordStatus.php:29
+msgid "Archived"
+msgstr "Gearchiveerd"
+
+#: src/Governance.php:32
+msgid "CRM record updated"
+msgstr "CRM-record bijgewerkt"
+
+#: src/Governance.php:33
+msgid "CRM record deleted"
+msgstr "CRM-record verwijderd"
+
+#: src/Governance.php:34
+msgid "CRM record data updated"
+msgstr "CRM-recordgegevens bijgewerkt"
+
+#: src/Governance.php:35
+msgid "CRM note created"
+msgstr "CRM-notitie aangemaakt"
+
+#: src/Governance.php:36
+msgid "CRM WooCommerce activity recorded"
+msgstr "CRM WooCommerce-activiteit vastgelegd"
+
+#: src/Governance.php:37
+msgid "CRM Helpdesk activity recorded"
+msgstr "CRM Helpdesk-activiteit vastgelegd"
+
+#: src/Governance.php:38
+msgid "CRM record cleanup failed"
+msgstr "Opschonen van CRM-record mislukt"
+
+#: src/Integration/Builders/Bricks/Conditions.php:30
+msgid "Service Agreement"
+msgstr "Serviceovereenkomst"
+
+#: src/Integration/Builders/Bricks/Conditions.php:30
+#: src/Integration/Builders/Bricks/IntegrationData.php:73
+msgid "Documentation"
+msgstr "Documentatie"
+
+#: src/Integration/Builders/Bricks/Conditions.php:30
+msgid "Open Helpdesk tickets"
+msgstr "Open Helpdesk-tickets"
+
+#: src/Integration/Builders/Bricks/FormActions.php:33
+#: src/Integration/Builders/Bricks/FormActions.php:57
+msgid "CRM: Edit Contact"
+msgstr "CRM: Contact bewerken"
+
+#: src/Integration/Builders/Bricks/FormActions.php:34
+#: src/Integration/Builders/Bricks/FormActions.php:61
+msgid "CRM: Edit Organization"
+msgstr "CRM: Organisatie bewerken"
+
+#: src/Integration/Builders/Bricks/IntegrationData.php:73
+msgid "Count"
+msgstr "Aantal"
+
+#: src/Integration/Builders/Bricks/IntegrationData.php:77
+msgid "Relation"
+msgstr "Relatie"
+
+#: src/Integration/Builders/Bricks/IntegrationData.php:80
+msgid "Ticket count"
+msgstr "Aantal tickets"
+
+#: src/Integration/Builders/Bricks/Queries.php:34
+msgid "Linked documentation"
+msgstr "Gekoppelde documentatie"
+
+#: src/Integration/Builders/Bricks/Queries.php:34
+msgid "Records linked to document"
+msgstr "Records gekoppeld aan document"
+
+#: src/Integration/Builders/Bricks/Queries.php:35
+msgid "Contact tickets"
+msgstr "Contacttickets"
+
+#: src/Integration/DocsAdmin.php:115
+msgid "Add document"
+msgstr "Document toevoegen"
+
+#: src/Integration/DocsAdmin.php:120 src/Integration/DocsAdmin.php:163
+msgid "No documents found."
+msgstr "Geen documenten gevonden."
+
+#: src/Integration/DocsAdmin.php:147
+msgid "Context"
+msgstr "Context"
+
+#: src/Integration/DocsAdmin.php:151
+msgid "Search documents"
+msgstr "Documenten zoeken"
+
+#: src/Integration/DocsAdmin.php:152
+msgid "Search CRM"
+msgstr "CRM zoeken"
+
+#: src/Integration/Helpdesk.php:26 src/Integration/Helpdesk.php:75
+msgid "Helpdesk"
+msgstr "Helpdesk"
+
+#: src/Integration/Helpdesk.php:41
+msgid "Link this contact to a WordPress user to show their support tickets."
+msgstr ""
+"Koppel dit contact aan een WordPress-gebruiker om de supporttickets te tonen."
+"Koppel dit contact aan een WordPress-gebruiker om de supporttickets te tonen."
+
+#: src/Integration/Helpdesk.php:51
+msgid "No Helpdesk tickets for this user."
+msgstr "Geen Helpdesk-tickets voor deze gebruiker."
+
+#: src/Integration/Suite.php:56
+msgid "CRM database upgrade pending."
+msgstr "CRM-database-upgrade in afwachting."
+
+#: src/Integration/Suite.php:59
+msgid "CRM database schema is newer than this plugin build."
+msgstr "Het CRM-databaseschema is nieuwer dan deze pluginbuild."
+
+#. translators: %d: number of organizations.
+#: src/Integration/Suite.php:71
+#, php-format
 msgid "%d organization"
 msgid_plural "%d organizations"
 msgstr[0] "%d organisatie"
 msgstr[1] "%d organisaties"
 
-msgid "Actions"
-msgstr "Acties"
-
-msgid "Active"
-msgstr "Actief"
-
-msgid "Activity"
-msgstr "Activiteit"
-
-msgid "Add Contact"
-msgstr "Contact Toevoegen"
-
-msgid "Add Organization"
-msgstr "Organisatie Toevoegen"
-
-msgid "Add address"
-msgstr "Adres toevoegen"
-
-msgid "Add business identifier"
-msgstr "Bedrijfsidentificatie toevoegen"
-
-msgid "Add contact method"
-msgstr "Contactmethode toevoegen"
-
-msgid "Add document"
-msgstr "Document toevoegen"
-
-msgid "Add name or alias"
-msgstr "Naam of alias toevoegen"
-
-msgid "Add note"
-msgstr "Notitie toevoegen"
-
-msgid "Add organization"
-msgstr "Organisatie toevoegen"
-
-msgid "Add service agreement"
-msgstr "Serviceovereenkomst toevoegen"
-
-msgid "Address line 1"
-msgstr "Adresregel 1"
-
-msgid "Address line 2"
-msgstr "Adresregel 2"
-
-msgid "Addresses"
-msgstr "Adressen"
-
-msgid "Alias"
-msgstr "Alias"
-
-msgid "All Contacts"
-msgstr "Alle contacten"
-
-msgid "All Organizations"
-msgstr "Alle organisaties"
-
-msgid "Archived"
-msgstr "Gearchiveerd"
-
-msgid "Business Identifiers"
-msgstr "Bedrijfsidentificaties"
-
-msgid "CRM"
-msgstr "CRM"
-
-msgid "CRM Details"
-msgstr "CRM-details"
-
-msgid "CRM Helpdesk activity recorded"
-msgstr "CRM Helpdesk-activiteit vastgelegd"
-
-msgid "CRM Tag"
-msgstr "CRM-tag"
-
-msgid "CRM Tags"
-msgstr "CRM-tags"
-
-msgid "CRM WooCommerce activity recorded"
-msgstr "CRM WooCommerce-activiteit vastgelegd"
-
-msgid "CRM contact methods"
-msgstr "CRM-contactmethoden"
-
-msgid "CRM database schema is newer than this plugin build."
-msgstr "Het CRM-databaseschema is nieuwer dan deze pluginbuild."
-
-msgid "CRM database upgrade pending."
-msgstr "CRM-database-upgrade in afwachting."
-
-msgid "CRM note created"
-msgstr "CRM-notitie aangemaakt"
-
-msgid "CRM record cleanup failed"
-msgstr "Opschonen van CRM-record mislukt"
-
-msgid "CRM record created"
-msgstr "CRM-record aangemaakt"
-
-msgid "CRM record data updated"
-msgstr "CRM-recordgegevens bijgewerkt"
-
-msgid "CRM record deleted"
-msgstr "CRM-record verwijderd"
-
-msgid "CRM record updated"
-msgstr "CRM-record bijgewerkt"
-
-msgid "CRM: Edit Contact"
-msgstr "CRM: Contact bewerken"
-
-msgid "CRM: Edit Organization"
-msgstr "CRM: Organisatie bewerken"
-
-msgid "Choose which email address CRM should prefer. WordPress account linking itself remains optional."
-msgstr "Kies welk e-mailadres CRM bij voorkeur gebruikt. Het koppelen van een WordPress-account blijft optioneel."
-
-msgid "City"
-msgstr "Plaats"
-
-msgid "Companies, institutions and customer relationships."
-msgstr "Bedrijven, instellingen en klantrelaties."
-
-msgid "Company registration"
-msgstr "Bedrijfsregistratie"
-
-msgid "Contact"
-msgstr "Contact"
-
-msgid "Contact Methods"
-msgstr "Contactmethoden"
-
-msgid "Contact tickets"
-msgstr "Contacttickets"
-
-msgid "Contacts"
-msgstr "Contacten"
-
-msgid "Context"
-msgstr "Context"
-
-msgid "Core Blueprint CRM"
-msgstr "Core Blueprint CRM"
-
-msgid "Core Blueprint CRM could not access one or more required public Core Blueprint Base services."
-msgstr "Core Blueprint CRM kon één of meer vereiste publieke services van Core Blueprint Base niet bereiken."
-
-msgid "Core Blueprint CRM requires Core API %1$s or a newer compatible minor version. This site provides %2$s."
-msgstr "Core Blueprint CRM vereist Core API %1$s of een nieuwere compatibele minorversie. Deze site biedt %2$s."
-
-msgid "Core Blueprint CRM requires an active Core Blueprint Base plugin."
-msgstr "Core Blueprint CRM vereist een actieve Core Blueprint Base-plugin."
-
-msgid "Core Blueprint CRM:"
-msgstr "Core Blueprint CRM:"
-
-msgid "Core Blueprint Work is not available. Service agreements remain inactive because CRM never provides a fallback service or VAT catalog."
-msgstr "Core Blueprint Work is niet beschikbaar. Serviceovereenkomsten blijven inactief omdat CRM nooit een alternatieve service- of btw-catalogus aanbiedt."
-
-msgid "Core Blueprint dependency required"
-msgstr "Core Blueprint-afhankelijkheid vereist"
-
-msgid "Count"
-msgstr "Aantal"
-
-msgid "Country"
-msgstr "Land"
-
-msgid "Country code"
-msgstr "Landcode"
-
-msgid "Custom amount"
-msgstr "Aangepast bedrag"
-
-msgid "Customer identity, organizations, context and customer-specific service agreements. The service catalog and VAT are managed by Core Blueprint Work."
-msgstr "Klantidentiteit, organisaties, context en klantspecifieke serviceovereenkomsten. De servicecatalogus en btw worden beheerd door Core Blueprint Work."
-
-msgid "Customer-specific override"
-msgstr "Klantspecifieke afwijking"
-
-msgid "Display name"
-msgstr "Weergavenaam"
-
-msgid "Documentation"
-msgstr "Documentatie"
-
-msgid "EORI"
-msgstr "EORI"
-
-msgid "Edit Contact"
-msgstr "Contact bewerken"
-
-msgid "Edit Organization"
-msgstr "Organisatie bewerken"
-
-msgid "Email"
-msgstr "E-mail"
-
-msgid "Ended"
-msgstr "Beëindigd"
-
-msgid "Excluding VAT"
-msgstr "Exclusief btw"
-
-msgid "First name"
-msgstr "Voornaam"
-
-msgid "Former"
-msgstr "Voormalig"
-
-msgid "From"
-msgstr "Van"
-
-msgid "Helpdesk"
-msgstr "Helpdesk"
-
-msgid "Inactive"
-msgstr "Inactief"
-
-msgid "Including VAT"
-msgstr "Inclusief btw"
-
-msgid "Job title"
-msgstr "Functie"
-
-msgid "Label"
-msgstr "Label"
-
-msgid "Last name"
-msgstr "Achternaam"
-
-msgid "Legal"
-msgstr "Juridisch"
-
-msgid "Legal name"
-msgstr "Juridische naam"
-
-msgid "Link this contact to a WordPress user to show their WooCommerce orders."
-msgstr "Koppel dit contact aan een WordPress-gebruiker om de WooCommerce-bestellingen te tonen."
-
-msgid "Link this contact to a WordPress user to show their support tickets."
-msgstr "Koppel dit contact aan een WordPress-gebruiker om de supporttickets te tonen."
-
-msgid "Linked CRM record"
-msgstr "Gekoppeld CRM-record"
-
-msgid "Linked WordPress account"
-msgstr "Gekoppeld WordPress-account"
-
-msgid "Linked documentation"
-msgstr "Gekoppelde documentatie"
-
-msgid "Manage"
-msgstr "Beheren"
-
-msgid "Manage CRM"
-msgstr "CRM beheren"
-
-msgid "Mobile"
-msgstr "Mobiel"
-
-msgid "Name"
-msgstr "Naam"
-
-msgid "Names & Aliases"
-msgstr "Namen & aliassen"
-
-msgid "New Contact"
-msgstr "Nieuw contact"
-
-msgid "New Organization"
-msgstr "Nieuwe organisatie"
-
-msgid "No CRM records found."
-msgstr "Geen CRM-records gevonden."
-
-msgid "No Helpdesk tickets for this user."
-msgstr "Geen Helpdesk-tickets voor deze gebruiker."
-
-msgid "No WooCommerce orders for this user."
-msgstr "Geen WooCommerce-bestellingen voor deze gebruiker."
-
-msgid "No activity yet."
-msgstr "Nog geen activiteit."
-
-msgid "No contacts found in Trash."
-msgstr "Geen contacten gevonden in de prullenbak."
-
-msgid "No contacts found."
-msgstr "Geen contacten gevonden."
-
-msgid "No documents found."
-msgstr "Geen documenten gevonden."
-
-msgid "No matching WordPress users found."
-msgstr "Geen overeenkomende WordPress-gebruikers gevonden."
-
-msgid "No notes yet."
-msgstr "Nog geen notities."
-
-msgid "No organizations found in Trash."
-msgstr "Geen organisaties gevonden in de prullenbak."
-
-msgid "No organizations found."
-msgstr "Geen organisaties gevonden."
-
-msgid "Notes"
-msgstr "Notities"
-
-msgid "Notes & Activity"
-msgstr "Notities & activiteit"
-
-msgid "Open Helpdesk tickets"
-msgstr "Open Helpdesk-tickets"
-
-msgid "Optional. Link this CRM contact to an existing WordPress account."
-msgstr "Optioneel. Koppel dit CRM-contact aan een bestaand WordPress-account."
-
-msgid "Organization"
-msgstr "Organisatie"
-
-msgid "Organization name"
-msgstr "Organisatienaam"
-
-msgid "Organizations"
-msgstr "Organisaties"
-
-msgid "Other"
-msgstr "Overig"
-
-msgid "Overview"
-msgstr "Overzicht"
-
-msgid "Paused"
-msgstr "Gepauzeerd"
-
-msgid "People, identity and customer context."
-msgstr "Personen, identiteit en klantcontext."
-
-msgid "Phone"
-msgstr "Telefoon"
-
-msgid "Postal code"
-msgstr "Postcode"
-
-msgid "Preferred"
-msgstr "Voorkeur"
-
-msgid "Preferred email source"
-msgstr "Voorkeursbron voor e-mail"
-
-msgid "Pricing"
-msgstr "Prijsstelling"
-
-msgid "Primary"
-msgstr "Primair"
-
-msgid "Primary address"
-msgstr "Primair adres"
-
-msgid "Primary contact method"
-msgstr "Primaire contactmethode"
-
-msgid "Primary identifier of this type"
-msgstr "Primaire identificatie van dit type"
-
-msgid "Primary organization"
-msgstr "Primaire organisatie"
-
-msgid "Recent notes"
-msgstr "Recente notities"
-
-msgid "Records linked to document"
-msgstr "Records gekoppeld aan document"
-
-msgid "Region"
-msgstr "Regio"
-
-msgid "Relation"
-msgstr "Relatie"
-
-msgid "Remove"
-msgstr "Verwijderen"
-
-msgid "Remove address"
-msgstr "Adres verwijderen"
-
-msgid "Remove agreement"
-msgstr "Overeenkomst verwijderen"
-
-msgid "Role"
-msgstr "Rol"
-
-msgid "Search CRM"
-msgstr "CRM zoeken"
-
-msgid "Search Contacts"
-msgstr "Contacten zoeken"
-
-msgid "Search Organizations"
-msgstr "Organisaties zoeken"
-
-msgid "Search by name or email…"
-msgstr "Zoeken op naam of e-mailadres…"
-
-msgid "Search documents"
-msgstr "Documenten zoeken"
-
-msgid "Searching…"
-msgstr "Zoeken…"
-
-msgid "Service Agreement"
-msgstr "Serviceovereenkomst"
-
-msgid "Service Agreements"
-msgstr "Serviceovereenkomsten"
-
-msgid "Status"
-msgstr "Status"
-
-msgid "Store legal and commercial identifiers for this organization. Country uses a two-letter country code; Other identifiers require a descriptive label."
-msgstr "Sla juridische en commerciële identificaties voor deze organisatie op. Gebruik voor land een landcode van twee letters; overige identificaties vereisen een beschrijvend label."
-
-msgid "System"
-msgstr "Systeem"
-
-msgid "Tags"
-msgstr "Tags"
-
-msgid "The post was saved, but CRM could not save: %s. Review the record and try again."
-msgstr "Het bericht is opgeslagen, maar CRM kon het volgende niet opslaan: %s. Controleer het record en probeer het opnieuw."
-
-msgid "Ticket count"
-msgstr "Aantal tickets"
-
-msgid "Trading"
-msgstr "Handelsnaam"
-
-msgid "Type"
-msgstr "Type"
-
-msgid "Unavailable Work service #%d"
-msgstr "Niet-beschikbare Work-service #%d"
-
-msgid "Until"
-msgstr "Tot"
-
-msgid "Use Work service default"
-msgstr "Standaard van Work-service gebruiken"
-
-msgid "VAT / tax registration"
-msgstr "Btw-/belastingregistratie"
-
-msgid "VAT exempt"
-msgstr "Vrijgesteld van btw"
-
-msgid "VAT override"
-msgstr "Btw-afwijking"
-
-msgid "Validity"
-msgstr "Geldigheid"
-
-msgid "Value"
-msgstr "Waarde"
-
-msgid "View Contact"
-msgstr "Contact bekijken"
-
-msgid "View Organization"
-msgstr "Organisatie bekijken"
-
-msgid "View and manage CRM contacts, organizations, relationships, service agreements, notes and activity."
-msgstr "CRM-contacten, organisaties, relaties, serviceovereenkomsten, notities en activiteit bekijken en beheren."
-
-msgid "Website"
-msgstr "Website"
-
-msgid "WhatsApp"
-msgstr "WhatsApp"
-
+#: src/Integration/WooCommerce.php:31
 msgid "WooCommerce Orders"
 msgstr "WooCommerce-bestellingen"
 
+#: src/Integration/WooCommerce.php:43
+msgid "Link this contact to a WordPress user to show their WooCommerce orders."
+msgstr ""
+"Koppel dit contact aan een WordPress-gebruiker om de WooCommerce-"
+"bestellingen te tonen.Koppel dit contact aan een WordPress-gebruiker om de "
+"WooCommerce-bestellingen te tonen."
+
+#: src/Integration/WooCommerce.php:55
+msgid "No WooCommerce orders for this user."
+msgstr "Geen WooCommerce-bestellingen voor deze gebruiker."
+
+#: src/Integration/WooCommerce.php:81
+#, php-format
 msgid "WooCommerce order #%1$d changed from %2$s to %3$s"
 msgstr "WooCommerce-bestelling #%1$d gewijzigd van %2$s naar %3$s"
 
-msgid "WordPress account"
-msgstr "WordPress-account"
+#: src/Lifecycle.php:54
+msgid "Linked WordPress account was deleted"
+msgstr "Gekoppeld WordPress-account is verwijderd"
 
-msgid "WordPress account link"
-msgstr "WordPress-accountkoppeling"
+#: src/Repository/ServiceAgreements.php:23
+msgid "Paused"
+msgstr "Gepauzeerd"
 
-msgid "WordPress user search failed. Try again."
-msgstr "Zoeken naar WordPress-gebruikers mislukt. Probeer het opnieuw."
+#: src/Repository/ServiceAgreements.php:24
+msgid "Ended"
+msgstr "Beëindigd"
 
-msgid "Work service"
-msgstr "Work-service"
+#. translators: 1: required PHP version, 2: current PHP version.
+#: src/Support/Requirements.php:76
+#, php-format
+msgid "PHP %1$s or newer is required. This server runs PHP %2$s."
+msgstr "PHP %1$s of nieuwer is vereist. Deze server draait PHP %2$s."
 
-msgid "You are not allowed to search WordPress users."
-msgstr "Je hebt geen toestemming om WordPress-gebruikers te zoeken."
+#: src/Support/Requirements.php:82
+msgid "Core Blueprint must be installed and active."
+msgstr "Core Blueprint moet geïnstalleerd en actief zijn."
 
-msgid "You do not have permission to manage CRM data."
-msgstr "Je hebt geen toestemming om CRM-gegevens te beheren."
+#. translators: 1: required Core API version, 2: available Core API version.
+#: src/Support/Requirements.php:87
+#, php-format
+msgid ""
+"Core API %1$s or a newer compatible minor version is required. Available "
+"Core API: %2$s."
+msgstr "Core API %1$s of een nieuwere compatibele minorversie is vereist. Beschikbare Core API: %2$s."
 
-msgid "addresses"
-msgstr "adressen"
+#: src/Support/Requirements.php:89
+msgid "none"
+msgstr "geen"
 
-msgid "business identifiers"
-msgstr "bedrijfsidentificaties"
-
-msgid "contact methods"
-msgstr "contactmethoden"
-
-msgid "details"
-msgstr "details"
-
-msgid "e.g. Work or Home"
-msgstr "bijv. Werk of Thuis"
-
-msgid "names and aliases"
-msgstr "namen en aliassen"
-
-msgid "note"
-msgstr "notitie"
-
-msgid "organization relationships"
-msgstr "organisatierelaties"
-
-msgid "service agreements"
-msgstr "serviceovereenkomsten"
+#: src/Support/Requirements.php:93
+msgid "Ready"
+msgstr "Gereed"

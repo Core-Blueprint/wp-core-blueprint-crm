@@ -3,10 +3,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 while IFS= read -r -d '' file; do php -l "$file" >/dev/null; done < <(find "$ROOT" -type f -name '*.php' -print0)
 php "$ROOT/tests/source-conformance.php"
+"$ROOT/tools/i18n/check"
 php "$ROOT/tests/work-provider-smoke.php"
 php "$ROOT/tests/business-identifiers-smoke.php"
 php "$ROOT/tests/security-boundary-smoke.php"
-php "$ROOT/tests/localization-conformance.php"
 php "$ROOT/tests/panels-decomposition-smoke.php"
 php "$ROOT/tests/docs-decomposition-smoke.php"
 php "$ROOT/tests/schema-reconciliation-smoke.php"
@@ -20,4 +20,18 @@ php "$ROOT/tests/woocommerce-provision-audit-smoke.php"
 php "$ROOT/tests/contact-data-sources-smoke.php"
 php "$ROOT/tests/address-collapse-smoke.php"
 php "$ROOT/tests/woo-customer-workspace-smoke.php"
+php "$ROOT/tests/record-updater-persistence-smoke.php"
+php "$ROOT/tests/bootstrap-v1-smoke.php"
+
+PACKAGE_TMP="$(mktemp -d)"
+trap 'rm -rf "$PACKAGE_TMP"' EXIT
+CB_RELEASE_DIST="$PACKAGE_TMP" bash "$ROOT/tools/build-release" >/dev/null
+FIRST_PACKAGE_SHA="$(sha256sum "$PACKAGE_TMP/core-blueprint-crm.zip" | awk '{print $1}')"
+CB_RELEASE_DIST="$PACKAGE_TMP" bash "$ROOT/tools/build-release" >/dev/null
+SECOND_PACKAGE_SHA="$(sha256sum "$PACKAGE_TMP/core-blueprint-crm.zip" | awk '{print $1}')"
+if [[ "$FIRST_PACKAGE_SHA" != "$SECOND_PACKAGE_SHA" ]]; then
+	echo "CRM deterministic package smoke failed." >&2
+	exit 1
+fi
+
 echo "Core Blueprint CRM checks passed."
