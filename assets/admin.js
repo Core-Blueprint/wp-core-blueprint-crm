@@ -31,6 +31,39 @@
 		});
 	};
 
+	const initSourceOverrides = () => {
+		document.querySelectorAll('[data-cb-crm-source-override]').forEach((toggle) => {
+			const targetId = toggle.dataset.target || '';
+			const input = targetId ? document.getElementById(targetId) : null;
+			if (!input) {
+				return;
+			}
+
+			const sync = () => {
+				if (toggle.checked) {
+					input.readOnly = false;
+					if (input.dataset.overrideValue) {
+						input.value = input.dataset.overrideValue;
+					}
+					return;
+				}
+				if (!input.readOnly && input.value !== (input.dataset.externalValue || '')) {
+					input.dataset.overrideValue = input.value;
+				}
+				input.readOnly = true;
+				input.value = input.dataset.externalValue || '';
+			};
+
+			input.addEventListener('input', () => {
+				if (toggle.checked) {
+					input.dataset.overrideValue = input.value;
+				}
+			});
+			toggle.addEventListener('change', sync);
+			sync();
+		});
+	};
+
 	const initUserPicker = () => {
 		const picker = document.querySelector('[data-cb-crm-user-picker]');
 		if (!picker || !config.ajaxUrl) {
@@ -189,6 +222,7 @@
 
 	document.addEventListener('DOMContentLoaded', () => {
 		initRepeaters();
+		initSourceOverrides();
 		initUserPicker();
 	});
 })();

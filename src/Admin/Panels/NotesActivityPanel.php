@@ -37,7 +37,35 @@ final class NotesActivityPanel {
 			echo '<p class="description">' . esc_html__( 'No activity yet.', 'core-blueprint-crm' ) . '</p>';
 		}
 		foreach ( $activity as $event ) {
-			echo '<div class="cb-crm-timeline-entry"><strong>' . esc_html( (string) $event['summary'] ) . '</strong><br><small>' . esc_html( (string) $event['source'] ) . ' · ' . esc_html( (string) $event['created_at'] ) . '</small></div>';
+			echo '<div class="cb-crm-timeline-entry"><strong>' . esc_html( (string) $event['summary'] ) . '</strong>';
+			self::override_context( $event );
+			echo '<br><small>' . esc_html( (string) $event['source'] ) . ' · ' . esc_html( (string) $event['created_at'] ) . '</small></div>';
+		}
+	}
+
+	/** @param array<string,mixed> $event */
+	private static function override_context( array $event ): void {
+		if ( 'contact_field_override' !== (string) ( $event['event_type'] ?? '' ) ) {
+			return;
+		}
+		$context = json_decode( (string) ( $event['context'] ?? '' ), true );
+		if ( ! is_array( $context ) ) {
+			return;
+		}
+		$parts = [];
+		$field = sanitize_key( (string) ( $context['field'] ?? '' ) );
+		if ( '' !== $field ) {
+			$parts[] = $field;
+		}
+		foreach ( [ 'crm' => 'CRM', 'wordpress' => 'WordPress', 'woocommerce' => 'WooCommerce' ] as $key => $label ) {
+			if ( ! array_key_exists( $key, $context ) ) {
+				continue;
+			}
+			$value = sanitize_text_field( (string) $context[ $key ] );
+			$parts[] = $label . ': ' . ( '' !== $value ? $value : '—' );
+		}
+		if ( [] !== $parts ) {
+			echo '<div class="cb-crm-timeline-provenance"><small>' . esc_html( implode( ' · ', $parts ) ) . '</small></div>';
 		}
 	}
 }

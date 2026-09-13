@@ -73,12 +73,12 @@ final class ContactProvisioner {
 			}
 			$contact_id = (int) $contact_id;
 
+			// Do not copy WordPress profile data into CRM. The canonical user link is
+			// enough for live source resolution; CRM fields remain explicit overrides.
 			$result = RecordUpdater::update_contact(
 				$contact_id,
 				[
 					'wp_user_id' => $user_id,
-					'first_name' => (string) get_user_meta( $user_id, 'first_name', true ),
-					'last_name'  => (string) get_user_meta( $user_id, 'last_name', true ),
 					'email_mode' => ContactIdentity::EMAIL_WP,
 				]
 			);

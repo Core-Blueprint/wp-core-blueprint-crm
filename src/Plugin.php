@@ -10,6 +10,7 @@ use CB\CRM\Integration\Helpdesk;
 use CB\CRM\Integration\Subscriptions;
 use CB\CRM\Integration\Suite;
 use CB\CRM\Integration\WooCommerce;
+use CB\CRM\Integration\WooCustomerWorkspace;
 use CB\CRM\Integration\WorkPricing;
 
 defined( 'ABSPATH' ) || exit;
@@ -37,5 +38,6 @@ final class Plugin {
 		Helpdesk::init();
 		Subscriptions::init();
 		WooCommerce::init();
+		WooCustomerWorkspace::init();
 	}
 }

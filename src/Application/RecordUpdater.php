@@ -9,6 +9,7 @@ use CB\CRM\Content\Meta;
 use CB\CRM\Content\PostTypes;
 use CB\CRM\Content\RecordStatus;
 use CB\CRM\Governance;
+use CB\CRM\Integration\ContactDataSources;
 use CB\CRM\Repository\Activity;
 use CB\CRM\Repository\Addresses;
 use CB\CRM\Repository\BusinessIdentifiers;
@@ -68,13 +69,67 @@ final class RecordUpdater {
 		if ( array_key_exists( 'title', $input ) ) { if ( ! is_scalar( $input['title'] ) ) { $failures[] = 'details'; } else { $title = sanitize_text_field( (string) $input['title'] ); if ( get_the_title( $record_id ) !== $title ) { $result = wp_update_post( [ 'ID' => $record_id, 'post_title' => $title ], true ); if ( is_wp_error( $result ) ) { $failures[] = 'details'; } else { $changed = true; } } } }
 		if ( array_key_exists( 'status', $input ) ) { $status = is_scalar( $input['status'] ) ? sanitize_key( (string) $input['status'] ) : ''; if ( ! in_array( $status, RecordStatus::VALUES, true ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::STATUS, $status ) || $changed; } }
 		if ( Entity::CONTACT === $owner_type ) {
-			foreach ( [ 'first_name' => Meta::FIRST_NAME, 'last_name' => Meta::LAST_NAME, 'job_title' => Meta::JOB_TITLE ] as $key => $meta_key ) { if ( ! array_key_exists( $key, $input ) ) { continue; } if ( ! is_scalar( $input[ $key ] ) ) { $failures[] = 'details'; continue; } $changed = self::update_meta_if_changed( $record_id, $meta_key, sanitize_text_field( (string) $input[ $key ] ) ) || $changed; }
+			$changed = self::update_contact_name( $record_id, 'first_name', Meta::FIRST_NAME, $input, $failures ) || $changed;
+			$changed = self::update_contact_name( $record_id, 'last_name', Meta::LAST_NAME, $input, $failures ) || $changed;
+			if ( array_key_exists( 'job_title', $input ) ) { if ( ! is_scalar( $input['job_title'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::JOB_TITLE, sanitize_text_field( (string) $input['job_title'] ) ) || $changed; } }
 			if ( array_key_exists( 'wp_user_id', $input ) ) { $changed = self::update_meta_if_changed( $record_id, Meta::WP_USER_ID, absint( $input['wp_user_id'] ) ) || $changed; }
 			if ( array_key_exists( 'email_mode', $input ) || array_key_exists( 'wp_user_id', $input ) ) { $user_id = array_key_exists( 'wp_user_id', $input ) ? absint( $input['wp_user_id'] ) : ContactIdentity::linked_user_id( $record_id ); $stored_mode = sanitize_key( (string) get_post_meta( $record_id, Meta::EMAIL_MODE, true ) ); $mode = $stored_mode; if ( array_key_exists( 'email_mode', $input ) ) { $candidate = is_scalar( $input['email_mode'] ) ? sanitize_key( (string) $input['email_mode'] ) : ''; if ( ! in_array( $candidate, [ ContactIdentity::EMAIL_CRM, ContactIdentity::EMAIL_WP ], true ) ) { $failures[] = 'details'; } else { $mode = $candidate; } } if ( ContactIdentity::EMAIL_WP === $mode && 0 === $user_id ) { $mode = ContactIdentity::EMAIL_CRM; } $changed = self::update_meta_if_changed( $record_id, Meta::EMAIL_MODE, $mode ) || $changed; }
 		}
 		if ( Entity::ORGANIZATION === $owner_type && array_key_exists( 'legal_name', $input ) ) { if ( ! is_scalar( $input['legal_name'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::LEGAL_NAME, sanitize_text_field( (string) $input['legal_name'] ) ) || $changed; } }
 		return $changed;
 	}
+
+	/** @param array<string,mixed> $input @param string[] $failures */
+	private static function update_contact_name( int $record_id, string $field, string $meta_key, array $input, array &$failures ): bool {
+		if ( ! array_key_exists( $field, $input ) ) {
+			return false;
+		}
+		if ( ! is_scalar( $input[ $field ] ) ) {
+			$failures[] = 'details';
+			return false;
+		}
+		$value = sanitize_text_field( (string) $input[ $field ] );
+		$before = sanitize_text_field( (string) get_post_meta( $record_id, $meta_key, true ) );
+		if ( $before === $value ) {
+			return false;
+		}
+
+		$candidates = ContactDataSources::name_candidates( $record_id, $field );
+		$before_override = '' !== $before && [] !== $candidates && ! self::matches_candidate( $before, $candidates );
+		$after_override = '' !== $value && [] !== $candidates && ! self::matches_candidate( $value, $candidates );
+		if ( ! self::update_meta_if_changed( $record_id, $meta_key, $value ) ) {
+			return false;
+		}
+		if ( $before_override || $after_override ) {
+			$context = [ 'field' => $field, 'crm' => $value, 'state' => $after_override ? 'set' : 'removed' ];
+			foreach ( $candidates as $candidate ) {
+				$context[ $candidate['source'] ] = $candidate['value'];
+			}
+			Activity::record(
+				Entity::CONTACT,
+				$record_id,
+				'contact_field_override',
+				__( 'Customer-specific override', 'core-blueprint-crm' ),
+				'crm',
+				get_current_user_id(),
+				'post',
+				(string) $record_id,
+				$context
+			);
+		}
+		return true;
+	}
+
+	/** @param array<int,array{source:string,path:string,value:string}> $candidates */
+	private static function matches_candidate( string $value, array $candidates ): bool {
+		foreach ( $candidates as $candidate ) {
+			if ( $value === $candidate['value'] ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static function update_meta_if_changed( int $record_id, string $key, mixed $value ): bool { $before = get_post_meta( $record_id, $key, true ); if ( (string) $before === (string) $value ) { return false; } update_post_meta( $record_id, $key, $value ); return true; }
 	/** @return array<int,int|string> */
 	private static function terms( mixed $raw ): array { $values = is_array( $raw ) ? array_slice( $raw, 0, 50 ) : ( is_scalar( $raw ) ? [ $raw ] : [] ); $terms = []; foreach ( $values as $value ) { if ( ! is_scalar( $value ) ) { continue; } $string = trim( (string) $value ); if ( '' === $string ) { continue; } $terms[] = ctype_digit( $string ) ? absint( $string ) : sanitize_title( $string ); } return array_values( array_unique( $terms, SORT_REGULAR ) ); }
