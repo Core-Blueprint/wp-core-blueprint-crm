@@ -1,14 +1,24 @@
 <?php
 declare(strict_types=1);
 
-$root = dirname( __DIR__ );
-$entry = file_get_contents( $root . '/core-blueprint-crm.php' );
-$plugin = file_get_contents( $root . '/src/Plugin.php' );
+$root         = dirname( __DIR__ );
+$entry        = file_get_contents( $root . '/core-blueprint-crm.php' );
 $requirements = file_get_contents( $root . '/src/Support/Requirements.php' );
-$suite = file_get_contents( $root . '/src/Integration/Suite.php' );
-$tools = file_get_contents( $root . '/tools/check' );
+$plugin       = file_get_contents( $root . '/src/Plugin.php' );
+$install      = file_get_contents( $root . '/src/Install.php' );
+$lifecycle    = file_get_contents( $root . '/src/Lifecycle.php' );
+$suite        = file_get_contents( $root . '/src/Integration/Suite.php' );
+$tools        = file_get_contents( $root . '/tools/check' );
 
-foreach ( [ 'entry' => $entry, 'plugin' => $plugin, 'requirements' => $requirements, 'suite' => $suite, 'tools' => $tools ] as $name => $source ) {
+foreach ( [
+	'entry' => $entry,
+	'requirements' => $requirements,
+	'plugin' => $plugin,
+	'install' => $install,
+	'lifecycle' => $lifecycle,
+	'suite' => $suite,
+	'tools' => $tools,
+] as $name => $source ) {
 	if ( false === $source ) {
 		fwrite( STDERR, "FAIL: could not read {$name}.\n" );
 		exit( 1 );
@@ -32,24 +42,46 @@ $compatible = \CB\CRM\Support\Requirements::api_compatible( '1.0', '1.0' )
 	&& ! \CB\CRM\Support\Requirements::api_compatible( '1.0', '1.1' )
 	&& ! \CB\CRM\Support\Requirements::api_compatible( 'garbage', '1.0' );
 
-$php_gate = strpos( $entry, "version_compare( PHP_VERSION, CB_CRM_MIN_PHP, '<' )" );
-$autoload = strpos( $entry, 'spl_autoload_register' );
-$suite_init = strpos( $entry, '\\CB\\CRM\\Integration\\Suite::init();' );
+$php_gate     = strpos( $entry, "version_compare( PHP_VERSION, CB_CRM_MIN_PHP, '<' )" );
+$autoload     = strpos( $entry, 'spl_autoload_register' );
+$suite_init   = strpos( $entry, '\\CB\\CRM\\Integration\\Suite::init();' );
+$product_gate = strpos( $entry, 'if ( ! cb_crm_product_ready() )' );
 $product_boot = strpos( $entry, '\\CB\\CRM\\Plugin::boot();' );
+$deactivate   = strpos( $entry, 'deactivate_plugins( CB_CRM_BASENAME );', (int) strpos( $entry, 'function cb_crm_fail_activation' ) );
+$die          = strpos( $entry, 'wp_die(', (int) strpos( $entry, 'function cb_crm_fail_activation' ) );
+
+$canonical_php = 'PHP %1$s or newer is required. This server runs PHP %2$s.';
+$canonical_base = 'Core Blueprint must be installed and active.';
+$canonical_api = 'Core API %1$s or a newer compatible minor version is required. Available Core API: %2$s.';
+$canonical_contracts = 'Required Core Blueprint Base contracts are unavailable.';
 
 $checks = [
+	'Base-required plugin declares exact native WordPress dependency' => 1 === preg_match( '/^\s*\*\s*Requires Plugins:\s*core-blueprint\s*$/m', $entry ),
+	'native dependency does not encode a Base version' => ! preg_match( '/^\s*\*\s*Requires Plugins:\s*core-blueprint\s+.+$/m', $entry ),
 	'API compatibility follows same-major sufficient-minor semantics' => $compatible,
 	'minimum PHP gate precedes product autoload' => false !== $php_gate && false !== $autoload && $php_gate < $autoload,
-	'Base dependency is not expressed through Requires Plugins' => ! str_contains( $entry, 'Requires Plugins:' ),
-	'failed activation explicitly deactivates the CRM plugin' => str_contains( $entry, 'deactivate_plugins( CB_CRM_BASENAME );' ),
-	'failed activation exposes canonical Plugins destination' => str_contains( $entry, "'link_url'  => admin_url( 'plugins.php' )" ),
-	'lightweight registration has its own ExtensionRegistry readiness boundary' => str_contains( $entry, 'function cb_crm_registration_contract_ready(): bool' ) && str_contains( $entry, "class_exists( '\\\\CB\\\\Core\\\\ExtensionRegistry' )" ),
-	'product contracts are separate from registration readiness' => str_contains( $entry, 'function cb_crm_product_contracts_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\\\Audit' ) && str_contains( $entry, 'Governance\\\\EventRegistry' ),
-	'suite registration is attached before product boot' => false !== $suite_init && false !== $product_boot && $suite_init < $product_boot,
-	'Plugin boot no longer owns suite registration' => ! str_contains( $plugin, 'Suite::init();' ) && ! str_contains( $plugin, 'Integration\\Suite' ),
-	'schema registration keeps its priority-4 boundary' => str_contains( $entry, "}, 4 );" ) && str_contains( $entry, '\\CB\\CRM\\Database\\Schema::register();' ),
-	'normal runtime remains inert when required public Base services disappear' => str_contains( $entry, 'if ( ! $registration_ready || ! cb_crm_product_contracts_ready() )' ),
-	'registered but inert runtime exposes explicit error health' => str_contains( $suite, "function_exists( 'cb_crm_product_contracts_ready' )" ) && str_contains( $suite, "'state'  => 'err'" ) && str_contains( $suite, 'Core Blueprint CRM could not access one or more required public Core Blueprint Base services.' ),
+	'root autoloader uses PHP-floor-safe prefix matching' => str_contains( $entry, 'strncmp( $class, $prefix, $length )' ) && ! str_contains( $entry, 'str_starts_with( $class' ),
+	'early PHP failure uses canonical factual body' => str_contains( $entry, "'{$canonical_php}'" ),
+	'activation title is canonical' => str_contains( $entry, "'Core Blueprint requirements not met'" ) && ! str_contains( $entry, 'Core Blueprint dependency required' ),
+	'activation return destination is Plugins' => str_contains( $entry, "'link_url'  => admin_url( 'plugins.php' )" ) && str_contains( $entry, "'link_text' => __( 'Plugins' )" ),
+	'failed activation deactivates before wp_die' => false !== $deactivate && false !== $die && $deactivate < $die,
+	'normal activation consumes raw issue-specific Bootstrap message' => str_contains( $entry, 'Requirements::activation_message()' ),
+	'generic Bootstrap owns canonical Base-missing copy' => str_contains( $requirements, "'{$canonical_base}'" ),
+	'generic Bootstrap owns canonical API-incompatible copy' => str_contains( $requirements, "'{$canonical_api}'" ),
+	'generic Bootstrap exposes separate raw and translated messages' => str_contains( $requirements, 'public static function activation_message()' ) && str_contains( $requirements, 'public static function operator_message()' ),
+	'generic Bootstrap does not absorb ExtensionRegistry' => ! str_contains( $requirements, 'ExtensionRegistry' ),
+	'generic Bootstrap does not absorb SchemaRegistry' => ! str_contains( $requirements, 'SchemaRegistry' ),
+	'generic Bootstrap does not absorb governance product contracts' => ! str_contains( $requirements, 'Governance\\' ),
+	'product readiness owns Base service contracts separately' => str_contains( $entry, 'function cb_crm_product_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\Audit' ) && str_contains( $entry, 'Governance\\EventRegistry' ),
+	'product contract failure uses canonical factual body' => str_contains( $entry, "'{$canonical_contracts}'" ) && str_contains( $suite, "'{$canonical_contracts}'" ),
+	'lightweight suite registration attaches after generic readiness' => false !== $suite_init && false !== $product_gate && $suite_init < $product_gate,
+	'product runtime remains behind product readiness' => false !== $product_gate && false !== $product_boot && $product_gate < $product_boot,
+	'schema registration preserves CRM priority 4' => str_contains( $entry, '\\CB\\CRM\\Database\\Schema::register();' ) && str_contains( $entry, '}, 4 );' ),
+	'product boot preserves CRM priority 30' => str_contains( $entry, '\\CB\\CRM\\Plugin::boot();' ) && str_contains( $entry, '}, 30 );' ),
+	'restored Base can recover on a later normal request' => str_contains( $entry, 'Requirements::runtime_ready()' ) && ! str_contains( $requirements, 'static $ready' ) && ! str_contains( $requirements, 'static $issues' ),
+	'Install has no duplicate generic dependency guard' => ! str_contains( $install, 'CB_CORE_API_VERSION' ) && ! str_contains( $install, 'PHP_VERSION' ) && ! str_contains( $install, 'wp_die(' ),
+	'Lifecycle has no duplicate generic dependency guard' => ! str_contains( $lifecycle, 'CB_CORE_API_VERSION' ) && ! str_contains( $lifecycle, 'PHP_VERSION' ) && ! str_contains( $lifecycle, 'wp_die(' ),
+	'Plugin has no duplicate generic dependency guard' => ! str_contains( $plugin, 'CB_CORE_API_VERSION' ) && ! str_contains( $plugin, 'PHP_VERSION' ) && ! str_contains( $plugin, 'wp_die(' ),
 	'Bootstrap smoke is wired into tools/check' => str_contains( $tools, 'bootstrap-v1-smoke.php' ),
 ];
 
