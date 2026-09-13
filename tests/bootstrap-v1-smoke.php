@@ -45,14 +45,15 @@ $compatible = \CB\CRM\Support\Requirements::api_compatible( '1.0', '1.0' )
 $php_gate     = strpos( $entry, "version_compare( PHP_VERSION, CB_CRM_MIN_PHP, '<' )" );
 $autoload     = strpos( $entry, 'spl_autoload_register' );
 $suite_init   = strpos( $entry, '\\CB\\CRM\\Integration\\Suite::init();' );
-$product_gate = strpos( $entry, 'if ( ! cb_crm_product_ready() )' );
-$product_boot = strpos( $entry, '\\CB\\CRM\\Plugin::boot();' );
-$deactivate   = strpos( $entry, 'deactivate_plugins( CB_CRM_BASENAME );', (int) strpos( $entry, 'function cb_crm_fail_activation' ) );
-$die          = strpos( $entry, 'wp_die(', (int) strpos( $entry, 'function cb_crm_fail_activation' ) );
+$product_gate = false !== $suite_init ? strpos( $entry, 'if ( ! cb_crm_product_ready() )', $suite_init ) : false;
+$product_boot = false !== $product_gate ? strpos( $entry, '\\CB\\CRM\\Plugin::boot();', $product_gate ) : false;
+$activation   = strpos( $entry, 'function cb_crm_fail_activation' );
+$deactivate   = false !== $activation ? strpos( $entry, 'deactivate_plugins( CB_CRM_BASENAME );', $activation ) : false;
+$die          = false !== $activation ? strpos( $entry, 'wp_die(', $activation ) : false;
 
-$canonical_php = 'PHP %1$s or newer is required. This server runs PHP %2$s.';
-$canonical_base = 'Core Blueprint must be installed and active.';
-$canonical_api = 'Core API %1$s or a newer compatible minor version is required. Available Core API: %2$s.';
+$canonical_php       = 'PHP %1$s or newer is required. This server runs PHP %2$s.';
+$canonical_base      = 'Core Blueprint must be installed and active.';
+$canonical_api       = 'Core API %1$s or a newer compatible minor version is required. Available Core API: %2$s.';
 $canonical_contracts = 'Required Core Blueprint Base contracts are unavailable.';
 
 $checks = [
@@ -74,8 +75,8 @@ $checks = [
 	'generic Bootstrap does not absorb governance product contracts' => ! str_contains( $requirements, 'Governance\\' ),
 	'product readiness owns Base service contracts separately' => str_contains( $entry, 'function cb_crm_product_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\Audit' ) && str_contains( $entry, 'Governance\\EventRegistry' ),
 	'product contract failure uses canonical factual body' => str_contains( $entry, "'{$canonical_contracts}'" ) && str_contains( $suite, "'{$canonical_contracts}'" ),
-	'lightweight suite registration attaches after generic readiness' => false !== $suite_init && false !== $product_gate && $suite_init < $product_gate,
-	'product runtime remains behind product readiness' => false !== $product_gate && false !== $product_boot && $product_gate < $product_boot,
+	'lightweight suite registration precedes the runtime product gate' => false !== $suite_init && false !== $product_gate && $suite_init < $product_gate,
+	'product runtime remains behind the runtime product gate' => false !== $product_gate && false !== $product_boot && $product_gate < $product_boot,
 	'schema registration preserves CRM priority 4' => str_contains( $entry, '\\CB\\CRM\\Database\\Schema::register();' ) && str_contains( $entry, '}, 4 );' ),
 	'product boot preserves CRM priority 30' => str_contains( $entry, '\\CB\\CRM\\Plugin::boot();' ) && str_contains( $entry, '}, 30 );' ),
 	'restored Base can recover on a later normal request' => str_contains( $entry, 'Requirements::runtime_ready()' ) && ! str_contains( $requirements, 'static $ready' ) && ! str_contains( $requirements, 'static $issues' ),
