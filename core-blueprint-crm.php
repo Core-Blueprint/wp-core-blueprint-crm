@@ -85,12 +85,21 @@ function cb_crm_api_compatible( string $available, string $required ): bool {
 	return \CB\CRM\Support\Requirements::api_compatible( $available, $required );
 }
 
-/** Product-specific public Base services consumed by CRM. */
-function cb_crm_base_contracts_ready(): bool {
-	return class_exists( '\\CB\\Core\\ExtensionRegistry' )
-		&& class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
+/** Lightweight Base contract required only for canonical suite registration. */
+function cb_crm_registration_contract_ready(): bool {
+	return class_exists( '\\CB\\Core\\ExtensionRegistry' );
+}
+
+/** Product-specific public Base services consumed by CRM runtime. */
+function cb_crm_product_contracts_ready(): bool {
+	return class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
 		&& class_exists( '\\CB\\Core\\Governance\\Audit' )
 		&& class_exists( '\\CB\\Core\\Governance\\EventRegistry' );
+}
+
+/** Backward-compatible public Base service readiness helper. */
+function cb_crm_base_contracts_ready(): bool {
+	return cb_crm_registration_contract_ready() && cb_crm_product_contracts_ready();
 }
 
 /** Backward-compatible product readiness helper. */
@@ -112,7 +121,7 @@ function cb_crm_fail_activation( string $message ): void {
 	deactivate_plugins( CB_CRM_BASENAME );
 	wp_die(
 		esc_html( $message ),
-		esc_html( 'Core Blueprint dependency required' ),
+		esc_html__( 'Core Blueprint dependency required', 'core-blueprint-crm' ),
 		[
 			'link_url'  => admin_url( 'plugins.php' ),
 			'link_text' => __( 'Plugins' ),
@@ -140,7 +149,10 @@ register_activation_hook( __FILE__, 'cb_crm_activate' );
 
 /* CRM must keep schema registration at priority 4 before Base migration priority 5. */
 add_action( 'plugins_loaded', static function (): void {
-	if ( \CB\CRM\Support\Requirements::runtime_ready() && cb_crm_base_contracts_ready() ) {
+	if (
+		\CB\CRM\Support\Requirements::runtime_ready()
+		&& class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
+	) {
 		\CB\CRM\Database\Schema::register();
 	}
 }, 4 );
@@ -163,7 +175,14 @@ add_action( 'plugins_loaded', static function (): void {
 		return;
 	}
 
-	if ( ! cb_crm_base_contracts_ready() ) {
+	// Lightweight suite identity must be attached as soon as its public Base
+	// contract exists, before migrations or other product-runtime readiness.
+	$registration_ready = cb_crm_registration_contract_ready();
+	if ( $registration_ready ) {
+		\CB\CRM\Integration\Suite::init();
+	}
+
+	if ( ! $registration_ready || ! cb_crm_product_contracts_ready() ) {
 		if ( is_admin() ) {
 			add_action( 'admin_notices', static function (): void {
 				if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -172,7 +191,7 @@ add_action( 'plugins_loaded', static function (): void {
 				printf(
 					'<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>',
 					esc_html__( 'Core Blueprint CRM:', 'core-blueprint-crm' ),
-					esc_html__( 'Required public Core Blueprint Base services are unavailable. Update Core Blueprint Base first.', 'core-blueprint-crm' )
+					esc_html( cb_crm_dependency_message() )
 				);
 			} );
 		}
