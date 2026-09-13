@@ -135,7 +135,7 @@ foreach ( $forbidden_tokens as $token ) {
 $checks = [
 	'candidate version is rc1 with schema 1.5' => str_contains( $bootstrap, 'Version:           1.0.0-rc1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.5'" ),
 	'CRM targets Core API without Base RC pin' => str_contains( $bootstrap, "CB_CRM_REQUIRED_API', '1.0'" ) && ! str_contains( $bootstrap, 'CB_CRM_REQUIRED_BASE' ),
-	'CRM declares canonical native Base dependency' => 1 === preg_match( '/^\s*\*\s*Requires Plugins:\s*core-blueprint\s*$/m', $bootstrap ),
+	'CRM declares canonical native Base dependency' => 1 === preg_match( '/^[ \t]*\*[ \t]*Requires Plugins:[ \t]*core-blueprint[ \t]*$/m', $bootstrap ),
 	'CRM no longer owns Service post type' => ! str_contains( $post_types, 'cb_crm_service' ) && ! str_contains( $entity, 'SERVICE' ),
 	'CRM schema owns agreements and business identifiers but no old assignments or VAT catalog' => str_contains( $schema, 'cb_crm_service_agreements' ) && str_contains( $schema, 'cb_crm_business_identifiers' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
 	'Business identifiers are organization-owned and transactional' => str_contains( $identifiers, 'Entity::ORGANIZATION' ) && str_contains( $identifiers, "START TRANSACTION" ) && str_contains( $identifiers, "ROLLBACK" ) && str_contains( $identifiers, "COMMIT" ),
