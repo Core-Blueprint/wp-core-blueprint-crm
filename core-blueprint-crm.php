@@ -12,6 +12,7 @@
  * Domain Path:       /languages
  * Requires at least: 7.0
  * Requires PHP:      8.4
+ * Requires Plugins: core-blueprint
  *
  * @package CB_CRM
  */
@@ -42,8 +43,8 @@ if ( version_compare( PHP_VERSION, CB_CRM_MIN_PHP, '<' ) ) {
 		}
 		deactivate_plugins( CB_CRM_BASENAME );
 		wp_die(
-			esc_html( sprintf( '%s requires PHP %s or newer. This server runs PHP %s.', CB_CRM_NAME, CB_CRM_MIN_PHP, PHP_VERSION ) ),
-			esc_html( 'Core Blueprint dependency required' ),
+			esc_html( sprintf( 'PHP %1$s or newer is required. This server runs PHP %2$s.', CB_CRM_MIN_PHP, PHP_VERSION ) ),
+			esc_html( 'Core Blueprint requirements not met' ),
 			[
 				'link_url'  => admin_url( 'plugins.php' ),
 				'link_text' => __( 'Plugins' ),
@@ -58,7 +59,7 @@ if ( version_compare( PHP_VERSION, CB_CRM_MIN_PHP, '<' ) ) {
 		printf(
 			'<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>',
 			esc_html( CB_CRM_NAME . ':' ),
-			esc_html( sprintf( 'PHP %s or newer is required. This server runs PHP %s.', CB_CRM_MIN_PHP, PHP_VERSION ) )
+			esc_html( sprintf( 'PHP %1$s or newer is required. This server runs PHP %2$s.', CB_CRM_MIN_PHP, PHP_VERSION ) )
 		);
 	} );
 	return;
@@ -97,21 +98,27 @@ function cb_crm_product_contracts_ready(): bool {
 		&& class_exists( '\\CB\\Core\\Governance\\EventRegistry' );
 }
 
+/** CRM product readiness after generic Bootstrap v1 has passed. */
+function cb_crm_product_ready(): bool {
+	return cb_crm_registration_contract_ready() && cb_crm_product_contracts_ready();
+}
+
 /** Backward-compatible public Base service readiness helper. */
 function cb_crm_base_contracts_ready(): bool {
-	return cb_crm_registration_contract_ready() && cb_crm_product_contracts_ready();
+	return cb_crm_product_ready();
 }
 
 /** Backward-compatible product readiness helper. */
 function cb_crm_base_ready(): bool {
-	return \CB\CRM\Support\Requirements::runtime_ready() && cb_crm_base_contracts_ready();
+	return \CB\CRM\Support\Requirements::runtime_ready() && cb_crm_product_ready();
 }
 
+/** Translation-safe operator message for the current dependency state. */
 function cb_crm_dependency_message(): string {
 	if ( ! \CB\CRM\Support\Requirements::runtime_ready() ) {
 		return \CB\CRM\Support\Requirements::operator_message();
 	}
-	return __( 'Core Blueprint CRM could not access one or more required public Core Blueprint Base services.', 'core-blueprint-crm' );
+	return __( 'Required Core Blueprint Base contracts are unavailable.', 'core-blueprint-crm' );
 }
 
 function cb_crm_fail_activation( string $message ): void {
@@ -121,7 +128,7 @@ function cb_crm_fail_activation( string $message ): void {
 	deactivate_plugins( CB_CRM_BASENAME );
 	wp_die(
 		esc_html( $message ),
-		esc_html__( 'Core Blueprint dependency required', 'core-blueprint-crm' ),
+		esc_html( 'Core Blueprint requirements not met' ),
 		[
 			'link_url'  => admin_url( 'plugins.php' ),
 			'link_text' => __( 'Plugins' ),
@@ -131,17 +138,10 @@ function cb_crm_fail_activation( string $message ): void {
 
 function cb_crm_activate(): void {
 	if ( ! \CB\CRM\Support\Requirements::runtime_ready() ) {
-		cb_crm_fail_activation(
-			sprintf(
-				'%s requires PHP %s or newer and an active Core Blueprint Base installation compatible with Core API %s.',
-				CB_CRM_NAME,
-				CB_CRM_MIN_PHP,
-				CB_CRM_REQUIRED_API
-			)
-		);
+		cb_crm_fail_activation( \CB\CRM\Support\Requirements::activation_message() );
 	}
-	if ( ! cb_crm_base_contracts_ready() ) {
-		cb_crm_fail_activation( 'Core Blueprint CRM requires the public Base services used by CRM. Update Core Blueprint Base first.' );
+	if ( ! cb_crm_product_ready() ) {
+		cb_crm_fail_activation( 'Required Core Blueprint Base contracts are unavailable.' );
 	}
 	\CB\CRM\Install::activate();
 }
@@ -175,14 +175,13 @@ add_action( 'plugins_loaded', static function (): void {
 		return;
 	}
 
-	// Lightweight suite identity must be attached as soon as its public Base
-	// contract exists, before migrations or other product-runtime readiness.
-	$registration_ready = cb_crm_registration_contract_ready();
-	if ( $registration_ready ) {
+	// Lightweight suite identity attaches immediately after generic Bootstrap
+	// readiness, before CRM-specific Base contract/runtime gates.
+	if ( cb_crm_registration_contract_ready() ) {
 		\CB\CRM\Integration\Suite::init();
 	}
 
-	if ( ! $registration_ready || ! cb_crm_product_contracts_ready() ) {
+	if ( ! cb_crm_product_ready() ) {
 		if ( is_admin() ) {
 			add_action( 'admin_notices', static function (): void {
 				if ( ! current_user_can( 'activate_plugins' ) ) {
