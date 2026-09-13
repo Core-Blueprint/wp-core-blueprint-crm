@@ -5,9 +5,10 @@ $root = dirname( __DIR__ );
 $entry = file_get_contents( $root . '/core-blueprint-crm.php' );
 $plugin = file_get_contents( $root . '/src/Plugin.php' );
 $requirements = file_get_contents( $root . '/src/Support/Requirements.php' );
+$suite = file_get_contents( $root . '/src/Integration/Suite.php' );
 $tools = file_get_contents( $root . '/tools/check' );
 
-foreach ( [ 'entry' => $entry, 'plugin' => $plugin, 'requirements' => $requirements, 'tools' => $tools ] as $name => $source ) {
+foreach ( [ 'entry' => $entry, 'plugin' => $plugin, 'requirements' => $requirements, 'suite' => $suite, 'tools' => $tools ] as $name => $source ) {
 	if ( false === $source ) {
 		fwrite( STDERR, "FAIL: could not read {$name}.\n" );
 		exit( 1 );
@@ -48,6 +49,7 @@ $checks = [
 	'Plugin boot no longer owns suite registration' => ! str_contains( $plugin, 'Suite::init();' ) && ! str_contains( $plugin, 'Integration\\Suite' ),
 	'schema registration keeps its priority-4 boundary' => str_contains( $entry, "}, 4 );" ) && str_contains( $entry, '\\CB\\CRM\\Database\\Schema::register();' ),
 	'normal runtime remains inert when required public Base services disappear' => str_contains( $entry, 'if ( ! $registration_ready || ! cb_crm_product_contracts_ready() )' ),
+	'registered but inert runtime exposes explicit error health' => str_contains( $suite, "function_exists( 'cb_crm_product_contracts_ready' )" ) && str_contains( $suite, "'state'  => 'err'" ) && str_contains( $suite, 'Core Blueprint CRM could not access one or more required public Core Blueprint Base services.' ),
 	'Bootstrap smoke is wired into tools/check' => str_contains( $tools, 'bootstrap-v1-smoke.php' ),
 ];
 
