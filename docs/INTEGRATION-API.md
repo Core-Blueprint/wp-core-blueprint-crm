@@ -26,6 +26,26 @@ Both Business Identifier fields return an empty array for non-staff Organization
 
 Business Identifier storage accepts the standard types `vat`, `registration_number`, `eori` and `other`. `other` requires a descriptive label. CRM stores identity values but does not claim that a supplied registration number is externally or legally verified.
 
+## Server-side first-party Contact contract
+
+`CB\CRM\PublicApi\Contacts` is the canonical read-only Contact contract for trusted first-party server-side consumers such as background workers, scheduled jobs and sibling extensions.
+
+It is intentionally separate from the authenticated `Frontend` query boundary. The Public API does not impersonate a WordPress user and does not perform presentation-layer capability checks; the consuming product must authorize the operation that caused the read before calling it. The contract is PHP-only and does not expose a REST, AJAX or shortcode endpoint.
+
+`Contacts::get( $contact_id )` returns a minimal scalar/list projection containing:
+
+- `contact_id`, display name, resolved first/last name and CRM status;
+- the effective email plus `email_source` and `email_path` provenance;
+- linked WordPress user ID;
+- CRM tag slugs;
+- related organization IDs.
+
+Effective email selection remains owned by the existing CRM source resolver. The Public API only annotates which authority supplied the chosen value (`crm`, `wordpress` or `woocommerce`); it does not introduce a second email-selection policy.
+
+`Contacts::query()` supports only generic CRM filters: search, CRM status, one CRM tag slug, organization ID, explicit Contact IDs and pagination. Returned Contacts exclude Trash and auto-drafts.
+
+Marketing permission, newsletter subscription state, suppression, bounce/complaint state and campaign eligibility are deliberately **not** part of this CRM contract. A communication product may use CRM identity and segmentation context, but it must own and apply its own communication-permission policy before sending.
+
 ## Service Agreement storage
 
 CRM stores agreements in `cb_crm_service_agreements` with customer type/id, `work_service_id`, status, validity window, pricing mode, optional custom amount/currency/VAT override and notes. There is deliberately no cross-plugin SQL foreign key.
