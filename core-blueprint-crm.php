@@ -47,7 +47,7 @@ if ( version_compare( PHP_VERSION, CB_CRM_MIN_PHP, '<' ) ) {
 			esc_html( 'Core Blueprint requirements not met' ),
 			[
 				'link_url'  => admin_url( 'plugins.php' ),
-				'link_text' => 'Plugins',
+				'link_text' => __( 'Plugins' ),
 			]
 		);
 	} );
@@ -131,7 +131,7 @@ function cb_crm_fail_activation( string $message ): void {
 		esc_html( 'Core Blueprint requirements not met' ),
 		[
 			'link_url'  => admin_url( 'plugins.php' ),
-			'link_text' => 'Plugins',
+			'link_text' => __( 'Plugins' ),
 		]
 	);
 }
