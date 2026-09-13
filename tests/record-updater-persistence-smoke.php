@@ -11,7 +11,7 @@ if ( false === $source ) {
 $checks = [
 	'meta helper receives failure accumulator' => str_contains( $source, 'update_meta_if_changed( int $record_id, string $key, mixed $value, array &$failures )' ),
 	'meta helper checks WordPress persistence result' => str_contains( $source, '$result = update_post_meta( $record_id, $key, $value );' ) && str_contains( $source, 'if ( false === $result )' ),
-	'meta helper reports detail failure' => str_contains( $source, "$failures[] = 'details';" ),
+	'meta helper reports detail failure' => str_contains( $source, "\$failures[] = 'details';" ),
 	'status persistence forwards failures' => str_contains( $source, 'Meta::STATUS, $status, $failures' ),
 	'job title persistence forwards failures' => str_contains( $source, 'Meta::JOB_TITLE, sanitize_text_field( (string) $input[' . "'job_title'" . '] ), $failures' ),
 	'user-link persistence forwards failures' => str_contains( $source, 'Meta::WP_USER_ID, absint( $input[' . "'wp_user_id'" . '] ), $failures' ),
