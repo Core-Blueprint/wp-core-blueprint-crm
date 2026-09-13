@@ -68,7 +68,7 @@ final class Contacts {
 			'linked_user_id'   => ContactIdentity::linked_user_id( $contact_id ),
 			'status'           => RecordStatus::normalize( (string) get_post_meta( $contact_id, Meta::STATUS, true ) ),
 			'tags'             => self::tags( $contact_id ),
-			'organization_ids' => Organizations::organization_ids_for_contact( $contact_id ),
+			'organization_ids' => self::organization_ids( $contact_id ),
 		];
 	}
 
@@ -191,6 +191,18 @@ final class Contacts {
 			}
 		}
 		return array_values( array_unique( $out ) );
+	}
+
+	/** @return int[] */
+	private static function organization_ids( int $contact_id ): array {
+		$ids = [];
+		foreach ( Organizations::for_contact( $contact_id ) as $relation ) {
+			$organization_id = absint( $relation['organization_id'] ?? 0 );
+			if ( $organization_id > 0 && PostTypes::ORGANIZATION === get_post_type( $organization_id ) ) {
+				$ids[] = $organization_id;
+			}
+		}
+		return array_values( array_unique( $ids ) );
 	}
 
 	private static function positive_int( mixed $value, int $default ): int {
