@@ -102,30 +102,35 @@ final class AddressesPanel {
 			$has_value = $has_value || '' !== $values[ $key ];
 		}
 		$can_edit = WooCustomerWorkspace::can_edit_customer();
-		if ( ! $has_value && ! $can_edit ) {
-			return;
-		}
 		$countries = WooCustomerWorkspace::countries();
 		$title = 'billing' === $kind ? __( 'Billing address', 'woocommerce' ) : __( 'Shipping address', 'woocommerce' );
 		?>
-		<div class="cb-crm-address-card cb-crm-source-address-card">
-			<div class="cb-crm-source-card-header"><strong><?php echo esc_html( $title ); ?></strong><span class="cb-crm-source-badges"><?php SourceBadge::render( 'woocommerce', $kind . '_address' ); ?></span></div>
-			<div class="cb-crm-address-grid">
-				<?php foreach ( $fields as $key => $definition ) :
-					$value = $values[ $key ];
-					$css = '' !== $definition[2] ? ' is-' . $definition[2] : '';
-					$id = 'cb-crm-woo-' . str_replace( '_', '-', $key );
-					?>
-					<div class="cb-crm-address-field<?php echo esc_attr( $css ); ?>"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $definition[0] ); ?></label>
-						<?php if ( 'country' === $definition[1] && [] !== $countries ) : ?>
-							<select id="<?php echo esc_attr( $id ); ?>" name="cb_crm_woo_customer[<?php echo esc_attr( $key ); ?>]" <?php disabled( ! $can_edit ); ?>><option value=""></option><?php foreach ( $countries as $code => $country_label ) : ?><option value="<?php echo esc_attr( $code ); ?>" <?php selected( $value, $code ); ?>><?php echo esc_html( $country_label ); ?></option><?php endforeach; ?></select>
-						<?php else : ?>
-							<input type="<?php echo esc_attr( $definition[1] ); ?>" id="<?php echo esc_attr( $id ); ?>" name="cb_crm_woo_customer[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_attr( $value ); ?>" <?php disabled( ! $can_edit ); ?>>
-						<?php endif; ?>
-					</div>
-				<?php endforeach; ?>
+		<details class="cb-crm-address-card cb-crm-source-address-card"<?php echo $has_value ? ' open' : ''; ?>>
+			<summary class="cb-crm-source-address-summary">
+				<span class="cb-crm-source-address-summary-main">
+					<strong><?php echo esc_html( $title ); ?></strong>
+					<?php if ( ! $has_value ) : ?><span class="cb-crm-source-address-empty"><?php echo esc_html( __( 'No address set.', 'woocommerce' ) ); ?></span><?php endif; ?>
+				</span>
+				<span class="cb-crm-source-badges"><?php SourceBadge::render( 'woocommerce', $kind . '_address' ); ?></span>
+			</summary>
+			<div class="cb-crm-source-address-body">
+				<div class="cb-crm-address-grid">
+					<?php foreach ( $fields as $key => $definition ) :
+						$value = $values[ $key ];
+						$css = '' !== $definition[2] ? ' is-' . $definition[2] : '';
+						$id = 'cb-crm-woo-' . str_replace( '_', '-', $key );
+						?>
+						<div class="cb-crm-address-field<?php echo esc_attr( $css ); ?>"><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $definition[0] ); ?></label>
+							<?php if ( 'country' === $definition[1] && [] !== $countries ) : ?>
+								<select id="<?php echo esc_attr( $id ); ?>" name="cb_crm_woo_customer[<?php echo esc_attr( $key ); ?>]" <?php disabled( ! $can_edit ); ?>><option value=""></option><?php foreach ( $countries as $code => $country_label ) : ?><option value="<?php echo esc_attr( $code ); ?>" <?php selected( $value, $code ); ?>><?php echo esc_html( $country_label ); ?></option><?php endforeach; ?></select>
+							<?php else : ?>
+								<input type="<?php echo esc_attr( $definition[1] ); ?>" id="<?php echo esc_attr( $id ); ?>" name="cb_crm_woo_customer[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_attr( $value ); ?>" <?php disabled( ! $can_edit ); ?>>
+							<?php endif; ?>
+						</div>
+					<?php endforeach; ?>
+				</div>
 			</div>
-		</div>
+		</details>
 		<?php
 	}
 }
