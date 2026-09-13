@@ -46,7 +46,7 @@ final class Suite {
 		if ( function_exists( 'cb_crm_product_contracts_ready' ) && ! cb_crm_product_contracts_ready() ) {
 			return [
 				'state'  => 'err',
-				'detail' => __( 'Core Blueprint CRM could not access one or more required public Core Blueprint Base services.', 'core-blueprint-crm' ),
+				'detail' => __( 'Required Core Blueprint Base contracts are unavailable.', 'core-blueprint-crm' ),
 				'url'    => $url,
 			];
 		}
