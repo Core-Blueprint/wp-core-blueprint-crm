@@ -72,7 +72,7 @@ $checks = [
 	'generic Bootstrap does not absorb ExtensionRegistry' => ! str_contains( $requirements, 'ExtensionRegistry' ),
 	'generic Bootstrap does not absorb SchemaRegistry' => ! str_contains( $requirements, 'SchemaRegistry' ),
 	'generic Bootstrap does not absorb governance product contracts' => ! str_contains( $requirements, 'Governance\\' ),
-	'product readiness owns Base service contracts separately' => str_contains( $entry, 'function cb_crm_product_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\Audit' ) && str_contains( $entry, 'Governance\\EventRegistry' ),
+	'product readiness owns Base service contracts separately' => str_contains( $entry, 'function cb_crm_product_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\\\Audit' ) && str_contains( $entry, 'Governance\\\\EventRegistry' ),
 	'product contract failure uses canonical factual body' => str_contains( $entry, "'{$canonical_contracts}'" ) && str_contains( $suite, "'{$canonical_contracts}'" ),
 	'lightweight suite registration precedes the runtime product gate' => false !== $suite_init && false !== $product_gate && $suite_init < $product_gate,
 	'product runtime remains behind the runtime product gate' => false !== $product_gate && false !== $product_boot && $product_gate < $product_boot,
