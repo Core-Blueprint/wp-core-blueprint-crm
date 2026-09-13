@@ -28,6 +28,13 @@ $required = [
 	'tests/bootstrap-v1-smoke.php',
 	'tests/record-updater-persistence-smoke.php',
 	'tools/build-release',
+	'tools/i18n/catalog.py',
+	'tools/i18n/reference.json',
+	'tools/i18n/check-reference',
+	'tools/i18n/update',
+	'tools/i18n/check',
+	'tools/i18n/config.json.example',
+	'tools/i18n/config.json',
 ];
 $forbidden_files = [
 	'src/Content/ServicePricing.php',
@@ -105,6 +112,8 @@ $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/Dyna
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Queries.php' )
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Conditions.php' );
 $buildRelease = file_get_contents( $root . '/tools/build-release' );
+$i18nReference = json_decode( (string) file_get_contents( $root . '/tools/i18n/reference.json' ), true );
+$i18nConfig = json_decode( (string) file_get_contents( $root . '/tools/i18n/config.json' ), true );
 
 $forbidden_tokens = [
 	'PostTypes::SERVICE',
@@ -126,6 +135,7 @@ foreach ( $forbidden_tokens as $token ) {
 $checks = [
 	'candidate version is rc1 with schema 1.5' => str_contains( $bootstrap, 'Version:           1.0.0-rc1' ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.5'" ),
 	'CRM targets Core API without Base RC pin' => str_contains( $bootstrap, "CB_CRM_REQUIRED_API', '1.0'" ) && ! str_contains( $bootstrap, 'CB_CRM_REQUIRED_BASE' ),
+	'CRM declares canonical native Base dependency' => 1 === preg_match( '/^\s*\*\s*Requires Plugins:\s*core-blueprint\s*$/m', $bootstrap ),
 	'CRM no longer owns Service post type' => ! str_contains( $post_types, 'cb_crm_service' ) && ! str_contains( $entity, 'SERVICE' ),
 	'CRM schema owns agreements and business identifiers but no old assignments or VAT catalog' => str_contains( $schema, 'cb_crm_service_agreements' ) && str_contains( $schema, 'cb_crm_business_identifiers' ) && ! str_contains( $schema, 'cb_crm_service_assignments' ) && ! str_contains( $schema, 'cb_crm_tax_rates' ),
 	'Business identifiers are organization-owned and transactional' => str_contains( $identifiers, 'Entity::ORGANIZATION' ) && str_contains( $identifiers, "START TRANSACTION" ) && str_contains( $identifiers, "ROLLBACK" ) && str_contains( $identifiers, "COMMIT" ),
@@ -142,6 +152,8 @@ $checks = [
 	'Work coupling uses public API only' => 0 === preg_match( '/CB\\\\Work\\\\(?!PublicApi\\\\)/', $source ),
 	'Bricks exposes agreements not CRM Service catalog' => str_contains( $bricks, 'cb_crm_service_agreements' ) && str_contains( $bricks, 'cb_crm_contact_has_service_agreement' ) && ! str_contains( $bricks, 'cb_crm_services' ) && ! str_contains( $bricks, 'cb_crm_service_name' ),
 	'release packaging preserves canonical CRM root and excludes development material' => str_contains( $buildRelease, 'PACKAGE="core-blueprint-crm"' ) && str_contains( $buildRelease, '.github|tests|tools|dist|docs' ),
+	'canonical i18n reference metadata is pinned to Starter 1.1.0' => is_array( $i18nReference ) && '1.1.0' === ( $i18nReference['version'] ?? null ) && '4330b86f693e31ae85f46e7054204f45c83ce535' === ( $i18nReference['catalog_git_blob'] ?? null ) && '68dc04aa12bb130ec51ef1c754044b37464071f378514ee89ee06f89e2ee9955' === ( $i18nReference['catalog_sha256'] ?? null ),
+	'CRM i18n config owns only product identity and runtime artifact policy' => is_array( $i18nConfig ) && 'Core Blueprint CRM' === ( $i18nConfig['product'] ?? null ) && 'core-blueprint-crm' === ( $i18nConfig['domain'] ?? null ) && true === ( $i18nConfig['commit_mo'] ?? null ) && false === ( $i18nConfig['commit_l10n_php'] ?? null ),
 ];
 foreach ( $checks as $label => $passed ) {
 	if ( ! $passed ) {
