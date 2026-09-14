@@ -8,6 +8,7 @@ $plugin       = file_get_contents( $root . '/src/Plugin.php' );
 $install      = file_get_contents( $root . '/src/Install.php' );
 $lifecycle    = file_get_contents( $root . '/src/Lifecycle.php' );
 $suite        = file_get_contents( $root . '/src/Integration/Suite.php' );
+$access       = file_get_contents( $root . '/src/Frontend/Access.php' );
 $tools        = file_get_contents( $root . '/tools/check' );
 
 foreach ( [
@@ -17,6 +18,7 @@ foreach ( [
 	'install' => $install,
 	'lifecycle' => $lifecycle,
 	'suite' => $suite,
+	'access' => $access,
 	'tools' => $tools,
 ] as $name => $source ) {
 	if ( false === $source ) {
@@ -73,9 +75,16 @@ $checks = [
 	'generic Bootstrap does not absorb SchemaRegistry' => ! str_contains( $requirements, 'SchemaRegistry' ),
 	'generic Bootstrap does not absorb governance product contracts' => ! str_contains( $requirements, 'Governance\\' ),
 	'product readiness owns Base service contracts separately' => str_contains( $entry, 'function cb_crm_product_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\\\Audit' ) && str_contains( $entry, 'Governance\\\\EventRegistry' ),
+	'canonical runtime readiness combines generic and product readiness' => str_contains( $entry, 'function cb_crm_runtime_ready(): bool' ) && str_contains( $entry, 'Requirements::runtime_ready() && cb_crm_product_ready()' ),
+	'clean break removes pre-v1 compatibility helpers' => ! str_contains( $entry, 'function cb_crm_api_compatible(' ) && ! str_contains( $entry, 'function cb_crm_base_contracts_ready(' ) && ! str_contains( $entry, 'function cb_crm_base_ready(' ),
+	'CRM management capability fails closed outside runtime readiness' => str_contains( $entry, "'map_meta_cap'" ) && str_contains( $entry, "'cb_manage_crm' === \$cap" ) && str_contains( $entry, "return [ 'do_not_allow' ];" ),
 	'product contract failure uses canonical factual body' => str_contains( $entry, "'{$canonical_contracts}'" ) && str_contains( $suite, "'{$canonical_contracts}'" ),
 	'lightweight suite registration precedes the runtime product gate' => false !== $suite_init && false !== $product_gate && $suite_init < $product_gate,
+	'Suite self-enforces generic plus registration readiness' => str_contains( $suite, 'private static function registration_ready(): bool' ) && str_contains( $suite, 'Requirements::runtime_ready()' ) && str_contains( $suite, 'cb_crm_registration_contract_ready' ),
+	'Suite direct init is idempotent and fail closed' => str_contains( $suite, 'private static bool $initialized = false;' ) && str_contains( $suite, 'if ( ! self::registration_ready() || self::$initialized )' ),
 	'product runtime remains behind the runtime product gate' => false !== $product_gate && false !== $product_boot && $product_gate < $product_boot,
+	'direct Plugin boot rechecks current runtime readiness' => str_contains( $plugin, "function_exists( 'cb_crm_runtime_ready' )" ) && str_contains( $plugin, '! \\cb_crm_runtime_ready()' ),
+	'frontend access rechecks current runtime readiness' => str_contains( $access, "function_exists( 'cb_crm_runtime_ready' )" ) && str_contains( $access, "new \\WP_Error( 'crm_unavailable' )" ),
 	'schema registration preserves CRM priority 4' => str_contains( $entry, '\\CB\\CRM\\Database\\Schema::register();' ) && str_contains( $entry, '}, 4 );' ),
 	'product boot preserves CRM priority 30' => str_contains( $entry, '\\CB\\CRM\\Plugin::boot();' ) && str_contains( $entry, '}, 30 );' ),
 	'restored Base can recover on a later normal request' => str_contains( $entry, 'Requirements::runtime_ready()' ) && ! str_contains( $requirements, 'static $ready' ) && ! str_contains( $requirements, 'static $issues' ),
