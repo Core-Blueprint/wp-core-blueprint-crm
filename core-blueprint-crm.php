@@ -104,6 +104,14 @@ function cb_crm_runtime_ready(): bool {
 	return \CB\CRM\Support\Requirements::runtime_ready() && cb_crm_product_ready();
 }
 
+/* Every CRM management-capability path fails closed while product runtime is unavailable. */
+add_filter( 'map_meta_cap', static function ( array $caps, string $cap ): array {
+	if ( 'cb_manage_crm' === $cap && ! cb_crm_runtime_ready() ) {
+		return [ 'do_not_allow' ];
+	}
+	return $caps;
+}, 10, 2 );
+
 /** Translation-safe operator message for the current dependency state. */
 function cb_crm_dependency_message(): string {
 	if ( ! \CB\CRM\Support\Requirements::runtime_ready() ) {
