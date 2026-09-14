@@ -20,7 +20,7 @@ final class Contacts {
 
 	/** @return array<string,mixed>|\WP_Error */
 	public static function current_user(): array|\WP_Error {
-		return Contact::current();
+		return self::runtime_ready() ? Contact::current() : new \WP_Error( 'crm_unavailable' );
 	}
 
 	/**
@@ -32,6 +32,9 @@ final class Contacts {
 	 * @return array<string,mixed>|\WP_Error
 	 */
 	public static function for_user( int $user_id ): array|\WP_Error {
+		if ( ! self::runtime_ready() ) {
+			return new \WP_Error( 'crm_unavailable' );
+		}
 		$actor_user_id = get_current_user_id();
 		if ( $actor_user_id <= 0 ) {
 			return new \WP_Error( 'crm_login_required' );
@@ -62,6 +65,9 @@ final class Contacts {
 	 * @return array{items:array<int,array<string,mixed>>,page:int,per_page:int,total:int,total_pages:int}|\WP_Error
 	 */
 	public static function staff( array $args = [] ): array|\WP_Error {
+		if ( ! self::runtime_ready() ) {
+			return new \WP_Error( 'crm_unavailable' );
+		}
 		if ( ! current_user_can( Capabilities::MANAGE ) ) {
 			return new \WP_Error( 'crm_forbidden' );
 		}
@@ -70,6 +76,9 @@ final class Contacts {
 
 	/** @return array<int,array<string,mixed>>|\WP_Error */
 	public static function for_organization( int $organization_id, int $limit = 30 ): array|\WP_Error {
+		if ( ! self::runtime_ready() ) {
+			return new \WP_Error( 'crm_unavailable' );
+		}
 		if ( ! current_user_can( Capabilities::MANAGE ) ) {
 			return new \WP_Error( 'crm_forbidden' );
 		}
@@ -120,23 +129,48 @@ final class Contacts {
 		$query = new \WP_Query( $query_args );
 		$items = [];
 		foreach ( $query->posts as $post ) {
-			if ( ! $post instanceof \WP_Post ) { continue; }
+			if ( ! $post instanceof \WP_Post ) {
+				continue;
+			}
 			$item = Contact::get( (int) $post->ID );
-			if ( ! is_wp_error( $item ) ) { $items[] = $item; }
+			if ( ! is_wp_error( $item ) ) {
+				$items[] = $item;
+			}
 		}
-		return [ 'items' => $items, 'page' => $page, 'per_page' => $per_page, 'total' => max( 0, (int) $query->found_posts ), 'total_pages' => max( 0, (int) $query->max_num_pages ) ];
+		return [
+			'items' => $items,
+			'page' => $page,
+			'per_page' => $per_page,
+			'total' => max( 0, (int) $query->found_posts ),
+			'total_pages' => max( 0, (int) $query->max_num_pages ),
+		];
+	}
+
+	private static function runtime_ready(): bool {
+		return function_exists( 'cb_crm_runtime_ready' ) && \cb_crm_runtime_ready();
 	}
 
 	private static function positive_int( mixed $value, int $default ): int {
-		if ( ! is_scalar( $value ) || ! is_numeric( $value ) ) { return $default; }
-		$value = absint( $value ); return $value > 0 ? $value : $default;
+		if ( ! is_scalar( $value ) || ! is_numeric( $value ) ) {
+			return $default;
+		}
+		$value = absint( $value );
+		return $value > 0 ? $value : $default;
 	}
-	private static function scalar_string( mixed $value ): string { return is_scalar( $value ) ? (string) $value : ''; }
+
+	private static function scalar_string( mixed $value ): string {
+		return is_scalar( $value ) ? (string) $value : '';
+	}
+
 	/** @return int[] */
 	private static function include_ids( mixed $raw ): array {
 		$values = is_array( $raw ) ? $raw : ( is_scalar( $raw ) && '' !== (string) $raw ? [ $raw ] : [] );
 		$ids = [];
-		foreach ( $values as $value ) { if ( is_scalar( $value ) && absint( $value ) > 0 ) { $ids[] = absint( $value ); } }
+		foreach ( $values as $value ) {
+			if ( is_scalar( $value ) && absint( $value ) > 0 ) {
+				$ids[] = absint( $value );
+			}
+		}
 		return array_values( array_unique( $ids ) );
 	}
 }
