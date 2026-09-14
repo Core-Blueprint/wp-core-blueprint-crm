@@ -44,6 +44,10 @@ final class Contacts {
 	 * }|null
 	 */
 	public static function get( int $contact_id ): ?array {
+		if ( ! self::runtime_ready() ) {
+			return null;
+		}
+
 		$post = $contact_id > 0 ? get_post( $contact_id ) : null;
 		if (
 			! $post instanceof \WP_Post
@@ -102,6 +106,16 @@ final class Contacts {
 			self::MAX_PER_PAGE,
 			self::positive_int( $args['per_page'] ?? self::DEFAULT_PER_PAGE, self::DEFAULT_PER_PAGE )
 		);
+
+		if ( ! self::runtime_ready() ) {
+			return [
+				'items'       => [],
+				'page'        => $page,
+				'per_page'    => $per_page,
+				'total'       => 0,
+				'total_pages' => 0,
+			];
+		}
 
 		$query_args = [
 			'post_type'           => PostTypes::CONTACT,
@@ -203,6 +217,10 @@ final class Contacts {
 			}
 		}
 		return array_values( array_unique( $ids ) );
+	}
+
+	private static function runtime_ready(): bool {
+		return function_exists( 'cb_crm_runtime_ready' ) && \cb_crm_runtime_ready();
 	}
 
 	private static function positive_int( mixed $value, int $default ): int {
