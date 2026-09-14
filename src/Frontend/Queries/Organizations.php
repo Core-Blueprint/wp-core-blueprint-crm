@@ -47,7 +47,7 @@ final class Organizations {
 		}
 		$tag = sanitize_title( self::scalar_string( $args['tag'] ?? '' ) );
 		if ( '' !== $tag ) {
-			$query_args['tax_query'] = [ [ 'taxonomy' => PostTypes::TAG, 'field' => 'slug', 'terms' => [ $tag ] ];
+			$query_args['tax_query'] = [ [ 'taxonomy' => PostTypes::TAG, 'field' => 'slug', 'terms' => [ $tag ] ] ];
 		}
 		$ids = self::include_ids( $args['include_ids'] ?? [] );
 		if ( [] !== $ids ) {
