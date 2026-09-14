@@ -31,6 +31,13 @@ if ( is_string( $api ) ) {
 		'Background consumer reads must not depend on an authenticated WordPress user context.'
 	);
 	$assert(
+		str_contains( $api, "function_exists( 'cb_crm_runtime_ready' )" )
+			&& str_contains( $api, '! \\cb_crm_runtime_ready()' )
+			&& str_contains( $api, "'items'       => []" )
+			&& str_contains( $api, "'total'       => 0" ),
+		'Background Contact reads must fail closed without current CRM runtime readiness.'
+	);
+	$assert(
 		! str_contains( $api, 'global $wpdb' )
 			&& ! str_contains( $api, 'Database\\Schema' )
 			&& ! str_contains( $api, 'WC_Customer' )
