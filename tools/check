@@ -22,6 +22,7 @@ php "$ROOT/tests/public-contact-api-smoke.php"
 php "$ROOT/tests/address-collapse-smoke.php"
 php "$ROOT/tests/woo-customer-workspace-smoke.php"
 php "$ROOT/tests/record-updater-persistence-smoke.php"
+php "$ROOT/tests/record-updater-user-link-smoke.php"
 php "$ROOT/tests/bootstrap-v1-smoke.php"
 
 PACKAGE_TMP="$(mktemp -d)"
