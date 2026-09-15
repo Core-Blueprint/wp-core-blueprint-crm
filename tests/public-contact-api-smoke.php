@@ -32,7 +32,9 @@ if ( is_string( $api ) ) {
 	);
 	$assert(
 		str_contains( $api, "function_exists( 'cb_crm_runtime_ready' )" )
-			&& str_contains( $api, '! \\cb_crm_runtime_ready()' )
+			&& str_contains( $api, 'private static function runtime_ready(): bool' )
+			&& str_contains( $api, "return function_exists( 'cb_crm_runtime_ready' ) && \\cb_crm_runtime_ready();" )
+			&& substr_count( $api, 'if ( ! self::runtime_ready() )' ) >= 2
 			&& str_contains( $api, "'items'       => []" )
 			&& str_contains( $api, "'total'       => 0" ),
 		'Background Contact reads must fail closed without current CRM runtime readiness.'

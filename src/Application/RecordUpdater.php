@@ -33,7 +33,7 @@ final class RecordUpdater {
 		if ( Entity::CONTACT === $owner_type && array_key_exists( 'wp_user_id', $input ) ) {
 			$stored_user_id = ContactIdentity::linked_user_id( $record_id );
 			if ( ! is_scalar( $input['wp_user_id'] ) || ! is_numeric( $input['wp_user_id'] ) ) { $input['wp_user_id'] = $stored_user_id; $failures[] = 'wordpress_user'; }
-			else { $user_id = absint( $input['wp_user_id'] ); if ( $user_id > 0 && ! get_userdata( $user_id ) ) { $input['wp_user_id'] = 0; $failures[] = 'wordpress_user'; } elseif ( $user_id > 0 && ! ContactIdentity::can_link_user_to_contact( $user_id, $record_id ) ) { $input['wp_user_id'] = $stored_user_id; $failures[] = 'wordpress_user'; } }
+			else { $user_id = absint( $input['wp_user_id'] ); if ( $user_id > 0 && ! get_userdata( $user_id ) ) { $input['wp_user_id'] = $stored_user_id; $failures[] = 'wordpress_user'; } elseif ( $user_id > 0 && ! ContactIdentity::can_link_user_to_contact( $user_id, $record_id ) ) { $input['wp_user_id'] = $stored_user_id; $failures[] = 'wordpress_user'; } }
 		}
 		if ( self::update_details( $owner_type, $record_id, $input, $failures ) ) { $areas[] = 'details'; Governance::record_data_updated( $owner_type, $record_id, 'details' ); }
 		self::replace_area( 'contact_methods', $input, $areas, $failures, static fn( array $rows ): bool => ContactMethods::replace( $owner_type, $record_id, $rows ), $owner_type, $record_id );
