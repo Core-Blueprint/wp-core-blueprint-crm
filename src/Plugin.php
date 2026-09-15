@@ -18,6 +18,9 @@ final class Plugin {
 	private static bool $booted = false;
 
 	public static function boot(): void {
+		if ( ! function_exists( 'cb_crm_runtime_ready' ) || ! \cb_crm_runtime_ready() ) {
+			return;
+		}
 		if ( self::$booted ) {
 			return;
 		}

@@ -7,18 +7,30 @@ use CB\Core\ExtensionRegistry;
 use CB\CRM\Admin\Menu;
 use CB\CRM\Content\PostTypes;
 use CB\CRM\Database\Schema;
+use CB\CRM\Support\Requirements;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Suite {
 	public const ID = 'core-blueprint-crm';
 
+	private static bool $initialized = false;
+
 	public static function init(): void {
+		if ( ! self::registration_ready() || self::$initialized ) {
+			return;
+		}
+		self::$initialized = true;
+
 		add_action( 'cb_core_register_extensions', [ __CLASS__, 'register_extension' ] );
 		add_filter( 'cb_core_module_status_definitions', [ __CLASS__, 'register_status_definition' ] );
 	}
 
 	public static function register_extension(): void {
+		if ( ! self::registration_ready() ) {
+			return;
+		}
+
 		ExtensionRegistry::register( [
 			'id'            => self::ID,
 			'plugin_file'   => CB_CRM_BASENAME,
@@ -32,6 +44,10 @@ final class Suite {
 	 *  @return array<string,array<string,mixed>>
 	 */
 	public static function register_status_definition( array $definitions ): array {
+		if ( ! self::registration_ready() ) {
+			return $definitions;
+		}
+
 		$definitions['crm'] = [
 			'provider' => [ __CLASS__, 'status' ],
 			'label'    => did_action( 'init' ) ? __( 'CRM', 'core-blueprint-crm' ) : 'CRM',
@@ -42,8 +58,16 @@ final class Suite {
 
 	/** @return array{state:string,detail:string,url:string} */
 	public static function status(): array {
+		if ( ! self::registration_ready() ) {
+			return [
+				'state'  => 'err',
+				'detail' => Requirements::operator_message(),
+				'url'    => '',
+			];
+		}
+
 		$url = admin_url( 'admin.php?page=' . Menu::TOP_LEVEL_SLUG );
-		if ( function_exists( 'cb_crm_product_contracts_ready' ) && ! cb_crm_product_contracts_ready() ) {
+		if ( ! function_exists( 'cb_crm_product_contracts_ready' ) || ! \cb_crm_product_contracts_ready() ) {
 			return [
 				'state'  => 'err',
 				'detail' => __( 'Required Core Blueprint Base contracts are unavailable.', 'core-blueprint-crm' ),
@@ -77,6 +101,12 @@ final class Suite {
 			'detail' => $contacts . ' · ' . $organizations,
 			'url'    => $url,
 		];
+	}
+
+	private static function registration_ready(): bool {
+		return Requirements::runtime_ready()
+			&& function_exists( 'cb_crm_registration_contract_ready' )
+			&& \cb_crm_registration_contract_ready();
 	}
 
 	private static function record_count( string $post_type ): int {

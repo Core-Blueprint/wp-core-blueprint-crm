@@ -82,10 +82,6 @@ add_action( 'init', static function (): void {
 	load_plugin_textdomain( 'core-blueprint-crm', false, dirname( CB_CRM_BASENAME ) . '/languages' );
 }, 1 );
 
-function cb_crm_api_compatible( string $available, string $required ): bool {
-	return \CB\CRM\Support\Requirements::api_compatible( $available, $required );
-}
-
 /** Lightweight Base contract required only for canonical suite registration. */
 function cb_crm_registration_contract_ready(): bool {
 	return class_exists( '\\CB\\Core\\ExtensionRegistry' );
@@ -103,15 +99,18 @@ function cb_crm_product_ready(): bool {
 	return cb_crm_registration_contract_ready() && cb_crm_product_contracts_ready();
 }
 
-/** Backward-compatible public Base service readiness helper. */
-function cb_crm_base_contracts_ready(): bool {
-	return cb_crm_product_ready();
-}
-
-/** Backward-compatible product readiness helper. */
-function cb_crm_base_ready(): bool {
+/** Canonical current-request readiness for CRM product/public runtime. */
+function cb_crm_runtime_ready(): bool {
 	return \CB\CRM\Support\Requirements::runtime_ready() && cb_crm_product_ready();
 }
+
+/* Every CRM management-capability path fails closed while product runtime is unavailable. */
+add_filter( 'map_meta_cap', static function ( array $caps, string $cap ): array {
+	if ( 'cb_manage_crm' === $cap && ! cb_crm_runtime_ready() ) {
+		return [ 'do_not_allow' ];
+	}
+	return $caps;
+}, 10, 2 );
 
 /** Translation-safe operator message for the current dependency state. */
 function cb_crm_dependency_message(): string {

@@ -199,6 +199,41 @@ final class ContactDataSources {
 		return is_email( $woo ) ? $woo : '';
 	}
 
+	/** @return array{value:string,source:string,path:string} */
+	public static function effective_email_field( int $contact_id ): array {
+		$value = sanitize_email( self::effective_email( $contact_id ) );
+		if ( ! is_email( $value ) ) {
+			return [ 'value' => '', 'source' => '', 'path' => '' ];
+		}
+
+		$mode = sanitize_key( (string) get_post_meta( $contact_id, Meta::EMAIL_MODE, true ) );
+		$account_email = sanitize_email( ContactIdentity::account_email( $contact_id ) );
+		if (
+			ContactIdentity::EMAIL_WP === $mode
+			&& is_email( $account_email )
+			&& 0 === strcasecmp( $value, $account_email )
+		) {
+			return [ 'value' => $value, 'source' => 'wordpress', 'path' => 'user_email' ];
+		}
+
+		$primary = ContactMethods::primary( Entity::CONTACT, $contact_id, 'email' );
+		$crm_email = is_array( $primary ) ? sanitize_email( (string) ( $primary['value'] ?? '' ) ) : '';
+		if ( is_email( $crm_email ) && 0 === strcasecmp( $value, $crm_email ) ) {
+			return [ 'value' => $value, 'source' => 'crm', 'path' => 'contact_methods.primary_email' ];
+		}
+
+		if ( is_email( $account_email ) && 0 === strcasecmp( $value, $account_email ) ) {
+			return [ 'value' => $value, 'source' => 'wordpress', 'path' => 'user_email' ];
+		}
+
+		$woo_email = sanitize_email( self::woo_value( $contact_id, 'billing_email' ) );
+		if ( is_email( $woo_email ) && 0 === strcasecmp( $value, $woo_email ) ) {
+			return [ 'value' => $value, 'source' => 'woocommerce', 'path' => 'billing_email' ];
+		}
+
+		return [ 'value' => $value, 'source' => 'crm', 'path' => 'effective_email' ];
+	}
+
 	public static function effective_phone( int $contact_id ): string {
 		$phone = ContactMethods::primary( Entity::CONTACT, $contact_id, 'phone' );
 		if ( ! is_array( $phone ) ) {
