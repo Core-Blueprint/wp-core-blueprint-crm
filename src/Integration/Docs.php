@@ -27,7 +27,11 @@ final class Docs {
 		DocsAdmin::register_crm_panel();
 	}
 
-	public static function register_docs_panel( string $post_type, \WP_Post $post ): void {
+	public static function register_docs_panel( string $post_type, mixed $post ): void {
+		if ( ! $post instanceof \WP_Post ) {
+			return;
+		}
+
 		DocsAdmin::register_docs_panel( $post_type, $post );
 	}
 
