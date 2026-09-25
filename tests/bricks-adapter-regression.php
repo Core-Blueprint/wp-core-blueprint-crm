@@ -4,7 +4,7 @@ declare(strict_types=1);
 $root = dirname( __DIR__ );
 
 function cb_crm_bricks_read( string $relative ): string {
-    $path = $root = dirname( __DIR__ );
+    $path = dirname( __DIR__ );
     $contents = file_get_contents( $path . '/' . $relative );
     if ( false === $contents ) {
         fwrite( STDERR, "CRM Bricks regression failed: unable to read {$relative}\n" );
