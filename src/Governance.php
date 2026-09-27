@@ -18,8 +18,9 @@ final class Governance {
 	public const RECORD_DELETED  = 'crm.record.deleted';
 	public const DATA_UPDATED    = 'crm.data.updated';
 	public const NOTE_CREATED    = 'crm.note.created';
-	public const ORDER_ACTIVITY  = 'crm.order.activity';
-	public const TICKET_ACTIVITY = 'crm.ticket.activity';
+	public const ORDER_ACTIVITY   = 'crm.order.activity';
+	public const BOOKING_ACTIVITY = 'crm.booking.activity';
+	public const TICKET_ACTIVITY  = 'crm.ticket.activity';
 	public const CLEANUP_FAILED  = 'crm.cleanup.failed';
 
 	public static function init(): void {
@@ -34,6 +35,7 @@ final class Governance {
 		EventRegistry::register( [ 'id' => self::DATA_UPDATED, 'label' => __( 'CRM record data updated', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::NOTE_CREATED, 'label' => __( 'CRM note created', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::ORDER_ACTIVITY, 'label' => __( 'CRM WooCommerce activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
+		EventRegistry::register( [ 'id' => self::BOOKING_ACTIVITY, 'label' => __( 'CRM Bookings activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::TICKET_ACTIVITY, 'label' => __( 'CRM Helpdesk activity recorded', 'core-blueprint-crm' ), 'retention_category' => 'general' ] );
 		EventRegistry::register( [ 'id' => self::CLEANUP_FAILED, 'label' => __( 'CRM record cleanup failed', 'core-blueprint-crm' ), 'retention_category' => 'maintenance' ] );
 	}
@@ -108,6 +110,41 @@ final class Governance {
 			]
 		);
 	}
+
+	public static function record_booking_activity( int $contact_id, int $booking_id, bool $created_contact ): void {
+		if ( PostTypes::CONTACT !== get_post_type( $contact_id ) || $booking_id <= 0 ) {
+			return;
+		}
+		Audit::record(
+			self::BOOKING_ACTIVITY,
+			'info',
+			[
+				'contact_id'      => $contact_id,
+				'booking_id'      => $booking_id,
+				'action'          => 'booking_created',
+				'created_contact' => $created_contact,
+				'actor_user_id'   => get_current_user_id(),
+			]
+		);
+	}
+
+	public static function record_booking_provision_failed( int $booking_id, string $reason ): void {
+		if ( $booking_id <= 0 ) {
+			return;
+		}
+		Audit::record(
+			self::BOOKING_ACTIVITY,
+			'warning',
+			[
+				'contact_id'    => 0,
+				'booking_id'    => $booking_id,
+				'action'        => 'identity_provision_failed',
+				'reason'        => substr( sanitize_key( $reason ), 0, 64 ),
+				'actor_user_id' => get_current_user_id(),
+			]
+		);
+	}
+
 
 	public static function record_ticket_activity( int $contact_id, int $ticket_id, string $action ): void {
 		if ( PostTypes::CONTACT !== get_post_type( $contact_id ) ) {

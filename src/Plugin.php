@@ -4,6 +4,7 @@ namespace CB\CRM;
 
 use CB\CRM\Admin\Admin;
 use CB\CRM\Content\PostTypes;
+use CB\CRM\Integration\Bookings;
 use CB\CRM\Integration\Builders\Bootstrap as BuildersBootstrap;
 use CB\CRM\Integration\Docs;
 use CB\CRM\Integration\Helpdesk;
@@ -36,6 +37,7 @@ final class Plugin {
 		Admin::init();
 		BuildersBootstrap::init();
 		Docs::init();
+		Bookings::init();
 		Helpdesk::init();
 		Subscriptions::init();
 		WooCommerce::init();
