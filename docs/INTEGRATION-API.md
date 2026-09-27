@@ -98,6 +98,31 @@ Guest orders do not create CRM Contacts. Organization creation from WooCommerce 
 
 Failed automatic provisioning is recorded as warning-level WooCommerce activity in the Base audit log with the order, user, source and fail-closed reason. Repeated identical failures for the same order, user and reason are deduplicated for a short window across the converging Woo signals; transient lock contention is treated as expected concurrency and does not generate warning noise.
 
+## Core Blueprint Bookings identity provisioning
+
+Core Blueprint Bookings remains authoritative for booking state. CRM listens only to the public post-commit `cb_bookings_booking_created` event and never calls Bookings storage or classes.
+
+The canonical Bookings v1 customer snapshot consumed by CRM is structured:
+
+- `customer_first_name`
+- `customer_name_prefix`
+- `customer_last_name`
+- `customer_email`
+- `customer_phone`
+
+CRM does not parse a combined customer display name. A booking without an email remains fully valid in Bookings but does not auto-provision a CRM Contact.
+
+`CB\CRM\Application\ContactSnapshotProvisioner` owns snapshot reconciliation. Email is the only automatic reconciliation key:
+
+1. one existing email match is reused without overwriting existing CRM identity;
+2. multiple email matches fail closed for operator review;
+3. no match may create a new Contact from the structured customer snapshot;
+4. new-contact creation uses an atomic non-autoloaded lease keyed by normalized email, with stale recovery and shutdown/finally release;
+5. identity is re-checked after the lease and after the Contact write;
+6. only the Contact created by the current request may be rolled back after a race or persistence failure.
+
+Successful reconciliation records CRM Activity with a Bookings reference. Failures are recorded through CRM governance, except expected transient lock contention. CRM processing happens after the Bookings transaction has committed, so CRM failure can never invalidate or roll back the booking.
+
 ## Builder adapters
 
 Builder adapters may only call these builder-neutral/public contracts. No adapter reads CRM or Work tables directly. Bricks is the first supported adapter, not a dependency or architectural special case.
