@@ -923,3 +923,12 @@ msgstr ""
 #: src/Admin/Panels/DetailsPanel.php:103
 msgid "Name prefix"
 msgstr ""
+
+#: src/Governance.php
+msgid "CRM Bookings activity recorded"
+msgstr ""
+
+#: src/Integration/Bookings.php
+#, php-format
+msgid "Booking #%d created"
+msgstr ""

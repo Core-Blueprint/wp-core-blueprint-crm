@@ -905,3 +905,12 @@ msgstr "Gereed"
 #: src/Admin/Panels/DetailsPanel.php:103
 msgid "Name prefix"
 msgstr "Tussenvoegsel"
+
+#: src/Governance.php
+msgid "CRM Bookings activity recorded"
+msgstr "CRM Bookings-activiteit geregistreerd"
+
+#: src/Integration/Bookings.php
+#, php-format
+msgid "Booking #%d created"
+msgstr "Boeking #%d aangemaakt"

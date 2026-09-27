@@ -907,3 +907,12 @@ msgstr "Prêt"
 #: src/Admin/Panels/DetailsPanel.php:103
 msgid "Name prefix"
 msgstr "Préfixe du nom"
+
+#: src/Governance.php
+msgid "CRM Bookings activity recorded"
+msgstr "Activité Bookings du CRM enregistrée"
+
+#: src/Integration/Bookings.php
+#, php-format
+msgid "Booking #%d created"
+msgstr "Réservation n° %d créée"

@@ -908,3 +908,12 @@ msgstr "Bereit"
 #: src/Admin/Panels/DetailsPanel.php:103
 msgid "Name prefix"
 msgstr "Namenspräfix"
+
+#: src/Governance.php
+msgid "CRM Bookings activity recorded"
+msgstr "CRM-Bookings-Aktivität aufgezeichnet"
+
+#: src/Integration/Bookings.php
+#, php-format
+msgid "Booking #%d created"
+msgstr "Buchung #%d erstellt"
