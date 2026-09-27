@@ -165,6 +165,7 @@ final class ContactSnapshotProvisioner {
 			return new \WP_Error( 'crm_snapshot_lock_failed' );
 		}
 		if ( add_option( $option, $handle, '', false ) ) {
+			self::release_on_shutdown( $email, $handle );
 			return $handle;
 		}
 
@@ -180,7 +181,16 @@ final class ContactSnapshotProvisioner {
 		if ( ! self::delete_lock_value( $option, $existing ) || ! add_option( $option, $handle, '', false ) ) {
 			return new \WP_Error( 'crm_snapshot_provision_busy' );
 		}
+		self::release_on_shutdown( $email, $handle );
 		return $handle;
+	}
+
+	private static function release_on_shutdown( string $email, string $handle ): void {
+		register_shutdown_function(
+			static function () use ( $email, $handle ): void {
+				self::release_lock( $email, $handle );
+			}
+		);
 	}
 
 	private static function release_lock( string $email, string $handle ): void {
