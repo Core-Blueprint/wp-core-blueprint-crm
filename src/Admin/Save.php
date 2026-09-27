@@ -61,6 +61,7 @@ final class Save {
 		$input = [ 'status' => $details['status'] ?? RecordStatus::ACTIVE ];
 		if ( Entity::CONTACT === $owner_type ) {
 			$input['job_title'] = $details['job_title'] ?? '';
+			$input['name_prefix'] = $details['name_prefix'] ?? '';
 			$input['wp_user_id'] = $details['wp_user_id'] ?? 0;
 			$input['email_mode'] = $details['email_mode'] ?? 'crm';
 

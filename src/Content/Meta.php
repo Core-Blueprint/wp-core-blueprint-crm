@@ -8,6 +8,7 @@ final class Meta {
 	public const WP_USER_ID = '_cb_crm_wp_user_id';
 	public const EMAIL_MODE = '_cb_crm_email_mode';
 	public const FIRST_NAME = '_cb_crm_first_name';
+	public const NAME_PREFIX = '_cb_crm_name_prefix';
 	public const LAST_NAME = '_cb_crm_last_name';
 	public const JOB_TITLE = '_cb_crm_job_title';
 	public const LEGAL_NAME = '_cb_crm_legal_name';
@@ -19,6 +20,7 @@ final class Meta {
 		register_post_meta( PostTypes::CONTACT, self::WP_USER_ID, self::args( 'integer', 'absint' ) );
 		register_post_meta( PostTypes::CONTACT, self::EMAIL_MODE, self::args( 'string', 'sanitize_key' ) );
 		register_post_meta( PostTypes::CONTACT, self::FIRST_NAME, self::args( 'string', 'sanitize_text_field' ) );
+		register_post_meta( PostTypes::CONTACT, self::NAME_PREFIX, self::args( 'string', 'sanitize_text_field' ) );
 		register_post_meta( PostTypes::CONTACT, self::LAST_NAME, self::args( 'string', 'sanitize_text_field' ) );
 		register_post_meta( PostTypes::CONTACT, self::JOB_TITLE, self::args( 'string', 'sanitize_text_field' ) );
 		register_post_meta( PostTypes::ORGANIZATION, self::LEGAL_NAME, self::args( 'string', 'sanitize_text_field' ) );

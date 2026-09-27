@@ -71,6 +71,10 @@ final class ContactDataSources {
 		}
 	}
 
+	public static function name_prefix( int $contact_id ): string {
+		return sanitize_text_field( (string) get_post_meta( $contact_id, Meta::NAME_PREFIX, true ) );
+	}
+
 	/**
 	 * @return array<int,array{source:string,path:string,value:string}>
 	 */

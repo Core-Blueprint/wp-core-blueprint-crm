@@ -55,6 +55,7 @@ final class DetailsPanel {
 				$email_mode = ContactIdentity::EMAIL_CRM;
 			}
 			self::source_name_row( $post_id, 'first_name', __( 'First name', 'core-blueprint-crm' ), 'cb-crm-first-name' );
+			self::name_prefix_row( $post_id );
 			self::source_name_row( $post_id, 'last_name', __( 'Last name', 'core-blueprint-crm' ), 'cb-crm-last-name' );
 			?>
 		<tr><th><label for="cb-crm-job-title"><?php esc_html_e( 'Job title', 'core-blueprint-crm' ); ?></label></th><td><div class="cb-crm-source-field"><input type="text" class="regular-text" id="cb-crm-job-title" name="cb_crm_details[job_title]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::JOB_TITLE, true ) ); ?>"><span class="cb-crm-source-badges"><?php SourceBadge::render( 'crm', Meta::JOB_TITLE, (string) get_post_meta( $post_id, Meta::JOB_TITLE, true ) ); ?></span></div></td></tr>
@@ -92,6 +93,21 @@ final class DetailsPanel {
 		<tr><th><label for="cb-crm-legal-name"><?php esc_html_e( 'Legal name', 'core-blueprint-crm' ); ?></label></th><td><input type="text" class="regular-text" id="cb-crm-legal-name" name="cb_crm_details[legal_name]" value="<?php echo esc_attr( (string) get_post_meta( $post_id, Meta::LEGAL_NAME, true ) ); ?>"></td></tr>
 		<?php endif; ?>
 		</tbody></table>
+		<?php
+	}
+
+	private static function name_prefix_row( int $post_id ): void {
+		$value = ContactDataSources::name_prefix( $post_id );
+		?>
+		<tr>
+			<th><label for="cb-crm-name-prefix"><?php esc_html_e( 'Name prefix', 'core-blueprint-crm' ); ?></label></th>
+			<td>
+				<div class="cb-crm-source-field">
+					<input type="text" class="regular-text" id="cb-crm-name-prefix" name="cb_crm_details[name_prefix]" value="<?php echo esc_attr( $value ); ?>">
+					<span class="cb-crm-source-badges"><?php SourceBadge::render( 'crm', Meta::NAME_PREFIX, $value ); ?></span>
+				</div>
+			</td>
+		</tr>
 		<?php
 	}
 
