@@ -903,3 +903,7 @@ msgstr "aucun"
 #: src/Support/Requirements.php:93
 msgid "Ready"
 msgstr "Prêt"
+
+#: src/Admin/Panels/DetailsPanel.php:103
+msgid "Name prefix"
+msgstr "Préfixe du nom"

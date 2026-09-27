@@ -905,3 +905,7 @@ msgstr "ninguno"
 #: src/Support/Requirements.php:93
 msgid "Ready"
 msgstr "Listo"
+
+#: src/Admin/Panels/DetailsPanel.php:103
+msgid "Name prefix"
+msgstr "Prefijo del apellido"

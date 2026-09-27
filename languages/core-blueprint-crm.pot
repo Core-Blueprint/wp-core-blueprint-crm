@@ -919,3 +919,7 @@ msgstr ""
 #: src/Support/Requirements.php:93
 msgid "Ready"
 msgstr ""
+
+#: src/Admin/Panels/DetailsPanel.php:103
+msgid "Name prefix"
+msgstr ""
