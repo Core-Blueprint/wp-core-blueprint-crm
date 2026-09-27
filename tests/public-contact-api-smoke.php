@@ -47,6 +47,11 @@ if ( is_string( $api ) ) {
 		'Public Contact projections must not expose or couple to storage/provider internals.'
 	);
 	$assert(
+		str_contains( $api, "'name_prefix'")
+			&& str_contains( $api, 'ContactDataSources::name_prefix' ),
+		'Public Contact projections must expose the canonical CRM-owned name prefix.'
+	);
+	$assert(
 		str_contains( $api, 'ContactDataSources::effective_email_field' )
 			&& str_contains( $api, "'email_source'")
 			&& str_contains( $api, "'email_path'"),
@@ -70,6 +75,11 @@ if ( is_string( $api ) ) {
 }
 
 if ( is_string( $sources ) ) {
+	$assert(
+		str_contains( $sources, 'public static function name_prefix(' )
+			&& str_contains( $sources, 'Meta::NAME_PREFIX' ),
+		'Name prefix must remain CRM-owned and independent from external name candidates.'
+	);
 	$assert(
 		str_contains( $sources, 'public static function effective_email_field(' )
 			&& str_contains( $sources, "'source' => 'wordpress'")

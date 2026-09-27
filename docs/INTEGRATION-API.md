@@ -34,11 +34,13 @@ It is intentionally separate from the authenticated `Frontend` query boundary. T
 
 `Contacts::get( $contact_id )` returns a minimal scalar/list projection containing:
 
-- `contact_id`, display name, resolved first/last name and CRM status;
+- `contact_id`, display name, resolved first/last name, CRM-owned name prefix and CRM status;
 - the effective email plus `email_source` and `email_path` provenance;
 - linked WordPress user ID;
 - CRM tag slugs;
 - related organization IDs.
+
+`name_prefix` is canonical CRM-owned Contact identity. It is intentionally independent from live WordPress/WooCommerce first/last-name source resolution and from the aliases/history stored in `cb_crm_names`.
 
 Effective email selection remains owned by the existing CRM source resolver. The Public API only annotates which authority supplied the chosen value (`crm`, `wordpress` or `woocommerce`); it does not introduce a second email-selection policy.
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace {
 	if ( ! defined( 'ABSPATH' ) ) { define( 'ABSPATH', __DIR__ . '/' ); }
-	$meta = [ 44 => [ '_cb_crm_first_name' => '', '_cb_crm_last_name' => '' ] ];
+	$meta = [ 44 => [ '_cb_crm_first_name' => '', '_cb_crm_name_prefix' => 'van', '_cb_crm_last_name' => '' ] ];
 	$user_meta = [ 7 => [ 'first_name' => 'Chris', 'last_name' => 'Example' ] ];
 
 	class WP_User {
@@ -45,6 +45,7 @@ namespace {
 namespace CB\CRM\Content {
 	final class Meta {
 		public const FIRST_NAME = '_cb_crm_first_name';
+		public const NAME_PREFIX = '_cb_crm_name_prefix';
 		public const LAST_NAME = '_cb_crm_last_name';
 	}
 	final class Entity { public const CONTACT = 'contact'; public const ORGANIZATION = 'organization'; }
@@ -85,6 +86,8 @@ namespace {
 		if ( ! $condition ) { fwrite( STDERR, $message . "\n" ); $failed = true; }
 	};
 
+	$assert( 'van' === ContactDataSources::name_prefix( 44 ), 'CRM-owned name prefix must resolve independently from connected first/last-name sources.' );
+
 	$first = ContactDataSources::name_field( 44, 'first_name' );
 	$assert( 'Chris' === $first['value'] && 'wordpress' === $first['source'] && false === $first['override'], 'Empty CRM name must resolve live WordPress identity data first.' );
 	$assert( 2 === count( $first['candidates'] ) && 'Christopher' === $first['candidates'][1]['value'], 'Woo billing identity must remain visible as connected provenance.' );
@@ -118,16 +121,18 @@ namespace {
 
 	$record_input = new \ReflectionMethod( \CB\CRM\Admin\Save::class, 'record_input' );
 	$record_input->setAccessible( true );
-	$_POST = [ 'cb_crm_details' => [ 'status' => 'active', 'wp_user_id' => '7', 'email_mode' => 'wp_user', 'job_title' => '', 'first_name' => 'Chris', 'first_name_override' => '0', 'last_name' => 'Example', 'last_name_override' => '0' ] ];
+	$_POST = [ 'cb_crm_details' => [ 'status' => 'active', 'wp_user_id' => '7', 'email_mode' => 'wp_user', 'job_title' => '', 'first_name' => 'Chris', 'first_name_override' => '0', 'name_prefix' => 'van', 'last_name' => 'Example', 'last_name_override' => '0' ] ];
 	$input = $record_input->invoke( null, 'contact', 44 );
 	$assert( '' === ( $input['first_name'] ?? null ) && '' === ( $input['last_name'] ?? null ), 'Displayed live names must not be persisted into CRM when no override is selected.' );
+	$assert( 'van' === ( $input['name_prefix'] ?? null ), 'CRM-owned name prefix must persist independently from source-aware first/last-name overrides.' );
 	$_POST['cb_crm_details']['first_name'] = 'CRM Chris';
 	$_POST['cb_crm_details']['first_name_override'] = '1';
 	$input = $record_input->invoke( null, 'contact', 44 );
 	$assert( 'CRM Chris' === ( $input['first_name'] ?? null ), 'Checked CRM name override must be persisted explicitly.' );
 	$_POST['cb_crm_details']['wp_user_id'] = '8';
 	$input = $record_input->invoke( null, 'contact', 44 );
-	$assert( ! array_key_exists( 'first_name', $input ) && ! array_key_exists( 'last_name', $input ), 'Name writes must fail closed when the linked WordPress identity changes in the same request.' );
+	$assert( ! array_key_exists( 'first_name', $input ) && ! array_key_exists( 'last_name', $input ), 'Source-aware name writes must fail closed when the linked WordPress identity changes in the same request.' );
+	$assert( 'van' === ( $input['name_prefix'] ?? null ), 'CRM-owned name prefix must remain writable during a linked-identity change.' );
 
 	$_POST['cb_crm_details']['wp_user_id'] = '7';
 	$meta[44]['_cb_crm_first_name'] = '';
@@ -157,9 +162,10 @@ namespace {
 	$activity_panel_source = (string) file_get_contents( dirname( __DIR__ ) . '/src/Admin/Panels/NotesActivityPanel.php' );
 	$assert( ! str_contains( $provisioner_source, "'first_name' =>" ) && ! str_contains( $provisioner_source, "'last_name'  =>" ), 'Provisioning must link the WordPress identity without copying profile names into CRM master data.' );
 	$assert( str_contains( $save_source, '$override_key = $field . \'_override\'' ) && str_contains( $save_source, '$identity_switch' ), 'CRM name overrides must be explicit and fail closed during identity switches.' );
-	$assert( str_contains( $frontend_source, 'ContactDataSources::name_field' ) && str_contains( $frontend_source, 'ContactDataSources::effective_phone' ), 'CRM public Contact projection must resolve connected system data instead of requiring duplicated CRM rows.' );
+	$assert( str_contains( $frontend_source, 'ContactDataSources::name_field' ) && str_contains( $frontend_source, 'ContactDataSources::name_prefix' ) && str_contains( $frontend_source, 'ContactDataSources::effective_phone' ), 'CRM public Contact projection must combine source-aware first/last names with the canonical CRM-owned name prefix.' );
 	$assert( str_contains( $updater_source, "'contact_field_override'" ) && str_contains( $updater_source, '$context[ $candidate[\'source\'] ]' ), 'Explicit CRM overrides must snapshot their provenance into Activity.' );
 	$assert( str_contains( $details_source, '$candidate[\'source\'] === $resolved[\'source\']' ) && str_contains( $details_source, '$candidate[\'path\'] === $resolved[\'path\']' ), 'Source-aware name fields must retain the actually resolved external value instead of silently switching to a higher-priority different source in JavaScript.' );
+	$assert( str_contains( $details_source, "'Name prefix'" ) && str_contains( $details_source, 'Meta::NAME_PREFIX' ), 'CRM Details must expose name prefix as a distinct CRM-owned identity field.' );
 	$assert( str_contains( $activity_panel_source, "'contact_field_override'" ) && str_contains( $activity_panel_source, "'wordpress' => 'WordPress'" ) && str_contains( $activity_panel_source, "'woocommerce' => 'WooCommerce'" ), 'Override provenance must remain visible to operators in CRM Activity.' );
 
 	exit( $failed ? 1 : 0 );
