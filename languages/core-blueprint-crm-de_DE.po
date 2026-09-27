@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Core Blueprint CRM 1.0.0-rc1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-core-blueprint-"
-"crm-audit\n"
-"POT-Creation-Date: 2026-09-13 19:32+0000\n"
-"PO-Revision-Date: 2026-09-13 19:32+0000\n"
+"crm\n"
+"POT-Creation-Date: 2026-09-27 15:56+0000\n"
+"PO-Revision-Date: 2026-09-27 15:56+0000\n"
 "Last-Translator: Core Blueprint\n"
 "Language-Team: de_DE\n"
 "Language: de_DE\n"
@@ -38,11 +38,11 @@ msgstr ""
 msgid "Core Blueprint"
 msgstr "Core Blueprint"
 
-#: core-blueprint-crm.php:121 src/Integration/Suite.php:49
+#: core-blueprint-crm.php:120 src/Integration/Suite.php:73
 msgid "Required Core Blueprint Base contracts are unavailable."
 msgstr "Erforderliche Core Blueprint Base-Verträge sind nicht verfügbar."
 
-#: core-blueprint-crm.php:170 core-blueprint-crm.php:192
+#: core-blueprint-crm.php:169 core-blueprint-crm.php:191
 msgid "Core Blueprint CRM:"
 msgstr "Core Blueprint CRM:"
 
@@ -50,7 +50,7 @@ msgstr "Core Blueprint CRM:"
 #: src/Integration/Builders/Bricks/FormActions.php:128
 #: src/Integration/Builders/Bricks/Queries.php:29
 #: src/Integration/DocsAdmin.php:50 src/Integration/DocsAdmin.php:140
-#: src/Integration/Suite.php:37
+#: src/Integration/Suite.php:53
 msgid "CRM"
 msgstr "CRM"
 
@@ -137,7 +137,7 @@ msgstr "Primäre Kennung dieses Typs"
 
 #: src/Admin/BusinessIdentifiersPanel.php:63
 #: src/Admin/Panels/ContactMethodsPanel.php:60
-#: src/Admin/Panels/DetailsPanel.php:73 src/Admin/Panels/NamesPanel.php:44
+#: src/Admin/Panels/DetailsPanel.php:74 src/Admin/Panels/NamesPanel.php:44
 #: src/Admin/Panels/OrganizationsPanel.php:51 src/Integration/DocsAdmin.php:118
 #: src/Integration/DocsAdmin.php:187 src/Integration/DocsAdmin.php:220
 msgid "Remove"
@@ -162,11 +162,11 @@ msgstr "Sonstige"
 
 #: src/Admin/ContactList.php:25 src/Admin/ContactList.php:30
 #: src/Admin/ContactList.php:61 src/Admin/ContactList.php:63
-#: src/Admin/Menu.php:32 src/Admin/Panels/DetailsPanel.php:63
+#: src/Admin/Menu.php:32 src/Admin/Panels/DetailsPanel.php:64
 msgid "WordPress account"
 msgstr "WordPress-Konto"
 
-#: src/Admin/ContactList.php:64 src/Admin/Panels/DetailsPanel.php:86
+#: src/Admin/ContactList.php:64 src/Admin/Panels/DetailsPanel.php:87
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 msgid "Linked WordPress account"
 msgstr "Verknüpftes WordPress-Konto"
@@ -320,39 +320,39 @@ msgstr "Status"
 msgid "First name"
 msgstr "Vorname"
 
-#: src/Admin/Panels/DetailsPanel.php:58
+#: src/Admin/Panels/DetailsPanel.php:59
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:40
 msgid "Last name"
 msgstr "Nachname"
 
-#: src/Admin/Panels/DetailsPanel.php:60
+#: src/Admin/Panels/DetailsPanel.php:61
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:41
 msgid "Job title"
 msgstr "Position"
 
-#: src/Admin/Panels/DetailsPanel.php:75 src/Admin/UserLinks.php:96
+#: src/Admin/Panels/DetailsPanel.php:76 src/Admin/UserLinks.php:96
 #: src/Admin/UserLinks.php:97 src/Admin/UserLinks.php:165
 #: src/Admin/UserLinks.php:166
 msgid "Search by name or email…"
 msgstr "Nach Name oder E-Mail suchen…"
 
-#: src/Admin/Panels/DetailsPanel.php:78 src/Integration/Subscriptions.php:41
+#: src/Admin/Panels/DetailsPanel.php:79 src/Integration/Subscriptions.php:41
 msgid "Optional. Link this CRM contact to an existing WordPress account."
 msgstr ""
 "Optional. Diesen CRM-Kontakt mit einem vorhandenen WordPress-Konto "
 "verknüpfen."
 
-#: src/Admin/Panels/DetailsPanel.php:82
+#: src/Admin/Panels/DetailsPanel.php:83
 msgid "Preferred email source"
 msgstr "Bevorzugte E-Mail-Quelle"
 
-#: src/Admin/Panels/DetailsPanel.php:85
+#: src/Admin/Panels/DetailsPanel.php:86
 msgid "CRM contact methods"
 msgstr "CRM-Kontaktmethoden"
 
-#: src/Admin/Panels/DetailsPanel.php:88
+#: src/Admin/Panels/DetailsPanel.php:89
 msgid ""
 "Choose which email address CRM should prefer. WordPress account linking "
 "itself remains optional."
@@ -360,14 +360,18 @@ msgstr ""
 "Wählen Sie aus, welche E-Mail-Adresse CRM bevorzugen soll. Die Verknüpfung "
 "mit einem WordPress-Konto bleibt optional."
 
-#: src/Admin/Panels/DetailsPanel.php:92
+#: src/Admin/Panels/DetailsPanel.php:93
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:47
 msgid "Legal name"
 msgstr "Rechtlicher Name"
 
-#: src/Admin/Panels/DetailsPanel.php:132 src/Admin/ServiceAgreements.php:91
-#: src/Application/RecordUpdater.php:112
+#: src/Admin/Panels/DetailsPanel.php:103
+msgid "Name prefix"
+msgstr "Namenspräfix"
+
+#: src/Admin/Panels/DetailsPanel.php:148 src/Admin/ServiceAgreements.php:91
+#: src/Application/RecordUpdater.php:113
 msgid "Customer-specific override"
 msgstr "Kundenspezifische Abweichung"
 
@@ -617,7 +621,7 @@ msgid "No contacts found."
 msgstr "Keine Kontakte gefunden."
 
 #. translators: %d: number of contacts.
-#: src/Admin/UserLinks.php:206 src/Integration/Suite.php:66
+#: src/Admin/UserLinks.php:206 src/Integration/Suite.php:90
 #, php-format
 msgid "%d contact"
 msgid_plural "%d contacts"
@@ -633,7 +637,7 @@ msgstr "Kontakt hinzufügen"
 msgid "Edit Contact"
 msgstr "Kontakt bearbeiten"
 
-#: src/Admin/UserLinks.php:271 src/Governance.php:31
+#: src/Admin/UserLinks.php:271 src/Governance.php:32
 msgid "CRM record created"
 msgstr "CRM-Datensatz erstellt"
 
@@ -723,33 +727,42 @@ msgstr "Inaktiv"
 msgid "Archived"
 msgstr "Archiviert"
 
-#: src/Governance.php:32
+#: src/Governance.php:33
 msgid "CRM record updated"
 msgstr "CRM-Datensatz aktualisiert"
 
-#: src/Governance.php:33
+#: src/Governance.php:34
 msgid "CRM record deleted"
 msgstr "CRM-Datensatz gelöscht"
 
-#: src/Governance.php:34
+#: src/Governance.php:35
 msgid "CRM record data updated"
 msgstr "CRM-Datensatzdaten aktualisiert"
 
-#: src/Governance.php:35
+#: src/Governance.php:36
 msgid "CRM note created"
 msgstr "CRM-Notiz erstellt"
 
-#: src/Governance.php:36
+#: src/Governance.php:37
 msgid "CRM WooCommerce activity recorded"
 msgstr "CRM-WooCommerce-Aktivität protokolliert"
 
-#: src/Governance.php:37
+#: src/Governance.php:38
+msgid "CRM Bookings activity recorded"
+msgstr "CRM-Bookings-Aktivität aufgezeichnet"
+
+#: src/Governance.php:39
 msgid "CRM Helpdesk activity recorded"
 msgstr "CRM-Helpdesk-Aktivität protokolliert"
 
-#: src/Governance.php:38
+#: src/Governance.php:40
 msgid "CRM record cleanup failed"
 msgstr "Bereinigung des CRM-Datensatzes fehlgeschlagen"
+
+#: src/Integration/Bookings.php:68
+#, php-format
+msgid "Booking #%d created"
+msgstr "Buchung #%d erstellt"
 
 #: src/Integration/Builders/Bricks/Conditions.php:30
 msgid "Service Agreement"
@@ -832,16 +845,16 @@ msgstr ""
 msgid "No Helpdesk tickets for this user."
 msgstr "Keine Helpdesk-Tickets für diesen Benutzer."
 
-#: src/Integration/Suite.php:56
+#: src/Integration/Suite.php:80
 msgid "CRM database upgrade pending."
 msgstr "CRM-Datenbank-Upgrade ausstehend."
 
-#: src/Integration/Suite.php:59
+#: src/Integration/Suite.php:83
 msgid "CRM database schema is newer than this plugin build."
 msgstr "Das CRM-Datenbankschema ist neuer als dieser Plugin-Build."
 
 #. translators: %d: number of organizations.
-#: src/Integration/Suite.php:71
+#: src/Integration/Suite.php:95
 #, php-format
 msgid "%d organization"
 msgid_plural "%d organizations"
@@ -904,16 +917,3 @@ msgstr "keine"
 #: src/Support/Requirements.php:93
 msgid "Ready"
 msgstr "Bereit"
-
-#: src/Admin/Panels/DetailsPanel.php:103
-msgid "Name prefix"
-msgstr "Namenspräfix"
-
-#: src/Governance.php
-msgid "CRM Bookings activity recorded"
-msgstr "CRM-Bookings-Aktivität aufgezeichnet"
-
-#: src/Integration/Bookings.php
-#, php-format
-msgid "Booking #%d created"
-msgstr "Buchung #%d erstellt"
