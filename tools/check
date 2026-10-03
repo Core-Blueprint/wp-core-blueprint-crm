@@ -4,6 +4,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 while IFS= read -r -d '' file; do php -l "$file" >/dev/null; done < <(find "$ROOT" -type f -name '*.php' -print0)
 php "$ROOT/tests/source-conformance.php"
 php "$ROOT/tests/base-v1-contract-smoke.php"
+php "$ROOT/tests/settings-hub-smoke.php"
 php "$ROOT/tests/bricks-adapter-regression.php"
 "$ROOT/tools/i18n/check"
 php "$ROOT/tests/work-provider-smoke.php"
