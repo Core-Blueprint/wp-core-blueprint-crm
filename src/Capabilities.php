@@ -7,7 +7,7 @@ final class Capabilities {
 	public const MANAGE = 'cb_manage_crm';
 
 	public static function init(): void {
-		add_filter( 'cb_core_capability_catalog', [ __CLASS__, 'catalog' ] );
+		add_filter( 'core_blueprint_capability_catalog', [ __CLASS__, 'catalog' ] );
 	}
 
 	public static function install(): void {
