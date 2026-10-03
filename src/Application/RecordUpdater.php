@@ -70,6 +70,7 @@ final class RecordUpdater {
 		if ( array_key_exists( 'status', $input ) ) { $status = is_scalar( $input['status'] ) ? sanitize_key( (string) $input['status'] ) : ''; if ( ! in_array( $status, RecordStatus::VALUES, true ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::STATUS, $status, $failures ) || $changed; } }
 		if ( Entity::CONTACT === $owner_type ) {
 			$changed = self::update_contact_name( $record_id, 'first_name', Meta::FIRST_NAME, $input, $failures ) || $changed;
+			if ( array_key_exists( 'name_prefix', $input ) ) { if ( ! is_scalar( $input['name_prefix'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::NAME_PREFIX, sanitize_text_field( (string) $input['name_prefix'] ), $failures ) || $changed; } }
 			$changed = self::update_contact_name( $record_id, 'last_name', Meta::LAST_NAME, $input, $failures ) || $changed;
 			if ( array_key_exists( 'job_title', $input ) ) { if ( ! is_scalar( $input['job_title'] ) ) { $failures[] = 'details'; } else { $changed = self::update_meta_if_changed( $record_id, Meta::JOB_TITLE, sanitize_text_field( (string) $input['job_title'] ), $failures ) || $changed; } }
 			if ( array_key_exists( 'wp_user_id', $input ) ) { $changed = self::update_meta_if_changed( $record_id, Meta::WP_USER_ID, absint( $input['wp_user_id'] ), $failures ) || $changed; }

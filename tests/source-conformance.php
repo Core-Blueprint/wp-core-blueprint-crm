@@ -19,6 +19,8 @@ $required = [
 	'src/Integration/DocsAdmin.php',
 	'src/Integration/DocsAjax.php',
 	'src/Integration/WorkPricing.php',
+	'src/Integration/Bookings.php',
+	'src/Application/ContactSnapshotProvisioner.php',
 	'src/Frontend/Data/Organization.php',
 	'src/Frontend/Queries/ServiceAgreements.php',
 	'src/Integration/Builders/Bricks/Queries.php',
@@ -27,6 +29,8 @@ $required = [
 	'tests/schema-reconciliation-smoke.php',
 	'tests/bootstrap-v1-smoke.php',
 	'tests/record-updater-persistence-smoke.php',
+	'tests/contact-snapshot-provisioner-smoke.php',
+	'tests/bookings-integration-smoke.php',
 	'tools/build-release',
 	'tools/i18n/catalog.py',
 	'tools/i18n/reference.json',
@@ -92,6 +96,8 @@ $docsIntegration = file_get_contents( $root . '/src/Integration/Docs.php' )
 	. file_get_contents( $root . '/src/Integration/DocsAdmin.php' )
 	. file_get_contents( $root . '/src/Integration/DocsAjax.php' );
 $workPricing = file_get_contents( $root . '/src/Integration/WorkPricing.php' );
+$bookingsIntegration = file_get_contents( $root . '/src/Integration/Bookings.php' );
+$snapshotProvisioner = file_get_contents( $root . '/src/Application/ContactSnapshotProvisioner.php' );
 $agreements  = file_get_contents( $root . '/src/Repository/ServiceAgreements.php' );
 $identifiers = file_get_contents( $root . '/src/Repository/BusinessIdentifiers.php' );
 $organizationData = file_get_contents( $root . '/src/Frontend/Data/Organization.php' );
@@ -112,6 +118,7 @@ $bricks      = file_get_contents( $root . '/src/Integration/Builders/Bricks/Dyna
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Queries.php' )
 	. file_get_contents( $root . '/src/Integration/Builders/Bricks/Conditions.php' );
 $buildRelease = file_get_contents( $root . '/tools/build-release' );
+$toolsCheck = file_get_contents( $root . '/tools/check' );
 $i18nReference = json_decode( (string) file_get_contents( $root . '/tools/i18n/reference.json' ), true );
 $i18nConfig = json_decode( (string) file_get_contents( $root . '/tools/i18n/config.json' ), true );
 
@@ -150,6 +157,10 @@ $checks = [
 	'Contact user-picker markup still matches admin.js contract' => str_contains( $panels, 'data-cb-crm-user-selected' ) && str_contains( $panels, 'data-cb-crm-user-selected-name' ) && str_contains( $panels, 'data-cb-crm-user-selected-email' ) && str_contains( $panels, 'data-cb-crm-user-remove' ) && str_contains( $panels, 'data-cb-crm-email-mode' ) && str_contains( $adminJs, 'data-cb-crm-user-selected' ),
 	'CRM timeline presentation uses semantic Base tokens' => str_contains( $panels, 'cb-crm-timeline-entry' ) && str_contains( $panels, 'cb-crm-timeline-body' ) && ! str_contains( $panels, '#dcdcde' ) && str_contains( $adminCss, '.cb-crm-timeline-entry' ) && str_contains( $adminCss, 'var(--cb-border)' ) && str_contains( $adminCss, 'var(--cb-text-muted)' ),
 	'Work coupling uses public API only' => 0 === preg_match( '/CB\\\\Work\\\\(?!PublicApi\\\\)/', $source ),
+	'Bookings integration stays optional and consumes only the public post-commit event' => str_contains( $bookingsIntegration, "'cb_bookings_booking_created'") && ! str_contains( $bookingsIntegration, 'CB\\\\Bookings') && ! str_contains( $bookingsIntegration, "'customer_name'"),
+	'Bookings integration consumes structured customer identity' => str_contains( $bookingsIntegration, 'customer_first_name' ) && str_contains( $bookingsIntegration, 'customer_name_prefix' ) && str_contains( $bookingsIntegration, 'customer_last_name' ),
+	'Snapshot provisioning is email-reconciled and race-safe' => str_contains( $snapshotProvisioner, 'ContactIdentity::find_by_email' ) && str_contains( $snapshotProvisioner, 'add_option' ) && str_contains( $snapshotProvisioner, 'release_on_shutdown' ) && str_contains( $snapshotProvisioner, 'wp_delete_post' ),
+	'Bookings integration runtime smokes are permanent gates' => str_contains( $toolsCheck, 'contact-snapshot-provisioner-smoke.php' ) && str_contains( $toolsCheck, 'bookings-integration-smoke.php' ),
 	'Bricks exposes agreements not CRM Service catalog' => str_contains( $bricks, 'cb_crm_service_agreements' ) && str_contains( $bricks, 'cb_crm_contact_has_service_agreement' ) && ! str_contains( $bricks, 'cb_crm_services' ) && ! str_contains( $bricks, 'cb_crm_service_name' ),
 	'release packaging preserves canonical CRM root and excludes development material' => str_contains( $buildRelease, 'PACKAGE="core-blueprint-crm"' ) && str_contains( $buildRelease, '.github|tests|tools|dist|docs' ),
 	'canonical i18n reference metadata is pinned to Starter 1.1.0' => is_array( $i18nReference ) && '1.1.0' === ( $i18nReference['version'] ?? null ) && '4330b86f693e31ae85f46e7054204f45c83ce535' === ( $i18nReference['catalog_git_blob'] ?? null ) && '68dc04aa12bb130ec51ef1c754044b37464071f378514ee89ee06f89e2ee9955' === ( $i18nReference['catalog_sha256'] ?? null ),

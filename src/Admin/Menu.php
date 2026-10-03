@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CB\CRM\Admin;
 
-use CB\Core\UI\AdminTheme;
+use CoreBlueprint\Core\UI\AdminTheme;
 use CB\CRM\Capabilities;
 use CB\CRM\Content\PostTypes;
 defined( 'ABSPATH' ) || exit;

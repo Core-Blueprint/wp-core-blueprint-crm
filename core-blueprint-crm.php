@@ -84,14 +84,14 @@ add_action( 'init', static function (): void {
 
 /** Lightweight Base contract required only for canonical suite registration. */
 function cb_crm_registration_contract_ready(): bool {
-	return class_exists( '\\CB\\Core\\ExtensionRegistry' );
+	return class_exists( '\\CoreBlueprint\\Core\\ExtensionRegistry' );
 }
 
 /** Product-specific public Base services consumed by CRM runtime. */
 function cb_crm_product_contracts_ready(): bool {
-	return class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
-		&& class_exists( '\\CB\\Core\\Governance\\Audit' )
-		&& class_exists( '\\CB\\Core\\Governance\\EventRegistry' );
+	return class_exists( '\\CoreBlueprint\\Core\\Database\\SchemaRegistry' )
+		&& class_exists( '\\CoreBlueprint\\Core\\Governance\\Audit' )
+		&& class_exists( '\\CoreBlueprint\\Core\\Governance\\EventRegistry' );
 }
 
 /** CRM product readiness after generic Bootstrap v1 has passed. */
@@ -150,7 +150,7 @@ register_activation_hook( __FILE__, 'cb_crm_activate' );
 add_action( 'plugins_loaded', static function (): void {
 	if (
 		\CB\CRM\Support\Requirements::runtime_ready()
-		&& class_exists( '\\CB\\Core\\Database\\SchemaRegistry' )
+		&& class_exists( '\\CoreBlueprint\\Core\\Database\\SchemaRegistry' )
 	) {
 		\CB\CRM\Database\Schema::register();
 	}

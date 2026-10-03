@@ -34,11 +34,13 @@ It is intentionally separate from the authenticated `Frontend` query boundary. T
 
 `Contacts::get( $contact_id )` returns a minimal scalar/list projection containing:
 
-- `contact_id`, display name, resolved first/last name and CRM status;
+- `contact_id`, display name, resolved first/last name, CRM-owned name prefix and CRM status;
 - the effective email plus `email_source` and `email_path` provenance;
 - linked WordPress user ID;
 - CRM tag slugs;
 - related organization IDs.
+
+`name_prefix` is canonical CRM-owned Contact identity. It is intentionally independent from live WordPress/WooCommerce first/last-name source resolution and from the aliases/history stored in `cb_crm_names`.
 
 Effective email selection remains owned by the existing CRM source resolver. The Public API only annotates which authority supplied the chosen value (`crm`, `wordpress` or `woocommerce`); it does not introduce a second email-selection policy.
 
@@ -95,6 +97,31 @@ Guest orders do not create CRM Contacts. Organization creation from WooCommerce 
 `CB\CRM\Application\ContactProvisioner` owns this internal provisioning policy so commerce integrations do not write canonical identity metadata directly. New-contact creation is protected by an atomic, non-autoloaded WordPress option lease keyed by WordPress user ID, with stale-lease recovery and shutdown/finally release. The service re-checks identity after acquiring the lease and rolls back only the Contact created by its own request if post-write reconciliation is not uniquely canonical.
 
 Failed automatic provisioning is recorded as warning-level WooCommerce activity in the Base audit log with the order, user, source and fail-closed reason. Repeated identical failures for the same order, user and reason are deduplicated for a short window across the converging Woo signals; transient lock contention is treated as expected concurrency and does not generate warning noise.
+
+## Core Blueprint Bookings identity provisioning
+
+Core Blueprint Bookings remains authoritative for booking state. CRM listens only to the public post-commit `cb_bookings_booking_created` event and never calls Bookings storage or classes.
+
+The canonical Bookings v1 customer snapshot consumed by CRM is structured:
+
+- `customer_first_name`
+- `customer_name_prefix`
+- `customer_last_name`
+- `customer_email`
+- `customer_phone`
+
+CRM does not parse a combined customer display name. A booking without an email remains fully valid in Bookings but does not auto-provision a CRM Contact.
+
+`CB\CRM\Application\ContactSnapshotProvisioner` owns snapshot reconciliation. Email is the only automatic reconciliation key:
+
+1. one existing email match is reused without overwriting existing CRM identity;
+2. multiple email matches fail closed for operator review;
+3. no match may create a new Contact from the structured customer snapshot;
+4. new-contact creation uses an atomic non-autoloaded lease keyed by normalized email, with stale recovery and shutdown/finally release;
+5. identity is re-checked after the lease and after the Contact write;
+6. only the Contact created by the current request may be rolled back after a race or persistence failure.
+
+Successful reconciliation records CRM Activity with a Bookings reference. Failures are recorded through CRM governance, except expected transient lock contention. CRM processing happens after the Bookings transaction has committed, so CRM failure can never invalidate or roll back the booking.
 
 ## Builder adapters
 

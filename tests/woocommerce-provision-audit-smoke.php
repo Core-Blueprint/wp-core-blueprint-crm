@@ -15,7 +15,7 @@ namespace {
 	function get_post_type( int $post_id ): string { unset( $post_id ); return ''; }
 }
 
-namespace CB\Core\Governance {
+namespace CoreBlueprint\Core\Governance {
 	final class Audit {
 		public static array $records = [];
 		public static function record( string $event, string $severity, array $context = [] ): void { self::$records[] = [ $event, $severity, $context ]; }
@@ -34,7 +34,7 @@ namespace CB\CRM\Content {
 namespace {
 	require_once dirname( __DIR__ ) . '/src/Governance.php';
 
-	use CB\Core\Governance\Audit;
+	use CoreBlueprint\Core\Governance\Audit;
 	use CB\CRM\Governance;
 
 	$failed = false;
