@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace CB\CRM;
 
-use CB\Core\Governance\Audit;
-use CB\Core\Governance\EventRegistry;
+use CoreBlueprint\Core\Governance\Audit;
+use CoreBlueprint\Core\Governance\EventRegistry;
 use CB\CRM\Content\Entity;
 use CB\CRM\Content\PostTypes;
 

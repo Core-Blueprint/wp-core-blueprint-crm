@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace CB\CRM\Integration;
 
-use CB\Core\ExtensionRegistry;
+use CoreBlueprint\Core\ExtensionRegistry;
 use CB\CRM\Content\ContactIdentity;
 use CB\CRM\Content\Entity;
 use CB\CRM\PanelRegistry;
