@@ -68,3 +68,7 @@ An isolated PHP smoke is registered in `tools/check` and a new opt-in real Maria
 ## P0 acceptance evidence, superseding historical candidate wording (2026-10-11)
 
 Single-site durable WordPress user ID anonymization P0 is **locally Golden PASS** at CRM `ebc1041aae1624d77470c08c2d89bc523a456531` / Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`; real MariaDB SQL-fault injection + replay PASS, regressions and release PASS. ZIP SHA-256 `feccc71fa3e40847e50e14bd8c426afb4e84a0d683a15a8fec57d09c95247c91`. Earlier paragraphs describe the pre-P0 risk/candidate history and are not the current implementation status. P1 queue pagination, recovery observability and manual operator retry remain open; P2/P3 controller/legal choices also open.
+
+## P1A + P1B acceptance, current status (2026-10-11)
+
+Earlier sections describe historical candidate/open-gate states and have not been removed from the audit trail. **Current state:** P0 (durable single-site deleted-user anonymization) GOLDEN, P1A (approved operator read-only paginated inventory and confirmed one-ID retry) GOLDEN, and P1B (bounded fair rescheduling of Contact/Organization and deleted-user intents) GOLDEN. P1B source `1d0a2745d18f738b0b838a2e67e4865a12443d8c`, local ZIP SHA-256 `e7539338e321ca4d6896675c78acf0e96738e8c9e297fba87200cdb86df32579`. P2 data-subject projection and export, P3 controller-led erasure/retention, multisite compatibility and live-site operations remain OPEN. See the consolidated Wave 1A acceptance audit.
