@@ -1,9 +1,13 @@
 # CRM Sales Foundation v1 — Phased Delivery & Acceptance Plan
 
-**Recorded:** 2026-10-11  
-**Status:** PROPOSED ROADMAP, NOT APPROVED FOR SOURCE IMPLEMENTATION  
-**Parent design:** [Sales Foundation v1 RFC](SALES-FOUNDATION-V1-RFC.md)  
-**Code baseline:** CRM `main` `4e487145b49b396341732b5da9b16d2a608e0502`; Work `main` `0bf78e540bb4db8d366c20835c1b5625c281f319`  
+**Recorded:** 2026-10-11
+
+**Status:** PROPOSED ROADMAP, NOT APPROVED FOR SOURCE IMPLEMENTATION
+
+**Parent design:** [Sales Foundation v1 RFC](SALES-FOUNDATION-V1-RFC.md)
+
+**Code baseline:** CRM `main` `4e487145b49b396341732b5da9b16d2a608e0502`; Work `main` `0bf78e540bb4db8d366c20835c1b5625c281f319`
+
 **Boundary:** This plan adds **no** CRM implementation or Work feature yet. Work is a consumer/integration partner through verified public contracts only.
 
 ## Delivery principle
