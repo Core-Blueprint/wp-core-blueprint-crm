@@ -112,6 +112,8 @@ echo '==> Running actual WordPress and InnoDB tests'
 # through wp eval instead; PHP then parses it as an independent source file.
 CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-mariadb.php" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-transitions.php" \
+  wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 
 # Optional real single-site WordPress deleted_user SQL-failure/recovery fixture.
