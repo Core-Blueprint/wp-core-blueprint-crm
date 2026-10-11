@@ -113,4 +113,52 @@ echo '==> Running actual WordPress and InnoDB tests'
 CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-mariadb.php" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
+
+# Optional two-process race, separated from ordinary fresh-install acceptance.
+# Only paths/files inside this newly created randomly named test directory.
+if [[ "${CB_CRM_TEST_CONCURRENT:-0}" == "1" ]]; then
+  echo '==> Test real concurrent deletion before Sales identity lock'
+  fixture="$ROOT/tests/integration/sales-concurrent-deletion.php"
+  [[ -f "$fixture" ]] || fail 'Concurrent deletion PHP fixture missing'
+  race_eval() {
+    CB_CRM_RACE_PHASE="$1" CB_CRM_RACE_GATE_DIR="$run_root" CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+      wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+  }
+  race_eval prepare
+
+  # Child creates a Sales record but pauses BEFORE its locking read from
+  # wp_posts. The parent removes the identity from another PHP/WP process.
+  CB_CRM_RACE_PHASE=create CB_CRM_RACE_GATE_DIR="$run_root" CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root" \
+      >"$run_root/race-create.log" 2>&1 &
+  race_pid="$!"
+  release_stalled_child() {
+    : >"$run_root/race_go"
+    if [[ -n "${race_pid:-}" ]]; then wait "$race_pid" || true; fi
+  }
+  trap release_stalled_child EXIT
+  ticks=0
+  while [[ ! -f "$run_root/race_identity_before_lock" ]]; do
+    if ! kill -0 "$race_pid" 2>/dev/null; then
+      cat "$run_root/race-create.log"
+      fail 'Sales child exited before canonical locking read'
+    fi
+    if (( ticks >= 200 )); then
+      cat "$run_root/race-create.log"
+      fail 'Sales child did not reach canonical locking read in 20 seconds'
+    fi
+    sleep 0.1
+    ticks=$(( ticks + 1 ))
+  done
+  race_eval delete
+  : >"$run_root/race_go"
+  if ! wait "$race_pid"; then
+    cat "$run_root/race-create.log"
+    fail 'Sales child did not reject a deleted identity'
+  fi
+  race_pid=""
+  trap - EXIT
+  cat "$run_root/race-create.log"
+  race_eval verify
+fi
 echo "Artifacts and isolated database retained for inspection: $run_root | $database"
