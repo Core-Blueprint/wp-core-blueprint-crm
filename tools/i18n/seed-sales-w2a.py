@@ -20,8 +20,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = Path(__file__).resolve().with_name("sales-w2a-translations.json")
 
 
-def main() -> None:
-    payload = json.loads(DATA.read_text(encoding="utf-8"))
+def seed_dataset(data_path: Path) -> None:
+    payload = json.loads(data_path.read_text(encoding="utf-8"))
     if payload.get("version") != "1.0.0" or payload.get("domain") != "core-blueprint-crm":
         catalog.fail("unexpected W2A translation dataset identity")
     if payload.get("locales") != list(catalog.LOCALES):
@@ -78,6 +78,13 @@ def main() -> None:
         print(f"Seeded {locale}: {additions} new W2A gettext entries")
 
     print("CRM W2A reviewed translations seeded. Run ./tools/i18n/update next.")
+
+
+def main() -> None:
+    seed_dataset(DATA)
+    seed_dataset(DATA.with_name("sales-w2b1-translations.json"))
+    print("CRM Sales reviewed Admin translations seeded. Run ./tools/i18n/update next.")
+
 
 
 if __name__ == "__main__":
