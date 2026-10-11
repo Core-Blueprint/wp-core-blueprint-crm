@@ -100,6 +100,7 @@ namespace {
 	}
 	final class Sales_W2A_Denied extends \Exception {}
 	$GLOBALS['w2a_actor'] = 19;
+	$GLOBALS['w2a_grants'] = [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
 	$GLOBALS['w2a_menus'] = [];
 	$GLOBALS['w2a_styles'] = [];
 	$GLOBALS['w2a_scripts'] = [];
@@ -124,7 +125,7 @@ namespace {
 		return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( $key ) ) ?? '';
 	}
 	function get_current_user_id(): int { return $GLOBALS['w2a_actor']; }
-	function current_user_can( string $capability ): bool { return true; }
+	function current_user_can( string $capability ): bool { return in_array( $capability, $GLOBALS['w2a_grants'], true ); }
 	function get_current_screen(): WP_Screen { return $GLOBALS['w2a_screen']; }
 	function admin_url( string $path ): string { return 'https://example.invalid/wp-admin/' . $path; }
 	function add_query_arg( array $params, string $url ): string {
@@ -185,6 +186,22 @@ namespace {
 		$assert( \CB\CRM\Capabilities::VIEW_SALES === $item[1][3], 'Sales read menu escalated beyond view grant' );
 		$assert( is_callable( $item[1][5] ), 'Sales menu render callback missing' );
 	}
+
+	// Access::can_view allows a manager without the separate viewer grant.
+	$GLOBALS['w2a_grants'] = [ 'cb_manage_crm', 'cb_manage_crm_sales' ];
+	$GLOBALS['w2a_menus'] = [];
+	$menu::register();
+	$manager_sales_menus = array_values( array_filter(
+		$GLOBALS['w2a_menus'],
+		static fn ( array $row ): bool => 'sub' === $row[0] &&
+			in_array( $row[1][4], [ $menu::SALES_LEADS_SLUG, $menu::SALES_OPPORTUNITIES_SLUG ], true )
+	) );
+	$assert( 2 === count( $manager_sales_menus ) &&
+		\CB\CRM\Capabilities::MANAGE_SALES === $manager_sales_menus[0][1][3] &&
+		\CB\CRM\Capabilities::MANAGE_SALES === $manager_sales_menus[1][1][3],
+		'manager-only Sales grants lost read-only menu access' );
+	$GLOBALS['w2a_grants'] = [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
+
 	$assert( in_array( 'crm_page_' . $menu::SALES_LEADS_SLUG, \CoreBlueprint\Core\UI\AdminTheme::$screens, true )
 		&& in_array( 'crm_page_' . $menu::SALES_OPPORTUNITIES_SLUG, \CoreBlueprint\Core\UI\AdminTheme::$screens, true ),
 		'Base AdminTheme failed to register both Sales screens' );
