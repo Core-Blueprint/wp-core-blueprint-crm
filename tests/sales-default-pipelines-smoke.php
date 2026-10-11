@@ -188,6 +188,18 @@ $assert( Defaults::maybe_install(), 'retry of already-seeded default records suc
 $assert( $edited === serialize( $db->tables ), 'retry preserves custom names and disabled stage' );
 $assert( '1' === $GLOBALS['crm_sales_options'][ Defaults::OPTION ], 'retry repairs marker' );
 
+// Recovery may complete missing default stages, but may not reset existing ones.
+unset( $GLOBALS['crm_sales_options'][ Defaults::OPTION ] );
+$db->tables['wp_cb_crm_sales_stages'] = array_values( array_filter(
+	$db->tables['wp_cb_crm_sales_stages'],
+	static fn ( array $row ): bool => 'connected' !== $row['stage_key']
+) );
+$assert( 6 === count( $db->tables['wp_cb_crm_sales_stages'] ), 'missing stage simulated' );
+$assert( Defaults::maybe_install(), 'missing default stage is recoverable' );
+$assert( 7 === count( $db->tables['wp_cb_crm_sales_stages'] ), 'missing stage restored without duplicates' );
+$assert( 'Intake' === $db->tables['wp_cb_crm_sales_stages'][0]['name'], 'existing customized stage name is retained' );
+$assert( 0 === $db->tables['wp_cb_crm_sales_stages'][0]['is_active'], 'existing disabled stage remains disabled' );
+
 // A partial seed failure must be atomic, have no marker and be retryable.
 unset( $GLOBALS['crm_sales_options'][ Defaults::OPTION ] );
 $GLOBALS['wpdb'] = new CRM_Defaults_Fake_Db();
