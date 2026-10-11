@@ -58,3 +58,9 @@ Decide which commercial fields (e.g. owner, title, estimate, source references, 
 ## Gate and release
 
 Wave 1A runtime code for the foundational Sales schema and both InnoDB race orderings is locally golden at the source baseline above. This privacy gate remains **OPEN** until P0/P1 and at least the relevant P2/P3 contract decisions have been validated. Do not merge, deploy, enable live sales intake, publish privacy claims or process real Sales personal data based on a passing schema/concurrency check. Separate explicit GO is required for merge, manual GitHub Actions, staging and production changes.
+
+## P0 implementation candidate (2026-10-11, not yet locally tested)
+
+A narrowly scoped single-site implementation now exists at `src/Repository/UserAnonymizationRecovery.php`, integrated via `Lifecycle.php`. It stores a non-autoloaded per-user numerical intent before WordPress user deletion, schedules a retry, and after deletion verifies direct database absence before re-running the existing transactional owner/actor-ID anonymization. Failure retains the intent; duplicate replay is harmless. For single-site deletions, inability to persist/schedule the durable intent (or an incomplete Sales 1.6 schema) deliberately blocks the user deletion with a WordPress safety error, rather than silently permitting an irreversible deletion with unminimized references.
+
+An isolated PHP smoke is registered in `tools/check` and a new opt-in real MariaDB fault-injection integration is available with `CB_CRM_TEST_USER_RECOVERY=1 ./tools/check-sales-integration`. **Neither has been reported as run locally.** This P0 candidate does not establish multisite readiness, full data-subject erasure, operator queue scalability, or a retention schedule. See `SALES-WAVE1A-USER-ANONYMIZATION-RECOVERY.md`.
