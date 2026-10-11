@@ -76,8 +76,6 @@ $new_lead = static function ( string $name ) use ( $lead_pipeline, $lead_stage, 
 $lead_id = $new_lead( 'Synthetic B2 qualified Lead' );
 
 $assert( 'crm_sales_invalid_transition' === $code( Conversion::convert( $lead_id, 1, $deal_pipeline, $deal_stage ) ), 'open Lead converted without qualification' );
-$assert( 'crm_sales_invalid_pipeline' === $code( Conversion::convert( $lead_id, 1, $lead_pipeline, $foreign_stage ) )
-	|| true, 'placeholder' );
 $assert( 2 === Transitions::set_lead_status( $lead_id, 'qualified', 1 ), 'qualification failed' );
 $assert( 'crm_sales_conflict' === $code( Conversion::convert( $lead_id, 1, $deal_pipeline, $deal_stage ) ), 'stale revision allowed' );
 $assert( 'crm_sales_invalid_pipeline' === $code( Conversion::convert( $lead_id, 2, $lead_pipeline, $foreign_stage ) ), 'Lead pipeline accepted for Opportunity' );
