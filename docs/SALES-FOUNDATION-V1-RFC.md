@@ -1,10 +1,15 @@
 # CRM Sales Foundation v1 — Product and Architecture RFC
 
-**Recorded:** 2026-10-11  
-**Status:** DESIGN CANDIDATE, NOT APPROVED FOR IMPLEMENTATION  
-**Repository owner:** Core Blueprint CRM  
-**Scope:** Generic sales/qualification foundation for entrepreneurs, agencies and multi-user organisations; not an Operator Pack-specific workflow  
-**Source baseline:** CRM `main` `4e487145b49b396341732b5da9b16d2a608e0502`; Work `main` `0bf78e540bb4db8d366c20835c1b5625c281f319`  
+**Recorded:** 2026-10-11
+
+**Status:** DESIGN CANDIDATE, NOT APPROVED FOR IMPLEMENTATION
+
+**Repository owner:** Core Blueprint CRM
+
+**Scope:** Generic sales/qualification foundation for entrepreneurs, agencies and multi-user organisations; not an Operator Pack-specific workflow
+
+**Source baseline:** CRM `main` `4e487145b49b396341732b5da9b16d2a608e0502`; Work `main` `0bf78e540bb4db8d366c20835c1b5625c281f319`
+
 **Companion:** [Implementation and acceptance plan](SALES-FOUNDATION-V1-IMPLEMENTATION-PLAN.md)
 
 ## 1. Problem and design intent
