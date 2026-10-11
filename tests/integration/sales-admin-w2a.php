@@ -117,9 +117,9 @@ $assert( str_contains( $detail, 'Synthetic W2A own Lead' )
 	&& str_contains( $detail, 'Participants' )
 	&& str_contains( $detail, 'contact #' . $contact )
 	&& str_contains( $detail, 'Activity history' )
-	&& ! str_contains( $detail, 'method="post"' )
-	&& ! str_contains( $detail, 'type="submit"' ),
-	'W2A Lead detail unexpectedly mutated data or omitted C1 history' );
+	&& str_contains( $detail, 'method="post"' )
+	&& str_contains( $detail, 'name="_wpnonce"' ),
+	'W2A Lead detail or W2B1 guarded status actions missing' );
 
 $_GET = [ 'page' => Menu::SALES_OPPORTUNITIES_SLUG ];
 $deals = $render( [ SalesPage::class, 'render_opportunities' ] );
