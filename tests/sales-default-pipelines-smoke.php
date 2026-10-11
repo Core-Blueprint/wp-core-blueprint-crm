@@ -156,6 +156,12 @@ $assert = static function ( bool $condition, string $message ): void {
 		exit( 1 );
 	}
 };
+$plugin_source = (string) file_get_contents( $root . '/src/Plugin.php' );
+$boot_index = strpos( $plugin_source, 'Install::maybe_upgrade();' );
+$default_index = strpos( $plugin_source, 'DefaultPipelines::maybe_install();' );
+$assert( false !== $boot_index && false !== $default_index && $boot_index < $default_index,
+	'Sales defaults must initialize only after CRM install readiness' );
+
 $GLOBALS['wpdb'] = new CRM_Defaults_Fake_Db();
 $db = $GLOBALS['wpdb'];
 
