@@ -92,7 +92,10 @@ namespace {
 				return false;
 			}
 			$updated = 0;
-			foreach ( $this->rows[ $table ] ?? [] as &$row ) {
+			if ( ! isset( $this->rows[ $table ] ) ) {
+				$this->rows[ $table ] = [];
+			}
+			foreach ( $this->rows[ $table ] as &$row ) {
 				$matched = true;
 				foreach ( $where as $key => $value ) {
 					if ( (string) ( $row[ $key ] ?? '' ) !== (string) $value ) {
