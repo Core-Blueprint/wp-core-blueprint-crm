@@ -176,6 +176,10 @@ CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-outcomes.php" \
 echo '==> Verify C1 bounded staff read projections with real WordPress/MariaDB'
 CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-staff-projections.php" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+
+echo '==> Verify C2 staff action facade with real WordPress/MariaDB'
+CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-staff-actions.php" \
+  wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 
 # Optional real single-site WordPress deleted_user SQL-failure/recovery fixture.
