@@ -172,6 +172,10 @@ b2_eval verify
 echo '==> Verify B3 Won/Lost/Reopen and InnoDB outcome-event rollback'
 CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-outcomes.php" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+
+echo '==> Verify C1 bounded staff read projections with real WordPress/MariaDB'
+CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-staff-projections.php" \
+  wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 
 # Optional real single-site WordPress deleted_user SQL-failure/recovery fixture.
