@@ -15,6 +15,10 @@ final class Menu {
 	public const CONTEXT_USERS = 'users';
 	public const CONTEXT_ORGANIZATIONS = 'organizations';
 	public const CONTEXT_TAGS = 'tags';
+	public const CONTEXT_LEADS = 'leads';
+	public const CONTEXT_OPPORTUNITIES = 'opportunities';
+	public const SALES_LEADS_SLUG = 'core-blueprint-crm-leads';
+	public const SALES_OPPORTUNITIES_SLUG = 'core-blueprint-crm-opportunities';
 
 	public static function init(): void {
 		add_action( 'admin_menu', [ __CLASS__, 'register' ], 5 );
@@ -38,6 +42,16 @@ final class Menu {
 		}
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organizations', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::ORGANIZATION );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Tags', 'core-blueprint-crm' ), __( 'Tags', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT );
+		// Read-only Sales pages are native CRM submenus, not separate top-level menus.
+		foreach ( [
+			[ self::SALES_LEADS_SLUG, __( 'Leads', 'core-blueprint-crm' ), [ SalesPage::class, 'render_leads' ] ],
+			[ self::SALES_OPPORTUNITIES_SLUG, __( 'Opportunities', 'core-blueprint-crm' ), [ SalesPage::class, 'render_opportunities' ] ],
+		] as [ $slug, $label, $render ] ) {
+			$hook = add_submenu_page( self::TOP_LEVEL_SLUG, $label, $label, Capabilities::VIEW_SALES, $slug, $render );
+			if ( is_string( $hook ) && class_exists( AdminTheme::class ) ) {
+				AdminTheme::register_screen( $hook );
+			}
+		}
 	}
 
 	public static function screen_context( ?\WP_Screen $screen = null ): string {
@@ -46,6 +60,8 @@ final class Menu {
 		$page = isset( $_GET['page'] ) ? sanitize_key( (string) wp_unslash( $_GET['page'] ) ) : '';
 		if ( self::TOP_LEVEL_SLUG === $page ) { return self::CONTEXT_OVERVIEW; }
 		if ( UserLinks::PAGE_SLUG === $page ) { return self::CONTEXT_USERS; }
+		if ( self::SALES_LEADS_SLUG === $page ) { return self::CONTEXT_LEADS; }
+		if ( self::SALES_OPPORTUNITIES_SLUG === $page ) { return self::CONTEXT_OPPORTUNITIES; }
 		if ( '' !== (string) $screen->taxonomy ) { return PostTypes::TAG === (string) $screen->taxonomy ? self::CONTEXT_TAGS : ''; }
 		return match ( (string) $screen->post_type ) {
 			PostTypes::CONTACT => self::CONTEXT_CONTACTS,
@@ -75,7 +91,7 @@ final class Menu {
 	}
 
 	private static function submenu_slug( string $context ): string {
-		return match ( $context ) { self::CONTEXT_OVERVIEW => self::TOP_LEVEL_SLUG, self::CONTEXT_CONTACTS => 'edit.php?post_type=' . PostTypes::CONTACT, self::CONTEXT_USERS => UserLinks::PAGE_SLUG, self::CONTEXT_ORGANIZATIONS => 'edit.php?post_type=' . PostTypes::ORGANIZATION, self::CONTEXT_TAGS => 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT, default => '' };
+		return match ( $context ) { self::CONTEXT_OVERVIEW => self::TOP_LEVEL_SLUG, self::CONTEXT_CONTACTS => 'edit.php?post_type=' . PostTypes::CONTACT, self::CONTEXT_USERS => UserLinks::PAGE_SLUG, self::CONTEXT_ORGANIZATIONS => 'edit.php?post_type=' . PostTypes::ORGANIZATION, self::CONTEXT_TAGS => 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT, self::CONTEXT_LEADS => self::SALES_LEADS_SLUG, self::CONTEXT_OPPORTUNITIES => self::SALES_OPPORTUNITIES_SLUG, default => '' };
 	}
 	private static function count( string $post_type ): int { $counts = wp_count_posts( $post_type ); $total = 0; foreach ( get_object_vars( $counts ) as $status => $count ) { if ( ! in_array( $status, [ 'trash', 'auto-draft' ], true ) ) { $total += (int) $count; } } return $total; }
 }
