@@ -63,3 +63,24 @@ WP-CLI `eval-file` evaluates source text rather than requiring a PHP module; sou
       --path=/tmp/core-blueprint-tests/core-blueprint-crm-sales/run.jUx4Zaml/wordpress
 
 The path above is the first run's documented test-only path. It must never be replaced by staging, production, or a non-isolated WordPress location. Requiring the file retains PHP strict typing while invoking actual WP-CLI/WordPress APIs.
+
+## Privileged Access Guard in fresh WordPress installations
+
+Base may initially mark a newly installed WordPress administrator as Needs Review with reason `guard_marker_recovered`. This is correct Base fail-closed behavior. CRM's versioned policy can have all three stored capabilities (`cb_manage_crm`, `cb_view_crm_sales`, `cb_manage_crm_sales`) while effective permission remains denied because the administrator has not received Base's signed trust approval.
+
+The isolated runner now invokes **the official Base WP-CLI recovery** after activating Base and CRM, exclusively against the **new per-run disposable installation**:
+
+    wp cb operator recover crm-it-admin --path="$wp_root"
+    wp cb operator status crm-it-admin --path="$wp_root"
+
+This is not a security bypass. The command adds the additional CB Operator role and creates a valid signed approval, retaining the user's Administrator base role. It must not be used automatically against staging or production.
+
+The first test installation already exists. Resume it **without reprovisioning** by running:
+
+    WP_TEST=/tmp/core-blueprint-tests/core-blueprint-crm-sales/run.jUx4Zaml/wordpress
+    wp cb operator recover crm-it-admin --path="$WP_TEST"
+    wp cb operator status crm-it-admin --path="$WP_TEST"
+    CB_CRM_INTEGRATION_TEST_FILE="$PWD/tests/integration/sales-mariadb.php" \\
+      wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$WP_TEST"
+
+Do not weaken the Base Privileged Access Guard, add ad-hoc roles, or grant caps directly just to satisfy this test.

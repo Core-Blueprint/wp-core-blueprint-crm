@@ -98,6 +98,14 @@ wp core install --path="$wp_root" --url="http://crm-sales-test.invalid" \
 wp plugin activate core-blueprint --path="$wp_root" --quiet
 wp plugin activate core-blueprint-crm --path="$wp_root" --quiet
 
+# Base's Privileged Access Guard intentionally restricts a newly created
+# administrator pending signed approval, even when CRM grants role capabilities.
+# Use the official, audited recovery command ONLY in this freshly provisioned
+# disposable WordPress installation; never weaken the Base guard.
+echo '==> Approve isolated test identity through canonical Base trust recovery'
+wp cb operator recover crm-it-admin --path="$wp_root"
+wp cb operator status crm-it-admin --path="$wp_root"
+
 echo '==> Running actual WordPress and InnoDB tests'
 # WP-CLI eval-file passes file contents through eval(), where a strict_types
 # declaration can no longer be the first statement. Require the real file
