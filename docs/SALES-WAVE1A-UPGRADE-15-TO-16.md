@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A: real schema upgrade 1.5 to 1.6
 
-**State: normal 1.5-to-1.6 real WordPress/MariaDB upgrade PASS locally (2026-10-11); controlled interruption mode is new and NOT YET RUN.**
+**State: normal 1.5-to-1.6 upgrade and controlled migration-lock interruption/retry both PASS locally on 2026-10-11.**
 This is the next increment after the separate fresh-install real MariaDB test passed in the user's isolated WordPress test database (October 11, 2026).
 
 ## Objective
@@ -90,3 +90,9 @@ This is **lock-contended interrupted migration**, not a simulated MariaDB crash 
     CB_CRM_TEST_INTERRUPT=1 ./tools/check-sales-schema-upgrade
 
 The normal runner without `CB_CRM_TEST_INTERRUPT=1` retains its previous successful behavior. The new mode must be validated locally before acceptance. An unexpected failure leaves its test-only database and files for forensic review; do not reset any schema marker manually.
+
+## Actual controlled interruption/retry PASS (2026-10-11)
+
+User executed `CB_CRM_TEST_INTERRUPT=1 ./tools/check-sales-schema-upgrade` at CRM feature commit `ccc67534e9faa2c8b309b55eb948381fca1e6af7` with Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`. Disposable database: `cb_crm_up_fjxuxef1` (retained for inspection). The test proved: the held Base lock did not advance schema marker 1.5 or allow a Sales write; all nine legacy relational tables and three WordPress records remained intact both during blocking and after releasing the test-owned lock; retry advanced to schema 1.6; role policy and signed Base trust survived; six InnoDB tables, exactly two pipelines and seven stages existed; subsequent verification remained idempotent. `./tools/check`, `./tools/i18n/check`, ZIP integrity and checksum verification all passed at this source commit. Release ZIP SHA-256 `8c3317925167387351d8c7af665768d3312aaf8693bc433650c41137261593d5` (matches earlier runtime build because this increment only changes tests/docs/tooling). Non-blocking missing sendmail and six-locale PO header warnings remain.
+
+**Gate interpretation:** This is a genuine Base schema-lock contention and recovery test. It does not reproduce interruption halfway through individual `dbDelta` DDL statements or prove two concurrent WordPress requests can create/delete the same Sales participant safely. The concurrency and privacy tracks remain open. No merge, CI, staging or production change was authorized.
