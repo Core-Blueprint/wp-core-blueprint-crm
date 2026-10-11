@@ -126,14 +126,34 @@ final class Records {
 				throw new \DomainException( 'crm_sales_invalid_stage' );
 			}
 
-			// WordPress post identities stay canonical; never copy or create PII.
-			foreach ( $participants as $participant ) {
+			// Lock canonical WordPress identities in the SAME InnoDB transaction
+			// as the Sales record/participants. A cached get_post()/status check
+			// allows concurrent wp_delete_post() to leave orphan Sales links.
+			// Consistent ID order avoids avoidable lock-order inversions when
+			// multiple participants are attached to one Sales record.
+			$identity_locks = $participants;
+			usort( $identity_locks, static function ( array $a, array $b ): int {
+				return $a['party_id'] <=> $b['party_id'];
+			} );
+			foreach ( $identity_locks as $participant ) {
 				$party_type = $participant['party_type'];
 				$party_id = $participant['party_id'];
-				$post_status = get_post_status( $party_id );
-				if ( ! Entity::valid_owner( $party_type, $party_id )
-					|| ! is_string( $post_status )
-					|| in_array( $post_status, [ 'trash', 'auto-draft' ], true ) ) {
+				$expected_post_type = Entity::post_type_for_owner( $party_type );
+				$wpdb->last_error = '';
+				$identity = $wpdb->get_row(
+					$wpdb->prepare(
+						"SELECT post_type, post_status FROM {$wpdb->posts} WHERE ID = %d LIMIT 1 FOR UPDATE",
+						$party_id
+					),
+					ARRAY_A
+				);
+				if ( '' !== (string) $wpdb->last_error ) {
+					throw new \RuntimeException( 'crm_sales_identity_lock_failed' );
+				}
+				if ( '' === $expected_post_type || ! is_array( $identity )
+					|| $expected_post_type !== ( $identity['post_type'] ?? null )
+					|| ! is_string( $identity['post_status'] ?? null )
+					|| in_array( $identity['post_status'], [ 'trash', 'auto-draft' ], true ) ) {
 					throw new \DomainException( 'crm_sales_invalid_identity' );
 				}
 			}

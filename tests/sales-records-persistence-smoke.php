@@ -20,12 +20,14 @@ $GLOBALS['sales_authorized'] = false;
 $GLOBALS['sales_allowed_caps'] = [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
 $GLOBALS['sales_actor'] = 17;
 $GLOBALS['sales_schema_version'] = '1.6';
+// Simulates a WordPress cached identity map. The SQL map below can diverge.
 $GLOBALS['sales_identity'] = [
 	42 => [ 'type' => 'cb_crm_org', 'status' => 'publish' ],
 	7 => [ 'type' => 'cb_crm_contact', 'status' => 'publish' ],
 	8 => [ 'type' => 'cb_crm_contact', 'status' => 'trash' ],
 	9 => [ 'type' => 'post', 'status' => 'publish' ],
 ];
+$GLOBALS['sales_sql_identity'] = $GLOBALS['sales_identity'];
 function cb_crm_runtime_ready(): bool { return $GLOBALS['sales_ready']; }
 function current_user_can( string $capability ): bool {
 	return $GLOBALS['sales_authorized'] && in_array( $capability, $GLOBALS['sales_allowed_caps'], true );
@@ -51,6 +53,10 @@ function get_post_status( int $id ): string|false {
 
 final class CRM_Sales_Fake_Wpdb {
 	public string $prefix = 'wp_';
+	public string $posts = 'wp_posts';
+	public string $last_error = '';
+	public bool $fail_identity_read = false;
+	public array $locked_identity_ids = [];
 	public int $insert_id = 0;
 	/** @var array<string,list<array<string,mixed>>> */
 	public array $rows = [];
@@ -82,10 +88,23 @@ final class CRM_Sales_Fake_Wpdb {
 	}
 	public function get_row( string $sql, string $format ): ?array {
 		++$this->query_count;
-		if ( ARRAY_A !== $format || ! preg_match( '/WHERE id = ([0-9]+) LIMIT 1/', $sql, $m ) ) {
+		if ( ARRAY_A !== $format || ! preg_match( '/WHERE (?:id|ID) = ([0-9]+) LIMIT 1/', $sql, $m ) ) {
 			throw new RuntimeException( 'Unexpected Sales read SQL.' );
 		}
 		$id = (int) $m[1];
+		if ( str_contains( $sql, 'FROM wp_posts' ) ) {
+			if ( ! str_contains( $sql, 'FOR UPDATE' ) ) {
+				throw new RuntimeException( 'Identity read must lock the canonical WordPress row.' );
+			}
+			$this->locked_identity_ids[] = $id;
+			if ( $this->fail_identity_read ) {
+				$this->last_error = 'simulated database identity read failure';
+				return null;
+			}
+			return isset( $GLOBALS['sales_sql_identity'][ $id ] )
+				? [ 'post_type' => $GLOBALS['sales_sql_identity'][ $id ]['type'], 'post_status' => $GLOBALS['sales_sql_identity'][ $id ]['status'] ]
+				: null;
+		}
 		if ( str_contains( $sql, 'cb_crm_sales_pipelines' ) ) {
 			return $this->pipelines[ $id ] ?? null;
 		}
@@ -181,11 +200,24 @@ $assert( 'crm_sales_invalid_identity' === $code( Records::create_lead( $lead, [ 
 $assert( 'crm_sales_invalid_identity' === $code( Records::create_lead( $lead, [ [ 'party_type' => 'contact', 'party_id' => 9 ] ] ) ), 'non-CRM post rejected' );
 $assert( [] === $wpdb->rows, 'failed validation did not persist rows' );
 
+// Cached WP identity may survive a concurrent permanent deletion. The
+// authoritative FOR UPDATE DB read must nevertheless reject a new Sales link.
+$previous_sql_contact = $GLOBALS['sales_sql_identity'][7];
+unset( $GLOBALS['sales_sql_identity'][7] );
+$assert( 'cb_crm_contact' === get_post_type( 7 ), 'fixture retains stale cached Contact' );
+$assert( 'crm_sales_invalid_identity' === $code( Records::create_lead( $lead, [ [ 'party_type' => 'contact', 'party_id' => 7 ] ] ) ), 'stale WordPress identity cache does not permit Sales insert' );
+$GLOBALS['sales_sql_identity'][7] = $previous_sql_contact;
+$wpdb->fail_identity_read = true;
+$assert( 'crm_sales_storage_failed' === $code( Records::create_lead( $lead, $parties ) ), 'canonical identity read error fails closed' );
+$wpdb->fail_identity_read = false;
+$assert( [] === $wpdb->rows, 'concurrent deletion and database-error paths did not persist Sales records' );
+
 $id = Records::create_lead( $lead, $parties );
 $assert( is_int( $id ) && $id > 0, 'Lead created' );
 $assert( 17 === $wpdb->rows['wp_cb_crm_sales_leads'][0]['owner_user_id'], 'actor is canonical owner' );
 $assert( 'open' === $wpdb->rows['wp_cb_crm_sales_leads'][0]['status'], 'created Lead starts open' );
 $assert( 1 === count( $wpdb->rows['wp_cb_crm_sales_participants'] ), 'participant created' );
+$assert( in_array( 42, $wpdb->locked_identity_ids, true ), 'canonical identity row selected FOR UPDATE' );
 $assert( 'other' === $wpdb->rows['wp_cb_crm_sales_participants'][0]['role'], 'default role persisted' );
 $assert( 1 === count( $wpdb->rows['wp_cb_crm_sales_events'] ), 'created event stored atomically' );
 $assert( 'created' === $wpdb->rows['wp_cb_crm_sales_events'][0]['event_type'], 'created audit event type' );
@@ -209,6 +241,7 @@ $assert( 129900 === $wpdb->rows['wp_cb_crm_sales_opportunities'][0]['amount_mino
 $assert( 'EUR' === $wpdb->rows['wp_cb_crm_sales_opportunities'][0]['currency'], 'ISO currency stored' );
 $assert( 'open' === $wpdb->rows['wp_cb_crm_sales_events'][1]['to_outcome'], 'Opportunity outcome belongs to deal history' );
 $assert( 3 === count( $wpdb->rows['wp_cb_crm_sales_participants'] ), 'multiple opportunity participants supported' );
+$assert( [ 7, 42 ] === array_slice( $wpdb->locked_identity_ids, -2 ), 'multi-participant identity row locks acquired in stable ascending ID order' );
 
 $before = serialize( $wpdb->rows );
 $wpdb->fail_insert = 'wp_cb_crm_sales_participants';
