@@ -31,9 +31,12 @@ $assert = static function ( bool $condition, string $message ) use ( $fail ): vo
 
 $phase = getenv( 'CB_CRM_UPGRADE_PHASE' );
 $assert( in_array( $phase, [ 'seed', 'lock', 'blocked', 'unlock', 'verify' ], true ), 'unknown upgrade phase' );
-$expected_schema = 'verify' === $phase ? '1.6' : '1.5';
-$assert( defined( 'CB_CRM_SCHEMA_VERSION' ) && CB_CRM_SCHEMA_VERSION === $expected_schema, 'wrong CRM source schema for phase' );
-$assert( (string) get_option( Schema::OPTION, '' ) === $expected_schema, 'Base schema registry has not committed expected schema' );
+// During blocked/unlock requests CRM 1.6 code is running, while Base must
+// still report schema 1.5. Do not conflate source version with DB marker.
+$source_schema = in_array( $phase, [ 'seed', 'lock' ], true ) ? '1.5' : '1.6';
+$stored_schema = 'verify' === $phase ? '1.6' : '1.5';
+$assert( defined( 'CB_CRM_SCHEMA_VERSION' ) && CB_CRM_SCHEMA_VERSION === $source_schema, 'wrong CRM source schema for phase' );
+$assert( (string) get_option( Schema::OPTION, '' ) === $stored_schema, 'Base schema registry committed unexpected version' );
 $assert( function_exists( 'cb_crm_runtime_ready' ) && cb_crm_runtime_ready(), 'CRM runtime not ready' );
 
 $admin = get_user_by( 'login', 'crm-it-admin' );
