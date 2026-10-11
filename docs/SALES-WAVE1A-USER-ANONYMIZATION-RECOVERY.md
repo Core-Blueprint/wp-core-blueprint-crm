@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A P0: durable single-site WordPress user anonymisation
 
-**Status:** Candidate runtime patch, NOT YET locally tested or accepted.
+**Status:** P0 single-site real WordPress/MariaDB Golden PASS locally on 2026-10-11. Multisite/erasure/P1 queue observability NOT accepted.
 **Date:** 2026-10-11.
 **Scope:** CRM Sales v1.6 under a *single-site* WordPress 7.0/7.1 installation, using InnoDB. No new schema tables, outbound service, GUI, merge, CI, staging or deployment.
 
@@ -67,3 +67,9 @@ After acceptance, create and verify a **new** release artifact:
 - Network-wide WordPress user deletion and per-site roles require a separate multisite policy. The current P0 path is intentionally single-site only.
 - This anonymizes **WordPress login references**, not CRM Contact personal data and not a GDPR data-subject erasure response. Title, monetary estimate, provenance and other potentially identifying Sales fields may remain. Do not claim full privacy export/erasure/retention until P2/P3.
 - An operator/legal decision is still required for an explicit retention schedule and shared multi-party Sales records. No automatic destructive purge or outbound system is introduced.
+
+## Actual local P0 acceptance (2026-10-11)
+
+User tested branch commit `ebc1041aae1624d77470c08c2d89bc523a456531`, Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`. All PHP lint, `./tools/check`, `./tools/i18n/check` passed; six locales still emit nonfatal PO-header warnings. `CB_CRM_TEST_USER_RECOVERY=1 ./tools/check-sales-integration` PASS on actual WordPress 7.0/MariaDB 10.11.19 in disposable DB `cb_crm_it_0l1kujdc` (retained). Synthetic SQL trigger forced Events UPDATE failure after `wp_delete_user()`; post-delete intent remained durable and all earlier Sales writes rolled back. A subsequent explicit retry set both Sales owner and actor IDs to 0, preserved the unrelated synthetic user and canonical Contact, acknowledged the intent, and duplicate retry remained harmless. Release ZIP built and integrity/checksum verified. **New ZIP SHA-256:** `feccc71fa3e40847e50e14bd8c426afb4e84a0d683a15a8fec57d09c95247c91`.
+
+This verifies the single-site injected SQL failure path only, not WP-Cron delivery under load, an actual DB process crash, multisite, or full data-subject erasure. P1 still open.
