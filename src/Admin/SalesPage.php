@@ -140,6 +140,11 @@ final class SalesPage {
 	}
 
 	private static function render_detail( string $type, int $id ): void {
+		$history_after = self::query_id( 'history_after', true );
+		if ( $history_after instanceof \WP_Error ) {
+			self::render_error();
+			return;
+		}
 		$detail = StaffProjections::detail( $type, $id );
 		if ( $detail instanceof \WP_Error ) {
 			self::render_error();
@@ -186,11 +191,6 @@ final class SalesPage {
 				echo '<li>' . esc_html( $participant['party_type'] . ' #' . $participant['party_id'] . ' (' . $participant['role'] . ')' ) . '</li>';
 			}
 			echo '</ul>';
-		}
-		$history_after = self::query_id( 'history_after', true );
-		if ( $history_after instanceof \WP_Error ) {
-			self::render_error();
-			return;
 		}
 		$history = StaffProjections::history( $type, $id, $history_after, self::PER_PAGE );
 		echo '<h3>' . esc_html__( 'Activity history', 'core-blueprint-crm' ) . '</h3>';
