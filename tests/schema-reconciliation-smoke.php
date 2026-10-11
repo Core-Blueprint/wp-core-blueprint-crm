@@ -25,8 +25,8 @@ $fail = static function ( string $message ) use ( &$failed ): void {
 	$failed = true;
 };
 
-if ( 9 !== count( $definitions ) ) {
-	$fail( 'Expected exactly nine CRM-owned table definitions.' );
+if ( 15 !== count( $definitions ) ) {
+	$fail( 'Expected exactly fifteen CRM-owned table definitions, including six Sales tables.' );
 }
 
 $expected_tables = [
@@ -39,6 +39,12 @@ $expected_tables = [
 	'wp_cb_crm_document_links',
 	'wp_cb_crm_notes',
 	'wp_cb_crm_activities',
+	'wp_cb_crm_sales_pipelines',
+	'wp_cb_crm_sales_stages',
+	'wp_cb_crm_sales_leads',
+	'wp_cb_crm_sales_opportunities',
+	'wp_cb_crm_sales_participants',
+	'wp_cb_crm_sales_events',
 ];
 
 if ( array_keys( $definitions ) !== $expected_tables ) {
@@ -128,12 +134,33 @@ if (
 	$fail( 'Document-link unique index expectation is not canonical.' );
 }
 
+$sales_unique = [
+	'wp_cb_crm_sales_pipelines' => 'pipeline_key',
+	'wp_cb_crm_sales_stages' => 'pipeline_stage',
+	'wp_cb_crm_sales_leads' => 'converted_opportunity',
+	'wp_cb_crm_sales_opportunities' => 'source_lead',
+	'wp_cb_crm_sales_participants' => 'participant',
+	'wp_cb_crm_sales_events' => 'revision_event',
+];
+foreach ( $sales_unique as $table => $index ) {
+	if ( ! isset( $expectations[ $table ]['indexes'][ $index ] )
+		|| true !== $expectations[ $table ]['indexes'][ $index ]['unique'] ) {
+		$fail( "Sales table {$table} is missing its canonical unique integrity index {$index}." );
+	}
+}
+foreach ( [ 'wp_cb_crm_sales_leads', 'wp_cb_crm_sales_opportunities' ] as $table ) {
+	if ( ! isset( $expectations[ $table ]['indexes']['owner_status'] )
+		&& ! isset( $expectations[ $table ]['indexes']['owner_outcome'] ) ) {
+		$fail( "Sales table {$table} lacks a staff/owner query index." );
+	}
+}
+
 $schema_source = file_get_contents( $root . '/src/Database/Schema.php' );
 $bootstrap = file_get_contents( $root . '/core-blueprint-crm.php' );
 $tools_check = file_get_contents( $root . '/tools/check' );
 
 $source_checks = [
-	'schema version is 1.5' => str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.5'" ),
+	'schema version is 1.6' => str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.6'" ),
 	'installer repairs legacy default drift' => str_contains( $schema_source, 'self::repair_default_drift();' ),
 	'installer fails closed on postcondition drift' => str_contains( $schema_source, 'return self::schema_is_healthy();' ),
 	'health verification checks columns' => str_contains( $schema_source, 'SHOW COLUMNS FROM' ),
