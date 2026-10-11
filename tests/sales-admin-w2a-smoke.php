@@ -34,7 +34,10 @@ namespace CB\CRM\Domain\Sales {
 	}
 }
 namespace CB\CRM\Admin {
-	final class UserLinks { public const PAGE_SLUG = 'core-blueprint-crm-users'; }
+	final class UserLinks {
+		public const PAGE_SLUG = 'core-blueprint-crm-users';
+		public static function register_screen( string $screen_id ): void { unset( $screen_id ); }
+	}
 }
 namespace CB\CRM\Repository\Sales {
 	final class StaffProjections {
