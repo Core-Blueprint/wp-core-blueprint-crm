@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "domain": "core-blueprint-crm",
+  "locales": [
+    "nl_NL",
+    "de_DE",
+    "fr_FR",
+    "es_ES",
+    "it_IT",
+    "pt_PT"
+  ],
+  "messages": {
+    "Qualify lead": {
+      "nl_NL": "Lead kwalificeren",
+      "de_DE": "Lead qualifizieren",
+      "fr_FR": "Qualifier le lead",
+      "es_ES": "Cualificar lead",
+      "it_IT": "Qualifica lead",
+      "pt_PT": "Qualificar lead"
+    },
+    "Disqualify lead": {
+      "nl_NL": "Lead afwijzen",
+      "de_DE": "Lead disqualifizieren",
+      "fr_FR": "Disqualifier le lead",
+      "es_ES": "Descalificar lead",
+      "it_IT": "Squalifica lead",
+      "pt_PT": "Desqualificar lead"
+    },
+    "Mark won": {
+      "nl_NL": "Markeren als gewonnen",
+      "de_DE": "Als gewonnen markieren",
+      "fr_FR": "Marquer comme gagnée",
+      "es_ES": "Marcar como ganada",
+      "it_IT": "Segna come vinta",
+      "pt_PT": "Marcar como ganha"
+    },
+    "Mark lost": {
+      "nl_NL": "Markeren als verloren",
+      "de_DE": "Als verloren markieren",
+      "fr_FR": "Marquer comme perdue",
+      "es_ES": "Marcar como perdida",
+      "it_IT": "Segna come persa",
+      "pt_PT": "Marcar como perdida"
+    },
+    "Reopen opportunity": {
+      "nl_NL": "Opportunity heropenen",
+      "de_DE": "Verkaufschance erneut öffnen",
+      "fr_FR": "Rouvrir l’opportunité",
+      "es_ES": "Reabrir oportunidad",
+      "it_IT": "Riapri opportunità",
+      "pt_PT": "Reabrir oportunidade"
+    },
+    "Sales actions": {
+      "nl_NL": "Sales-acties",
+      "de_DE": "Sales-Aktionen",
+      "fr_FR": "Actions commerciales",
+      "es_ES": "Acciones de ventas",
+      "it_IT": "Azioni commerciali",
+      "pt_PT": "Ações comerciais"
+    },
+    "Invalid Sales request.": {
+      "nl_NL": "Ongeldig Sales-verzoek.",
+      "de_DE": "Ungültige Sales-Anfrage.",
+      "fr_FR": "Requête commerciale invalide.",
+      "es_ES": "Solicitud de ventas no válida.",
+      "it_IT": "Richiesta commerciale non valida.",
+      "pt_PT": "Pedido comercial inválido."
+    },
+    "The Sales action could not be completed. Reload the record and try again.": {
+      "nl_NL": "De Sales-actie kon niet worden voltooid. Laad het record opnieuw en probeer het nogmaals.",
+      "de_DE": "Die Sales-Aktion konnte nicht abgeschlossen werden. Laden Sie den Datensatz neu und versuchen Sie es erneut.",
+      "fr_FR": "L’action commerciale n’a pas pu aboutir. Rechargez le dossier et réessayez.",
+      "es_ES": "No se pudo completar la acción de ventas. Vuelva a cargar el registro e inténtelo de nuevo.",
+      "it_IT": "Impossibile completare l’azione commerciale. Ricarica il record e riprova.",
+      "pt_PT": "Não foi possível concluir a ação comercial. Recarregue o registo e tente novamente."
+    },
+    "Sales record updated.": {
+      "nl_NL": "Sales-record bijgewerkt.",
+      "de_DE": "Sales-Datensatz aktualisiert.",
+      "fr_FR": "Dossier commercial mis à jour.",
+      "es_ES": "Registro de ventas actualizado.",
+      "it_IT": "Record commerciale aggiornato.",
+      "pt_PT": "Registo comercial atualizado."
+    }
+  }
+}
