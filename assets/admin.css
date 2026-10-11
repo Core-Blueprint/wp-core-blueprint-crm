@@ -494,6 +494,19 @@
 	white-space: normal;
 }
 
+/* CRM Sales W2B2-A polish: primary action at the top-right of the heading. */
+.cb-crm-sales-heading {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 20px;
+}
+.cb-crm-sales-heading .cb-crm-sales-add {
+	margin-inline-start: auto;
+	flex-shrink: 0;
+}
+
 /* CRM Sales W2B2-A: native, accessible creation form. */
 .cb-crm-sales-create {
 	display: grid;
