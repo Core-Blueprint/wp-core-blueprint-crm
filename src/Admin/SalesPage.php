@@ -19,7 +19,6 @@ defined( 'ABSPATH' ) || exit;
  */
 final class SalesPage {
 	private const PER_PAGE = 20;
-	private const TEXT_DOMAIN = 'core-blueprint-crm';
 
 	public static function render_leads(): void {
 		self::render( Rules::LEAD );
@@ -31,7 +30,7 @@ final class SalesPage {
 
 	private static function render( string $type ): void {
 		if ( ! Access::can_view() || ! function_exists( 'get_current_user_id' ) || get_current_user_id() <= 0 ) {
-			wp_die( esc_html__( 'You do not have permission to view CRM Sales.', self::TEXT_DOMAIN ) );
+			wp_die( esc_html__( 'You do not have permission to view CRM Sales.', 'core-blueprint-crm' ) );
 			return;
 		}
 
@@ -79,23 +78,23 @@ final class SalesPage {
 		$url = self::url( $slug );
 		$states = self::states( $type );
 		?>
-		<p class="description"><?php esc_html_e( 'Internal staff records. Read-only overview.', self::TEXT_DOMAIN ); ?></p>
+		<p class="description"><?php esc_html_e( 'Internal staff records. Read-only overview.', 'core-blueprint-crm' ); ?></p>
 		<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="cb-crm-sales-filters">
 			<input type="hidden" name="page" value="<?php echo esc_attr( $slug ); ?>">
-			<label for="cb-crm-sales-state"><?php esc_html_e( 'Status', self::TEXT_DOMAIN ); ?></label>
+			<label for="cb-crm-sales-state"><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></label>
 			<select id="cb-crm-sales-state" name="state">
-				<option value=""><?php esc_html_e( 'All statuses', self::TEXT_DOMAIN ); ?></option>
+				<option value=""><?php esc_html_e( 'All statuses', 'core-blueprint-crm' ); ?></option>
 				<?php foreach ( $states as $value => $text ) : ?>
 				<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $state, $value ); ?>><?php echo esc_html( $text ); ?></option>
 				<?php endforeach; ?>
 			</select>
-			<label for="cb-crm-sales-mine"><?php esc_html_e( 'Owner', self::TEXT_DOMAIN ); ?></label>
+			<label for="cb-crm-sales-mine"><?php esc_html_e( 'Owner', 'core-blueprint-crm' ); ?></label>
 			<select id="cb-crm-sales-mine" name="mine">
-				<option value=""><?php esc_html_e( 'All records', self::TEXT_DOMAIN ); ?></option>
-				<option value="1" <?php selected( $mine, true ); ?>><?php esc_html_e( 'Assigned to me', self::TEXT_DOMAIN ); ?></option>
+				<option value=""><?php esc_html_e( 'All records', 'core-blueprint-crm' ); ?></option>
+				<option value="1" <?php selected( $mine, true ); ?>><?php esc_html_e( 'Assigned to me', 'core-blueprint-crm' ); ?></option>
 			</select>
 			<button type="submit" class="button"><?php esc_html_e( 'Filter' ); ?></button>
-			<a class="button-link" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Reset filters', self::TEXT_DOMAIN ); ?></a>
+			<a class="button-link" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Reset filters', 'core-blueprint-crm' ); ?></a>
 		</form>
 
 		<div class="cb-crm-sales-table-scroll">
@@ -104,15 +103,15 @@ final class SalesPage {
 				<thead>
 					<tr>
 						<th scope="col"><?php esc_html_e( 'Title' ); ?></th>
-						<th scope="col"><?php esc_html_e( 'Status', self::TEXT_DOMAIN ); ?></th>
-						<th scope="col"><?php esc_html_e( 'Owner', self::TEXT_DOMAIN ); ?></th>
-						<th scope="col"><?php esc_html_e( 'Next action', self::TEXT_DOMAIN ); ?></th>
-						<th scope="col"><?php esc_html_e( 'Updated', self::TEXT_DOMAIN ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Owner', 'core-blueprint-crm' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Next action', 'core-blueprint-crm' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Updated', 'core-blueprint-crm' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 				<?php if ( [] === $page['rows'] ) : ?>
-					<tr><td colspan="5"><?php esc_html_e( 'No matching records.', self::TEXT_DOMAIN ); ?></td></tr>
+					<tr><td colspan="5"><?php esc_html_e( 'No matching records.', 'core-blueprint-crm' ); ?></td></tr>
 				<?php else : ?>
 					<?php foreach ( $page['rows'] as $item ) : ?>
 					<tr>
@@ -129,12 +128,12 @@ final class SalesPage {
 				</tbody>
 			</table>
 		</div>
-		<nav class="cb-crm-sales-pagination" aria-label="<?php esc_attr_e( 'Sales pagination', self::TEXT_DOMAIN ); ?>">
+		<nav class="cb-crm-sales-pagination" aria-label="<?php esc_attr_e( 'Sales pagination', 'core-blueprint-crm' ); ?>">
 			<?php if ( $after > 0 ) : ?>
-				<a class="button" href="<?php echo esc_url( self::url( $slug, self::filter_args( $state, $mine ) ) ); ?>"><?php esc_html_e( 'First page', self::TEXT_DOMAIN ); ?></a>
+				<a class="button" href="<?php echo esc_url( self::url( $slug, self::filter_args( $state, $mine ) ) ); ?>"><?php esc_html_e( 'First page', 'core-blueprint-crm' ); ?></a>
 			<?php endif; ?>
 			<?php if ( $page['has_more'] && [] !== $page['rows'] ) : ?>
-				<a class="button" href="<?php echo esc_url( self::url( $slug, array_merge( self::filter_args( $state, $mine ), [ 'after' => $page['cursor'] ] ) ) ); ?>"><?php esc_html_e( 'Next page', self::TEXT_DOMAIN ); ?></a>
+				<a class="button" href="<?php echo esc_url( self::url( $slug, array_merge( self::filter_args( $state, $mine ), [ 'after' => $page['cursor'] ] ) ) ); ?>"><?php esc_html_e( 'Next page', 'core-blueprint-crm' ); ?></a>
 			<?php endif; ?>
 		</nav>
 		<?php
@@ -147,40 +146,40 @@ final class SalesPage {
 			return;
 		}
 		$slug = self::slug( $type );
-		echo '<p><a href="' . esc_url( self::url( $slug ) ) . '">' . esc_html__( 'Back to overview', self::TEXT_DOMAIN ) . '</a></p>';
+		echo '<p><a href="' . esc_url( self::url( $slug ) ) . '">' . esc_html__( 'Back to overview', 'core-blueprint-crm' ) . '</a></p>';
 		if ( null === $detail ) {
-			echo '<p>' . esc_html__( 'Record not found.', self::TEXT_DOMAIN ) . '</p>';
+			echo '<p>' . esc_html__( 'Record not found.', 'core-blueprint-crm' ) . '</p>';
 			return;
 		}
 		$item = $detail['record'];
 		echo '<h2>' . esc_html( $item['title'] ) . '</h2>';
-		echo '<p class="description">' . esc_html__( 'Read-only detail. Changes are not available on this screen.', self::TEXT_DOMAIN ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Read-only detail. Changes are not available on this screen.', 'core-blueprint-crm' ) . '</p>';
 		echo '<div class="cb-crm-sales-table-scroll"><table class="widefat striped cb-crm-sales-detail"><tbody>';
 		foreach ( [
-			__( 'Status', self::TEXT_DOMAIN ) => self::state_label( $type, $item['state'] ),
-			__( 'Owner', self::TEXT_DOMAIN ) => $item['owner_user_id'] > 0 ? '#' . $item['owner_user_id'] : '—',
-			__( 'Pipeline ID', self::TEXT_DOMAIN ) => (string) $item['pipeline_id'],
-			__( 'Stage ID', self::TEXT_DOMAIN ) => (string) $item['stage_id'],
-			__( 'Revision', self::TEXT_DOMAIN ) => (string) $item['revision'],
-			__( 'Next action', self::TEXT_DOMAIN ) => $item['next_action_on'] ?? '—',
-			__( 'Created', self::TEXT_DOMAIN ) => $item['created_at'],
-			__( 'Updated', self::TEXT_DOMAIN ) => $item['updated_at'],
+			__( 'Status', 'core-blueprint-crm' ) => self::state_label( $type, $item['state'] ),
+			__( 'Owner', 'core-blueprint-crm' ) => $item['owner_user_id'] > 0 ? '#' . $item['owner_user_id'] : '—',
+			__( 'Pipeline ID', 'core-blueprint-crm' ) => (string) $item['pipeline_id'],
+			__( 'Stage ID', 'core-blueprint-crm' ) => (string) $item['stage_id'],
+			__( 'Revision', 'core-blueprint-crm' ) => (string) $item['revision'],
+			__( 'Next action', 'core-blueprint-crm' ) => $item['next_action_on'] ?? '—',
+			__( 'Created', 'core-blueprint-crm' ) => $item['created_at'],
+			__( 'Updated', 'core-blueprint-crm' ) => $item['updated_at'],
 		] as $name => $value ) {
 			echo '<tr><th scope="row">' . esc_html( $name ) . '</th><td>' . esc_html( (string) $value ) . '</td></tr>';
 		}
 		if ( Rules::LEAD === $type ) {
-			self::detail_line( __( 'Source', self::TEXT_DOMAIN ), $item['source'] );
-			self::detail_line( __( 'Converted Opportunity ID', self::TEXT_DOMAIN ), $item['converted_opportunity_id'] );
+			self::detail_line( __( 'Source', 'core-blueprint-crm' ), $item['source'] );
+			self::detail_line( __( 'Converted Opportunity ID', 'core-blueprint-crm' ), $item['converted_opportunity_id'] );
 		} else {
-			self::detail_line( __( 'Amount (minor units)', self::TEXT_DOMAIN ), $item['amount_minor'] );
-			self::detail_line( __( 'Currency', self::TEXT_DOMAIN ), $item['currency'] );
-			self::detail_line( __( 'Source Lead ID', self::TEXT_DOMAIN ), $item['source_lead_id'] );
+			self::detail_line( __( 'Amount (minor units)', 'core-blueprint-crm' ), $item['amount_minor'] );
+			self::detail_line( __( 'Currency', 'core-blueprint-crm' ), $item['currency'] );
+			self::detail_line( __( 'Source Lead ID', 'core-blueprint-crm' ), $item['source_lead_id'] );
 		}
 		echo '</tbody></table></div>';
 
-		echo '<h3>' . esc_html__( 'Participants', self::TEXT_DOMAIN ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Participants', 'core-blueprint-crm' ) . '</h3>';
 		if ( [] === $detail['participants'] ) {
-			echo '<p>' . esc_html__( 'No participants.', self::TEXT_DOMAIN ) . '</p>';
+			echo '<p>' . esc_html__( 'No participants.', 'core-blueprint-crm' ) . '</p>';
 		} else {
 			echo '<ul class="ul-disc">';
 			foreach ( $detail['participants'] as $participant ) {
@@ -194,26 +193,26 @@ final class SalesPage {
 			return;
 		}
 		$history = StaffProjections::history( $type, $id, $history_after, self::PER_PAGE );
-		echo '<h3>' . esc_html__( 'Activity history', self::TEXT_DOMAIN ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Activity history', 'core-blueprint-crm' ) . '</h3>';
 		if ( $history instanceof \WP_Error ) {
 			self::render_error();
 			return;
 		}
 		echo '<div class="cb-crm-sales-table-scroll"><table class="widefat striped cb-crm-sales-history">';
-		echo '<thead><tr><th scope="col">' . esc_html__( 'Event', self::TEXT_DOMAIN ) . '</th><th scope="col">' . esc_html__( 'Revision', self::TEXT_DOMAIN ) . '</th><th scope="col">' . esc_html__( 'Actor ID', self::TEXT_DOMAIN ) . '</th><th scope="col">' . esc_html__( 'Created', self::TEXT_DOMAIN ) . '</th></tr></thead><tbody>';
+		echo '<thead><tr><th scope="col">' . esc_html__( 'Event', 'core-blueprint-crm' ) . '</th><th scope="col">' . esc_html__( 'Revision', 'core-blueprint-crm' ) . '</th><th scope="col">' . esc_html__( 'Actor ID', 'core-blueprint-crm' ) . '</th><th scope="col">' . esc_html__( 'Created', 'core-blueprint-crm' ) . '</th></tr></thead><tbody>';
 		if ( [] === $history['rows'] ) {
-			echo '<tr><td colspan="4">' . esc_html__( 'No history entries.', self::TEXT_DOMAIN ) . '</td></tr>';
+			echo '<tr><td colspan="4">' . esc_html__( 'No history entries.', 'core-blueprint-crm' ) . '</td></tr>';
 		}
 		foreach ( $history['rows'] as $event ) {
 			echo '<tr><td>' . esc_html( $event['event_type'] ) . '</td><td>' . esc_html( (string) $event['revision'] ) . '</td><td>' . esc_html( (string) $event['actor_user_id'] ) . '</td><td>' . esc_html( $event['created_at'] ) . '</td></tr>';
 		}
 		echo '</tbody></table></div>';
-		echo '<nav class="cb-crm-sales-pagination" aria-label="' . esc_attr__( 'Sales pagination', self::TEXT_DOMAIN ) . '">';
+		echo '<nav class="cb-crm-sales-pagination" aria-label="' . esc_attr__( 'Sales pagination', 'core-blueprint-crm' ) . '">';
 		if ( $history_after > 0 ) {
-			echo '<a class="button" href="' . esc_url( self::url( $slug, [ 'record' => $id ] ) ) . '">' . esc_html__( 'First page', self::TEXT_DOMAIN ) . '</a> ';
+			echo '<a class="button" href="' . esc_url( self::url( $slug, [ 'record' => $id ] ) ) . '">' . esc_html__( 'First page', 'core-blueprint-crm' ) . '</a> ';
 		}
 		if ( $history['has_more'] && [] !== $history['rows'] ) {
-			echo '<a class="button" href="' . esc_url( self::url( $slug, [ 'record' => $id, 'history_after' => $history['cursor'] ] ) ) . '">' . esc_html__( 'Next page', self::TEXT_DOMAIN ) . '</a>';
+			echo '<a class="button" href="' . esc_url( self::url( $slug, [ 'record' => $id, 'history_after' => $history['cursor'] ] ) ) . '">' . esc_html__( 'Next page', 'core-blueprint-crm' ) . '</a>';
 		}
 		echo '</nav>';
 	}
@@ -225,7 +224,7 @@ final class SalesPage {
 
 	private static function render_error(): void {
 		echo '<div class="notice notice-error inline" role="alert"><p>' .
-			esc_html__( 'Unable to display CRM Sales records. Check the filters or your access.', self::TEXT_DOMAIN ) .
+			esc_html__( 'Unable to display CRM Sales records. Check the filters or your access.', 'core-blueprint-crm' ) .
 			'</p></div>';
 	}
 
@@ -275,14 +274,14 @@ final class SalesPage {
 	/** @return array<string,string> */
 	private static function states( string $type ): array {
 		return Rules::LEAD === $type ? [
-			Rules::LEAD_OPEN => __( 'Open', self::TEXT_DOMAIN ),
-			Rules::LEAD_QUALIFIED => __( 'Qualified', self::TEXT_DOMAIN ),
-			Rules::LEAD_DISQUALIFIED => __( 'Disqualified', self::TEXT_DOMAIN ),
-			Rules::LEAD_CONVERTED => __( 'Converted', self::TEXT_DOMAIN ),
+			Rules::LEAD_OPEN => __( 'Open', 'core-blueprint-crm' ),
+			Rules::LEAD_QUALIFIED => __( 'Qualified', 'core-blueprint-crm' ),
+			Rules::LEAD_DISQUALIFIED => __( 'Disqualified', 'core-blueprint-crm' ),
+			Rules::LEAD_CONVERTED => __( 'Converted', 'core-blueprint-crm' ),
 		] : [
-			Rules::DEAL_OPEN => __( 'Open', self::TEXT_DOMAIN ),
-			Rules::DEAL_WON => __( 'Won', self::TEXT_DOMAIN ),
-			Rules::DEAL_LOST => __( 'Lost', self::TEXT_DOMAIN ),
+			Rules::DEAL_OPEN => __( 'Open', 'core-blueprint-crm' ),
+			Rules::DEAL_WON => __( 'Won', 'core-blueprint-crm' ),
+			Rules::DEAL_LOST => __( 'Lost', 'core-blueprint-crm' ),
 		];
 	}
 
@@ -291,7 +290,7 @@ final class SalesPage {
 	}
 
 	private static function heading( string $type ): string {
-		return Rules::LEAD === $type ? __( 'Leads', self::TEXT_DOMAIN ) : __( 'Opportunities', self::TEXT_DOMAIN );
+		return Rules::LEAD === $type ? __( 'Leads', 'core-blueprint-crm' ) : __( 'Opportunities', 'core-blueprint-crm' );
 	}
 
 	private static function slug( string $type ): string {
