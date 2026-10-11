@@ -493,3 +493,41 @@
 	max-width: 100%;
 	white-space: normal;
 }
+
+/* CRM Sales W2B2-A: native, accessible creation form. */
+.cb-crm-sales-create {
+	display: grid;
+	gap: 10px;
+	max-width: 640px;
+	margin: 18px 0 32px;
+}
+.cb-crm-sales-create > label {
+	font-weight: 600;
+}
+.cb-crm-sales-create input[type="text"],
+.cb-crm-sales-create input[type="number"],
+.cb-crm-sales-create select {
+	width: 100%;
+	max-width: 100%;
+}
+.cb-crm-sales-create fieldset {
+	padding: 12px 14px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+}
+.cb-crm-sales-create legend {
+	font-weight: 600;
+}
+.cb-crm-sales-identity {
+	display: block;
+	padding: 6px 0;
+	overflow-wrap: anywhere;
+}
+.cb-crm-sales-create > .button {
+	justify-self: start;
+	margin-top: 8px;
+}
+@media (max-width: 782px) {
+	.cb-crm-sales-create { max-width: none; }
+	.cb-crm-sales-create > .button { width: 100%; }
+}

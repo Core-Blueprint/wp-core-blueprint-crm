@@ -40,14 +40,21 @@ final class SalesPage {
 		?>
 		<div class="wrap cb-crm-sales">
 			<h1><?php echo esc_html( $label ); ?></h1>
+			<?php if ( isset( $_GET['sales_notice'] ) && is_string( $_GET['sales_notice'] ) && 'created' === wp_unslash( $_GET['sales_notice'] ) ) : ?>
+				<div class="notice notice-success inline" role="status"><p><?php esc_html_e( 'Sales record created.', 'core-blueprint-crm' ); ?></p></div>
+			<?php endif; ?>
 			<?php if ( isset( $_GET['sales_notice'] ) && is_string( $_GET['sales_notice'] ) && 'updated' === wp_unslash( $_GET['sales_notice'] ) ) : ?>
 				<div class="notice notice-success inline" role="status"><p><?php esc_html_e( 'Sales record updated.', 'core-blueprint-crm' ); ?></p></div>
 			<?php endif; ?>
 			<?php
-			if ( $record instanceof \WP_Error ) {
+			if ( $record instanceof \WP_Error
+				|| ( isset( $_GET['create'] ) && ( ! is_string( $_GET['create'] )
+					|| '1' !== wp_unslash( $_GET['create'] ) || $record > 0 ) ) ) {
 				self::render_error();
 			} elseif ( $record > 0 ) {
 				self::render_detail( $type, $record );
+			} elseif ( isset( $_GET['create'] ) ) {
+				SalesCreateActions::render_for_type( $type, $slug );
 			} else {
 				self::render_list( $type, $slug );
 			}
@@ -82,6 +89,9 @@ final class SalesPage {
 		$states = self::states( $type );
 		?>
 		<p class="description"><?php esc_html_e( 'Internal staff records. Read-only overview.', 'core-blueprint-crm' ); ?></p>
+		<?php if ( Access::can_manage() ) : ?>
+			<p><a class="button button-primary" href="<?php echo esc_url( self::url( $slug, [ 'create' => '1' ] ) ); ?>"><?php echo esc_html( Rules::LEAD === $type ? __( 'Create Lead', 'core-blueprint-crm' ) : __( 'Create Opportunity', 'core-blueprint-crm' ) ); ?></a></p>
+		<?php endif; ?>
 		<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="cb-crm-sales-filters">
 			<input type="hidden" name="page" value="<?php echo esc_attr( $slug ); ?>">
 			<label for="cb-crm-sales-state"><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></label>

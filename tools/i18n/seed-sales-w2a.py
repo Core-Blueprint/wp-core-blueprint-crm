@@ -83,6 +83,7 @@ def seed_dataset(data_path: Path) -> None:
 def main() -> None:
     seed_dataset(DATA)
     seed_dataset(DATA.with_name("sales-w2b1-translations.json"))
+    seed_dataset(DATA.with_name("sales-w2b2a-translations.json"))
     print("CRM Sales reviewed Admin translations seeded. Run ./tools/i18n/update next.")
 
 

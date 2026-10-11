@@ -1,0 +1,190 @@
+{
+  "version": "1.0.0",
+  "domain": "core-blueprint-crm",
+  "locales": [
+    "nl_NL",
+    "de_DE",
+    "fr_FR",
+    "es_ES",
+    "it_IT",
+    "pt_PT"
+  ],
+  "messages": {
+    "Create Lead": {
+      "nl_NL": "Lead aanmaken",
+      "de_DE": "Lead erstellen",
+      "fr_FR": "Créer un lead",
+      "es_ES": "Crear lead",
+      "it_IT": "Crea lead",
+      "pt_PT": "Criar lead"
+    },
+    "Create Opportunity": {
+      "nl_NL": "Opportunity aanmaken",
+      "de_DE": "Verkaufschance erstellen",
+      "fr_FR": "Créer une opportunité",
+      "es_ES": "Crear oportunidad",
+      "it_IT": "Crea opportunità",
+      "pt_PT": "Criar oportunidade"
+    },
+    "You do not have permission to create Sales records.": {
+      "nl_NL": "Je hebt geen toestemming om Sales-records aan te maken.",
+      "de_DE": "Sie sind nicht berechtigt, Vertriebsdatensätze zu erstellen.",
+      "fr_FR": "Vous ne disposez pas des droits pour créer des dossiers commerciaux.",
+      "es_ES": "No tiene permiso para crear registros de ventas.",
+      "it_IT": "Non disponi dei permessi per creare record commerciali.",
+      "pt_PT": "Não tem permissão para criar registos comerciais."
+    },
+    "First find a Contact or Organization to associate with this record.": {
+      "nl_NL": "Zoek eerst een contactpersoon of organisatie om aan dit record te koppelen.",
+      "de_DE": "Suchen Sie zuerst einen Kontakt oder eine Organisation, die mit diesem Datensatz verknüpft werden soll.",
+      "fr_FR": "Recherchez d’abord un contact ou une organisation à associer à ce dossier.",
+      "es_ES": "Primero busque un contacto o una organización para asociarlo a este registro.",
+      "it_IT": "Cerca prima un contatto o un’organizzazione da collegare a questo record.",
+      "pt_PT": "Primeiro, procure um contacto ou uma organização para associar a este registo."
+    },
+    "Relationship type": {
+      "nl_NL": "Relatietype",
+      "de_DE": "Beziehungstyp",
+      "fr_FR": "Type de relation",
+      "es_ES": "Tipo de relación",
+      "it_IT": "Tipo di relazione",
+      "pt_PT": "Tipo de relação"
+    },
+    "Search name": {
+      "nl_NL": "Naam zoeken",
+      "de_DE": "Name suchen",
+      "fr_FR": "Rechercher un nom",
+      "es_ES": "Buscar nombre",
+      "it_IT": "Cerca nome",
+      "pt_PT": "Pesquisar nome"
+    },
+    "Find relationship": {
+      "nl_NL": "Relatie zoeken",
+      "de_DE": "Beziehung suchen",
+      "fr_FR": "Rechercher une relation",
+      "es_ES": "Buscar relación",
+      "it_IT": "Cerca relazione",
+      "pt_PT": "Pesquisar relação"
+    },
+    "No matching Contacts or Organizations. Try another name.": {
+      "nl_NL": "Geen passende contactpersonen of organisaties gevonden. Probeer een andere naam.",
+      "de_DE": "Keine passenden Kontakte oder Organisationen gefunden. Versuchen Sie einen anderen Namen.",
+      "fr_FR": "Aucun contact ni aucune organisation correspondante. Essayez un autre nom.",
+      "es_ES": "No se encontraron contactos ni organizaciones. Pruebe con otro nombre.",
+      "it_IT": "Nessun contatto o organizzazione corrispondente. Prova un altro nome.",
+      "pt_PT": "Não foram encontrados contactos ou organizações. Tente outro nome."
+    },
+    "Select a relationship": {
+      "nl_NL": "Selecteer een relatie",
+      "de_DE": "Beziehung auswählen",
+      "fr_FR": "Sélectionner une relation",
+      "es_ES": "Seleccionar relación",
+      "it_IT": "Seleziona relazione",
+      "pt_PT": "Selecionar relação"
+    },
+    "Pipeline and stage": {
+      "nl_NL": "Pipeline en fase",
+      "de_DE": "Pipeline und Phase",
+      "fr_FR": "Pipeline et étape",
+      "es_ES": "Pipeline y etapa",
+      "it_IT": "Pipeline e fase",
+      "pt_PT": "Pipeline e fase"
+    },
+    "Choose a stage": {
+      "nl_NL": "Kies een fase",
+      "de_DE": "Phase auswählen",
+      "fr_FR": "Choisir une étape",
+      "es_ES": "Elegir etapa",
+      "it_IT": "Scegli una fase",
+      "pt_PT": "Escolher uma fase"
+    },
+    "Relationship role": {
+      "nl_NL": "Relatierol",
+      "de_DE": "Beziehungsrolle",
+      "fr_FR": "Rôle dans la relation",
+      "es_ES": "Rol de relación",
+      "it_IT": "Ruolo nella relazione",
+      "pt_PT": "Papel na relação"
+    },
+    "Primary contact": {
+      "nl_NL": "Primair contact",
+      "de_DE": "Hauptkontakt",
+      "fr_FR": "Contact principal",
+      "es_ES": "Contacto principal",
+      "it_IT": "Contatto principale",
+      "pt_PT": "Contacto principal"
+    },
+    "Decision maker": {
+      "nl_NL": "Beslisser",
+      "de_DE": "Entscheidungsträger",
+      "fr_FR": "Décideur",
+      "es_ES": "Responsable de decisiones",
+      "it_IT": "Responsabile delle decisioni",
+      "pt_PT": "Decisor"
+    },
+    "Influencer": {
+      "nl_NL": "Beïnvloeder",
+      "de_DE": "Einflussnehmer",
+      "fr_FR": "Influenceur",
+      "es_ES": "Persona influyente",
+      "it_IT": "Influenzatore",
+      "pt_PT": "Influenciador"
+    },
+    "Advisor": {
+      "nl_NL": "Adviseur",
+      "de_DE": "Berater",
+      "fr_FR": "Conseiller",
+      "es_ES": "Asesor",
+      "it_IT": "Consulente",
+      "pt_PT": "Consultor"
+    },
+    "Other": {
+      "nl_NL": "Overig",
+      "de_DE": "Sonstige",
+      "fr_FR": "Autre",
+      "es_ES": "Otro",
+      "it_IT": "Altro",
+      "pt_PT": "Outro"
+    },
+    "Estimated amount (minor units)": {
+      "nl_NL": "Geschat bedrag (kleinste valuta-eenheid)",
+      "de_DE": "Geschätzter Betrag (kleinste Währungseinheit)",
+      "fr_FR": "Montant estimé (unités monétaires mineures)",
+      "es_ES": "Importe estimado (unidades monetarias menores)",
+      "it_IT": "Importo stimato (unità monetarie minori)",
+      "pt_PT": "Montante estimado (unidades monetárias menores)"
+    },
+    "Currency (ISO code)": {
+      "nl_NL": "Valuta (ISO-code)",
+      "de_DE": "Währung (ISO-Code)",
+      "fr_FR": "Devise (code ISO)",
+      "es_ES": "Moneda (código ISO)",
+      "it_IT": "Valuta (codice ISO)",
+      "pt_PT": "Moeda (código ISO)"
+    },
+    "The Sales record could not be created. Check the information and try again.": {
+      "nl_NL": "Het Sales-record kon niet worden aangemaakt. Controleer de gegevens en probeer het opnieuw.",
+      "de_DE": "Der Vertriebsdatensatz konnte nicht erstellt werden. Prüfen Sie die Angaben und versuchen Sie es erneut.",
+      "fr_FR": "Impossible de créer le dossier commercial. Vérifiez les informations et réessayez.",
+      "es_ES": "No se pudo crear el registro de ventas. Compruebe los datos e inténtelo de nuevo.",
+      "it_IT": "Impossibile creare il record commerciale. Controlla le informazioni e riprova.",
+      "pt_PT": "Não foi possível criar o registo comercial. Verifique os dados e tente novamente."
+    },
+    "Unable to prepare the Sales creation form.": {
+      "nl_NL": "Het formulier voor het aanmaken van een Sales-record kan niet worden voorbereid.",
+      "de_DE": "Das Formular zur Erstellung des Vertriebsdatensatzes konnte nicht vorbereitet werden.",
+      "fr_FR": "Impossible de préparer le formulaire de création commerciale.",
+      "es_ES": "No se pudo preparar el formulario de creación de ventas.",
+      "it_IT": "Impossibile preparare il modulo di creazione commerciale.",
+      "pt_PT": "Não foi possível preparar o formulário de criação comercial."
+    },
+    "Sales record created.": {
+      "nl_NL": "Sales-record aangemaakt.",
+      "de_DE": "Vertriebsdatensatz erstellt.",
+      "fr_FR": "Dossier commercial créé.",
+      "es_ES": "Registro de ventas creado.",
+      "it_IT": "Record commerciale creato.",
+      "pt_PT": "Registo comercial criado."
+    }
+  }
+}

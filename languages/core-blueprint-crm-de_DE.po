@@ -47,7 +47,7 @@ msgstr "Erforderliche Core Blueprint Base-Verträge sind nicht verfügbar."
 msgid "Core Blueprint CRM:"
 msgstr "Core Blueprint CRM:"
 
-#: src/Admin/Admin.php:27 src/Admin/Menu.php:30 src/Admin/SettingsPage.php:28
+#: src/Admin/Admin.php:28 src/Admin/Menu.php:30 src/Admin/SettingsPage.php:28
 #: src/Admin/UserLinks.php:92
 #: src/Integration/Builders/Bricks/FormActions.php:128
 #: src/Integration/Builders/Bricks/Queries.php:29
@@ -56,12 +56,12 @@ msgstr "Core Blueprint CRM:"
 msgid "CRM"
 msgstr "CRM"
 
-#: src/Admin/Admin.php:33 src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Admin/Admin.php:34 src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:38
 msgid "Display name"
 msgstr "Anzeigename"
 
-#: src/Admin/Admin.php:34 src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Admin/Admin.php:35 src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:46
 msgid "Organization name"
 msgstr "Organisationsname"
@@ -159,6 +159,7 @@ msgstr "EORI"
 
 #: src/Admin/BusinessIdentifiersPanel.php:73
 #: src/Admin/Panels/ContactMethodsPanel.php:122
+#: src/Admin/SalesCreateActions.php:112
 msgid "Other"
 msgstr "Sonstige"
 
@@ -195,11 +196,11 @@ msgstr "Organisationen"
 msgid "Tags"
 msgstr "Schlagwörter"
 
-#: src/Admin/Menu.php:51 src/Admin/SalesPage.php:302
+#: src/Admin/Menu.php:51 src/Admin/SalesPage.php:312
 msgid "Leads"
 msgstr "Leads"
 
-#: src/Admin/Menu.php:52 src/Admin/SalesPage.php:302
+#: src/Admin/Menu.php:52 src/Admin/SalesPage.php:312
 msgid "Opportunities"
 msgstr "Verkaufschancen"
 
@@ -316,8 +317,8 @@ msgstr "WhatsApp"
 msgid "CRM Details"
 msgstr "CRM-Details"
 
-#: src/Admin/Panels/DetailsPanel.php:37 src/Admin/SalesPage.php:87
-#: src/Admin/SalesPage.php:109 src/Admin/SalesPage.php:169
+#: src/Admin/Panels/DetailsPanel.php:37 src/Admin/SalesPage.php:97
+#: src/Admin/SalesPage.php:119 src/Admin/SalesPage.php:179
 #: src/Admin/ServiceAgreements.php:82 src/Admin/UserLinks.php:35
 #: src/Admin/UserLinks.php:101
 #: src/Integration/Builders/Bricks/Conditions.php:30
@@ -460,7 +461,8 @@ msgstr "Aktivität"
 msgid "No activity yet."
 msgstr "Noch keine Aktivität."
 
-#: src/Admin/Panels/OrganizationsPanel.php:28 src/Content/PostTypes.php:41
+#: src/Admin/Panels/OrganizationsPanel.php:28
+#: src/Admin/SalesCreateActions.php:60 src/Content/PostTypes.php:41
 #: src/Integration/Builders/Bricks/Conditions.php:30
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:44
@@ -482,172 +484,281 @@ msgstr "Organisation hinzufügen"
 msgid "Primary organization"
 msgstr "Primäre Organisation"
 
+#: src/Admin/SalesCreateActions.php:23
+msgid "You do not have permission to create Sales records."
+msgstr "Sie sind nicht berechtigt, Vertriebsdatensätze zu erstellen."
+
+#: src/Admin/SalesCreateActions.php:51 src/Admin/SalesPage.php:93
+msgid "Create Lead"
+msgstr "Lead erstellen"
+
+#: src/Admin/SalesCreateActions.php:51 src/Admin/SalesPage.php:93
+msgid "Create Opportunity"
+msgstr "Verkaufschance erstellen"
+
+#: src/Admin/SalesCreateActions.php:53 src/Admin/SalesPage.php:167
+msgid "Back to overview"
+msgstr "Zurück zur Übersicht"
+
+#: src/Admin/SalesCreateActions.php:55
+msgid "First find a Contact or Organization to associate with this record."
+msgstr ""
+"Suchen Sie zuerst einen Kontakt oder eine Organisation, die mit diesem "
+"Datensatz verknüpft werden soll."
+
+#: src/Admin/SalesCreateActions.php:58
+msgid "Relationship type"
+msgstr "Beziehungstyp"
+
+#: src/Admin/SalesCreateActions.php:60 src/Admin/UserLinks.php:36
+#: src/Content/PostTypes.php:23
+#: src/Integration/Builders/Bricks/Conditions.php:30
+#: src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Integration/Builders/Bricks/FormActions.php:36
+#: src/Integration/Builders/Bricks/IntegrationData.php:80
+#: src/Integration/Builders/Bricks/Queries.php:30
+#: src/Integration/DocsAdmin.php:215
+msgid "Contact"
+msgstr "Kontakt"
+
+#: src/Admin/SalesCreateActions.php:63
+msgid "Search name"
+msgstr "Name suchen"
+
+#: src/Admin/SalesCreateActions.php:65
+msgid "Find relationship"
+msgstr "Beziehung suchen"
+
+#: src/Admin/SalesCreateActions.php:70
+msgid "No matching Contacts or Organizations. Try another name."
+msgstr ""
+"Keine passenden Kontakte oder Organisationen gefunden. Versuchen Sie einen "
+"anderen Namen."
+
+#: src/Admin/SalesCreateActions.php:78
+msgid "Select a relationship"
+msgstr "Beziehung auswählen"
+
+#: src/Admin/SalesCreateActions.php:86 src/Admin/SalesPage.php:118
+msgid "Title"
+msgstr "Titel"
+
+#: src/Admin/SalesCreateActions.php:88
+msgid "Pipeline and stage"
+msgstr "Pipeline und Phase"
+
+#: src/Admin/SalesCreateActions.php:89
+msgid "Choose a stage"
+msgstr "Phase auswählen"
+
+#: src/Admin/SalesCreateActions.php:105
+msgid "Relationship role"
+msgstr "Beziehungsrolle"
+
+#: src/Admin/SalesCreateActions.php:108
+msgid "Primary contact"
+msgstr "Hauptkontakt"
+
+#: src/Admin/SalesCreateActions.php:109
+msgid "Decision maker"
+msgstr "Entscheidungsträger"
+
+#: src/Admin/SalesCreateActions.php:110
+msgid "Influencer"
+msgstr "Einflussnehmer"
+
+#: src/Admin/SalesCreateActions.php:111
+msgid "Advisor"
+msgstr "Berater"
+
+#: src/Admin/SalesCreateActions.php:119
+msgid "Estimated amount (minor units)"
+msgstr "Geschätzter Betrag (kleinste Währungseinheit)"
+
+#: src/Admin/SalesCreateActions.php:121
+msgid "Currency (ISO code)"
+msgstr "Währung (ISO-Code)"
+
+#: src/Admin/SalesCreateActions.php:206 src/Admin/SalesStatusActions.php:147
+#: src/Admin/SalesStatusActions.php:163
+msgid "Invalid Sales request."
+msgstr "Ungültige Sales-Anfrage."
+
+#: src/Admin/SalesCreateActions.php:212
+msgid ""
+"The Sales record could not be created. Check the information and try again."
+msgstr ""
+"Der Vertriebsdatensatz konnte nicht erstellt werden. Prüfen Sie die Angaben "
+"und versuchen Sie es erneut."
+
+#: src/Admin/SalesCreateActions.php:245
+msgid "Unable to prepare the Sales creation form."
+msgstr ""
+"Das Formular zur Erstellung des Vertriebsdatensatzes konnte nicht "
+"vorbereitet werden."
+
 #: src/Admin/SalesPage.php:33
 msgid "You do not have permission to view CRM Sales."
 msgstr "Sie sind nicht berechtigt, CRM Sales anzuzeigen."
 
 #: src/Admin/SalesPage.php:44
+msgid "Sales record created."
+msgstr "Vertriebsdatensatz erstellt."
+
+#: src/Admin/SalesPage.php:47
 msgid "Sales record updated."
 msgstr "Sales-Datensatz aktualisiert."
 
-#: src/Admin/SalesPage.php:84
+#: src/Admin/SalesPage.php:91
 msgid "Internal staff records. Read-only overview."
 msgstr "Interne Mitarbeiterdatensätze. Schreibgeschützte Übersicht."
 
-#: src/Admin/SalesPage.php:89
+#: src/Admin/SalesPage.php:99
 msgid "All statuses"
 msgstr "Alle Status"
 
-#: src/Admin/SalesPage.php:94 src/Admin/SalesPage.php:110
-#: src/Admin/SalesPage.php:170
+#: src/Admin/SalesPage.php:104 src/Admin/SalesPage.php:120
+#: src/Admin/SalesPage.php:180
 msgid "Owner"
 msgstr "Verantwortliche Person"
 
-#: src/Admin/SalesPage.php:96
+#: src/Admin/SalesPage.php:106
 msgid "All records"
 msgstr "Alle Datensätze"
 
-#: src/Admin/SalesPage.php:97
+#: src/Admin/SalesPage.php:107
 msgid "Assigned to me"
 msgstr "Mir zugewiesen"
 
-#: src/Admin/SalesPage.php:99
+#: src/Admin/SalesPage.php:109
 msgid "Filter"
 msgstr "Filtern"
 
-#: src/Admin/SalesPage.php:100
+#: src/Admin/SalesPage.php:110
 msgid "Reset filters"
 msgstr "Filter zurücksetzen"
 
-#: src/Admin/SalesPage.php:108
-msgid "Title"
-msgstr "Titel"
-
-#: src/Admin/SalesPage.php:111 src/Admin/SalesPage.php:174
+#: src/Admin/SalesPage.php:121 src/Admin/SalesPage.php:184
 msgid "Next action"
 msgstr "Nächste Aktion"
 
-#: src/Admin/SalesPage.php:112 src/Admin/SalesPage.php:176
+#: src/Admin/SalesPage.php:122 src/Admin/SalesPage.php:186
 msgid "Updated"
 msgstr "Aktualisiert"
 
-#: src/Admin/SalesPage.php:117
+#: src/Admin/SalesPage.php:127
 msgid "No matching records."
 msgstr "Keine passenden Datensätze."
 
-#: src/Admin/SalesPage.php:134 src/Admin/SalesPage.php:219
+#: src/Admin/SalesPage.php:144 src/Admin/SalesPage.php:229
 msgid "Sales pagination"
 msgstr "Sales-Seitennavigation"
 
-#: src/Admin/SalesPage.php:136 src/Admin/SalesPage.php:221
+#: src/Admin/SalesPage.php:146 src/Admin/SalesPage.php:231
 msgid "First page"
 msgstr "Erste Seite"
 
-#: src/Admin/SalesPage.php:139 src/Admin/SalesPage.php:224
+#: src/Admin/SalesPage.php:149 src/Admin/SalesPage.php:234
 msgid "Next page"
 msgstr "Nächste Seite"
 
-#: src/Admin/SalesPage.php:157
-msgid "Back to overview"
-msgstr "Zurück zur Übersicht"
-
-#: src/Admin/SalesPage.php:159
+#: src/Admin/SalesPage.php:169
 msgid "Record not found."
 msgstr "Datensatz nicht gefunden."
 
-#: src/Admin/SalesPage.php:165
+#: src/Admin/SalesPage.php:175
 msgid "Read-only detail. Changes are not available on this screen."
 msgstr ""
 "Schreibgeschützte Detailansicht. Änderungen sind auf diesem Bildschirm nicht "
 "möglich."
 
-#: src/Admin/SalesPage.php:171
+#: src/Admin/SalesPage.php:181
 msgid "Pipeline ID"
 msgstr "Pipeline-ID"
 
-#: src/Admin/SalesPage.php:172
+#: src/Admin/SalesPage.php:182
 msgid "Stage ID"
 msgstr "Phasen-ID"
 
-#: src/Admin/SalesPage.php:173 src/Admin/SalesPage.php:211
+#: src/Admin/SalesPage.php:183 src/Admin/SalesPage.php:221
 msgid "Revision"
 msgstr "Revision"
 
-#: src/Admin/SalesPage.php:175 src/Admin/SalesPage.php:211
+#: src/Admin/SalesPage.php:185 src/Admin/SalesPage.php:221
 msgid "Created"
 msgstr "Erstellt"
 
-#: src/Admin/SalesPage.php:181
+#: src/Admin/SalesPage.php:191
 msgid "Source"
 msgstr "Quelle"
 
-#: src/Admin/SalesPage.php:182
+#: src/Admin/SalesPage.php:192
 msgid "Converted Opportunity ID"
 msgstr "ID der konvertierten Verkaufschance"
 
-#: src/Admin/SalesPage.php:184
+#: src/Admin/SalesPage.php:194
 msgid "Amount (minor units)"
 msgstr "Betrag (kleinste Währungseinheit)"
 
-#: src/Admin/SalesPage.php:185
+#: src/Admin/SalesPage.php:195
 msgid "Currency"
 msgstr "Währung"
 
-#: src/Admin/SalesPage.php:186
+#: src/Admin/SalesPage.php:196
 msgid "Source Lead ID"
 msgstr "Ursprungs-Lead-ID"
 
-#: src/Admin/SalesPage.php:194
+#: src/Admin/SalesPage.php:204
 msgid "Participants"
 msgstr "Beteiligte"
 
-#: src/Admin/SalesPage.php:196
+#: src/Admin/SalesPage.php:206
 msgid "No participants."
 msgstr "Keine Beteiligten."
 
-#: src/Admin/SalesPage.php:205
+#: src/Admin/SalesPage.php:215
 msgid "Activity history"
 msgstr "Aktivitätsverlauf"
 
-#: src/Admin/SalesPage.php:211
+#: src/Admin/SalesPage.php:221
 msgid "Event"
 msgstr "Ereignis"
 
-#: src/Admin/SalesPage.php:211
+#: src/Admin/SalesPage.php:221
 msgid "Actor ID"
 msgstr "Akteur-ID"
 
-#: src/Admin/SalesPage.php:213
+#: src/Admin/SalesPage.php:223
 msgid "No history entries."
 msgstr "Keine Verlaufseinträge."
 
-#: src/Admin/SalesPage.php:236
+#: src/Admin/SalesPage.php:246
 msgid "Unable to display CRM Sales records. Check the filters or your access."
 msgstr ""
 "CRM-Sales-Datensätze können nicht angezeigt werden. Prüfen Sie die Filter "
 "oder Ihre Zugriffsrechte."
 
-#: src/Admin/SalesPage.php:286 src/Admin/SalesPage.php:291
+#: src/Admin/SalesPage.php:296 src/Admin/SalesPage.php:301
 msgid "Open"
 msgstr "Offen"
 
-#: src/Admin/SalesPage.php:287
+#: src/Admin/SalesPage.php:297
 msgid "Qualified"
 msgstr "Qualifiziert"
 
-#: src/Admin/SalesPage.php:288
+#: src/Admin/SalesPage.php:298
 msgid "Disqualified"
 msgstr "Disqualifiziert"
 
-#: src/Admin/SalesPage.php:289
+#: src/Admin/SalesPage.php:299
 msgid "Converted"
 msgstr "Konvertiert"
 
-#: src/Admin/SalesPage.php:292
+#: src/Admin/SalesPage.php:302
 msgid "Won"
 msgstr "Gewonnen"
 
-#: src/Admin/SalesPage.php:293
+#: src/Admin/SalesPage.php:303
 msgid "Lost"
 msgstr "Verloren"
 
@@ -674,10 +785,6 @@ msgstr "Verkaufschance erneut öffnen"
 #: src/Admin/SalesStatusActions.php:70 src/Admin/SalesStatusActions.php:71
 msgid "Sales actions"
 msgstr "Sales-Aktionen"
-
-#: src/Admin/SalesStatusActions.php:147 src/Admin/SalesStatusActions.php:163
-msgid "Invalid Sales request."
-msgstr "Ungültige Sales-Anfrage."
 
 #: src/Admin/SalesStatusActions.php:154
 msgid ""
@@ -802,16 +909,6 @@ msgstr "Notizen"
 #: src/Admin/ServiceAgreements.php:114
 msgid "Remove agreement"
 msgstr "Vereinbarung entfernen"
-
-#: src/Admin/UserLinks.php:36 src/Content/PostTypes.php:23
-#: src/Integration/Builders/Bricks/Conditions.php:30
-#: src/Integration/Builders/Bricks/DynamicData.php:30
-#: src/Integration/Builders/Bricks/FormActions.php:36
-#: src/Integration/Builders/Bricks/IntegrationData.php:80
-#: src/Integration/Builders/Bricks/Queries.php:30
-#: src/Integration/DocsAdmin.php:215
-msgid "Contact"
-msgstr "Kontakt"
 
 #: src/Admin/UserLinks.php:104 src/Admin/UserLinks.php:198
 #: src/Admin/UserLinks.php:272
