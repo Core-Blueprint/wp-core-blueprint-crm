@@ -379,6 +379,12 @@ SHARED_TRANSLATIONS.update({
 })
 
 
+SHARED_TRANSLATIONS.update({
+    "Filter": {"nl_NL": "Filteren", "de_DE": "Filtern", "fr_FR": "Filtrer", "es_ES": "Filtrar", "it_IT": "Filtra", "pt_PT": "Filtrar"},
+    "Title": {"nl_NL": "Titel", "de_DE": "Titel", "fr_FR": "Titre", "es_ES": "Título", "it_IT": "Titolo", "pt_PT": "Título"},
+})
+
+
 def fail(message: str) -> None:
     raise SystemExit(f"ERROR: {message}")
 
