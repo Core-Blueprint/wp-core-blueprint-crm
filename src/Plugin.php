@@ -46,5 +46,10 @@ final class Plugin {
 		Subscriptions::init();
 		WooCommerce::init();
 		WooCustomerWorkspace::init();
+		// CLI command is operator-only and available only after CRM runtime
+		// readiness. Keep it distinct from Base's own "wp cb" hierarchy.
+		if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\\WP_CLI' ) ) {
+			\WP_CLI::add_command( 'cb-crm-recovery', \CB\CRM\CLI\RecoveryCommand::class );
+		}
 	}
 }
