@@ -150,6 +150,18 @@ if [[ "${CB_CRM_TEST_OVERSIGHT:-0}" == "1" ]]; then
     wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 fi
 
+# Optional real WordPress wp_options/cron fair scheduling for both queues.
+# No existing database is touched and no Sales rows are mutated.
+if [[ "${CB_CRM_TEST_QUEUE_FAIRNESS:-0}" == "1" ]]; then
+  echo '==> Test fair scheduled recovery across more than twenty pending intents'
+  fixture="$ROOT/tests/integration/recovery-queue-fairness.php"
+  [[ -f "$fixture" ]] || fail 'Recovery fairness integration fixture missing'
+  CB_CRM_FAIRNESS_PHASE=seed CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+  CB_CRM_FAIRNESS_PHASE=verify CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+fi
+
 # Optional two-process race, separated from ordinary fresh-install acceptance.
 # Only paths/files inside this newly created randomly named test directory.
 if [[ "${CB_CRM_TEST_CONCURRENT:-0}" == "1" ]]; then
