@@ -408,3 +408,67 @@
 		flex-direction: column;
 	}
 }
+
+
+/* CRM Sales W2A: native admin read-only list and detail. */
+.cb-crm-sales {
+	max-width: 1500px;
+}
+.cb-crm-sales-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 12px;
+	margin: 18px 0;
+}
+.cb-crm-sales-filters label {
+	font-weight: 600;
+}
+.cb-crm-sales-filters select {
+	min-width: 150px;
+	max-width: 100%;
+}
+.cb-crm-sales-table-scroll {
+	width: 100%;
+	overflow-x: auto;
+}
+.cb-crm-sales-list {
+	min-width: 670px;
+}
+.cb-crm-sales-list th:first-child {
+	width: 34%;
+}
+.cb-crm-sales-list td {
+	vertical-align: middle;
+}
+.cb-crm-sales-list td .description {
+	display: block;
+	font-weight: 400;
+}
+.cb-crm-sales-detail th {
+	width: 220px;
+	text-align: left;
+}
+.cb-crm-sales-detail th,
+.cb-crm-sales-detail td {
+	overflow-wrap: anywhere;
+}
+.cb-crm-sales-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 16px 0 24px;
+}
+@media (max-width: 782px) {
+	.cb-crm-sales-filters {
+		align-items: stretch;
+		flex-direction: column;
+	}
+	.cb-crm-sales-filters select,
+	.cb-crm-sales-filters button {
+		width: 100%;
+	}
+	.cb-crm-sales-detail th {
+		width: 135px;
+	}
+}
