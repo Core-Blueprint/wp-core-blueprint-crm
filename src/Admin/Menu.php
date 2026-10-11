@@ -42,12 +42,16 @@ final class Menu {
 		}
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Organizations', 'core-blueprint-crm' ), __( 'Organizations', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit.php?post_type=' . PostTypes::ORGANIZATION );
 		add_submenu_page( self::TOP_LEVEL_SLUG, __( 'Tags', 'core-blueprint-crm' ), __( 'Tags', 'core-blueprint-crm' ), Capabilities::MANAGE, 'edit-tags.php?taxonomy=' . PostTypes::TAG . '&post_type=' . PostTypes::CONTACT );
+		// Match Access::can_view(): a Sales manager may legitimately lack the separate viewer grant.
+		// WordPress menu API accepts only one capability, so choose a granted Sales capability
+		// for this request; SalesPage still enforces canonical CRM + Sales access itself.
+		$sales_menu_capability = current_user_can( Capabilities::VIEW_SALES ) ? Capabilities::VIEW_SALES : Capabilities::MANAGE_SALES;
 		// Read-only Sales pages are native CRM submenus, not separate top-level menus.
 		foreach ( [
 			[ self::SALES_LEADS_SLUG, __( 'Leads', 'core-blueprint-crm' ), [ SalesPage::class, 'render_leads' ] ],
 			[ self::SALES_OPPORTUNITIES_SLUG, __( 'Opportunities', 'core-blueprint-crm' ), [ SalesPage::class, 'render_opportunities' ] ],
 		] as [ $slug, $label, $render ] ) {
-			$hook = add_submenu_page( self::TOP_LEVEL_SLUG, $label, $label, Capabilities::VIEW_SALES, $slug, $render );
+			$hook = add_submenu_page( self::TOP_LEVEL_SLUG, $label, $label, $sales_menu_capability, $slug, $render );
 			if ( is_string( $hook ) && class_exists( AdminTheme::class ) ) {
 				AdminTheme::register_screen( $hook );
 			}
