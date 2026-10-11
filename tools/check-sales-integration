@@ -114,6 +114,14 @@ CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-mariadb.php" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 
+# Optional real single-site WordPress deleted_user SQL-failure/recovery fixture.
+# Its test login and MariaDB trigger exist only in this new disposable site.
+if [[ "${CB_CRM_TEST_USER_RECOVERY:-0}" == "1" ]]; then
+  echo '==> Test durable single-site user anonymization recovery under SQL failure'
+  CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-user-anonymization.php" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+fi
+
 # Optional two-process race, separated from ordinary fresh-install acceptance.
 # Only paths/files inside this newly created randomly named test directory.
 if [[ "${CB_CRM_TEST_CONCURRENT:-0}" == "1" ]]; then
