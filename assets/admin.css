@@ -494,13 +494,26 @@
 	white-space: normal;
 }
 
-/* CRM Sales W2B2-A polish: primary action at the top-right of the heading. */
+/* CRM Sales W2B2-A: Work-aligned list header, action at the top-right. */
+.cb-crm-sales.cb-crm-sales-index {
+	max-width: none;
+}
 .cb-crm-sales-heading {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: space-between;
 	gap: 12px 20px;
+}
+.cb-crm-sales-heading-main {
+	flex: 1 1 300px;
+	min-width: 0;
+}
+.cb-crm-sales-heading-main h1 {
+	margin: 0 0 12px;
+}
+.cb-crm-sales-heading-main .description {
+	margin: 0;
 }
 .cb-crm-sales-heading .cb-crm-sales-add {
 	margin-inline-start: auto;

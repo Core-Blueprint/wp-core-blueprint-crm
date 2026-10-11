@@ -17,7 +17,17 @@ final class Assets {
 		$is_record_editor = Menu::is_record_editor_screen( $screen );
 		if ( ! $is_record_editor && ! in_array( $context, [ Menu::CONTEXT_OVERVIEW, Menu::CONTEXT_USERS, Menu::CONTEXT_LEADS, Menu::CONTEXT_OPPORTUNITIES ], true ) ) { return; }
 
-		wp_enqueue_style( 'cb-crm-admin', CB_CRM_URL . 'assets/admin.css', [], CB_CRM_VERSION );
+		// The plugin version remains rc1 across local candidates. Bust stale admin CSS
+		// without changing the public plugin release/version contract.
+		$css_version = CB_CRM_VERSION;
+		$css_path = CB_CRM_DIR . 'assets/admin.css';
+		if ( is_file( $css_path ) ) {
+			$css_mtime = filemtime( $css_path );
+			if ( false !== $css_mtime ) {
+				$css_version .= '-' . (string) $css_mtime;
+			}
+		}
+		wp_enqueue_style( 'cb-crm-admin', CB_CRM_URL . 'assets/admin.css', [], $css_version );
 		if ( ! $is_record_editor ) { return; }
 		FormComposition::enqueue( FormComposition::PRESENTATION_WP_NATIVE );
 		wp_enqueue_script( 'cb-crm-admin', CB_CRM_URL . 'assets/admin.js', [], CB_CRM_VERSION, true );

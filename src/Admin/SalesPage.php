@@ -38,9 +38,14 @@ final class SalesPage {
 		$label = self::heading( $type );
 		$record = self::query_id( 'record', false );
 		?>
-		<div class="wrap cb-crm-sales">
+		<div class="wrap cb-crm-sales<?php echo ( 0 === $record && ! isset( $_GET['create'] ) ) ? ' cb-crm-sales-index' : ''; ?>">
 			<div class="cb-crm-sales-heading">
-				<h1><?php echo esc_html( $label ); ?></h1>
+				<div class="cb-crm-sales-heading-main">
+					<h1><?php echo esc_html( $label ); ?></h1>
+					<?php if ( 0 === $record && ! isset( $_GET['create'] ) ) : ?>
+						<p class="description"><?php esc_html_e( 'Internal staff records. Read-only overview.', 'core-blueprint-crm' ); ?></p>
+					<?php endif; ?>
+				</div>
 				<?php if ( 0 === $record && ! isset( $_GET['create'] ) && Access::can_manage() ) : ?>
 					<a class="button button-primary cb-crm-sales-add" href="<?php echo esc_url( self::url( $slug, [ 'create' => '1' ] ) ); ?>"><?php echo esc_html( Rules::LEAD === $type ? __( 'Create Lead', 'core-blueprint-crm' ) : __( 'Create Opportunity', 'core-blueprint-crm' ) ); ?></a>
 				<?php endif; ?>
@@ -93,7 +98,6 @@ final class SalesPage {
 		$url = self::url( $slug );
 		$states = self::states( $type );
 		?>
-		<p class="description"><?php esc_html_e( 'Internal staff records. Read-only overview.', 'core-blueprint-crm' ); ?></p>
 		<form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" class="cb-crm-sales-filters">
 			<input type="hidden" name="page" value="<?php echo esc_attr( $slug ); ?>">
 			<label for="cb-crm-sales-state"><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></label>
