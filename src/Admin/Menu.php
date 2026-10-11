@@ -61,7 +61,7 @@ final class Menu {
 	public static function screen_context( ?\WP_Screen $screen = null ): string {
 		$screen = $screen ?? get_current_screen();
 		if ( ! $screen ) { return ''; }
-		$page = isset( $_GET['page'] ) ? sanitize_key( (string) wp_unslash( $_GET['page'] ) ) : '';
+		$page = isset( $_GET['page'] ) && is_string( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
 		if ( self::TOP_LEVEL_SLUG === $page ) { return self::CONTEXT_OVERVIEW; }
 		if ( UserLinks::PAGE_SLUG === $page ) { return self::CONTEXT_USERS; }
 		if ( self::SALES_LEADS_SLUG === $page ) { return self::CONTEXT_LEADS; }
