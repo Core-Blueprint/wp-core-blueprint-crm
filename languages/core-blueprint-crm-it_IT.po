@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Core Blueprint CRM 1.0.0-rc1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-core-blueprint-"
 "crm\n"
-"POT-Creation-Date: 2026-09-27 15:56+0000\n"
-"PO-Revision-Date: 2026-09-27 15:56+0000\n"
+"POT-Creation-Date: 2026-10-11 17:22+0000\n"
+"PO-Revision-Date: 2026-10-11 17:22+0000\n"
 "Last-Translator: Core Blueprint\n"
 "Language-Team: it_IT\n"
 "Language: it_IT\n"
@@ -13,7 +13,8 @@ msgstr ""
 "Generated-By: Core Blueprint i18n tooling 1.1.0\n"
 
 #. Plugin Name of the plugin
-#: core-blueprint-crm.php src/Admin/Menu.php:71 src/Capabilities.php:25
+#: core-blueprint-crm.php src/Admin/Menu.php:91 src/Admin/SettingsPage.php:46
+#: src/Capabilities.php:31 src/Capabilities.php:43
 #: src/Integration/Builders/Bricks/Conditions.php:28
 msgid "Core Blueprint CRM"
 msgstr "Core Blueprint CRM"
@@ -38,15 +39,16 @@ msgstr ""
 msgid "Core Blueprint"
 msgstr "Core Blueprint"
 
-#: core-blueprint-crm.php:120 src/Integration/Suite.php:73
+#: core-blueprint-crm.php:124 src/Integration/Suite.php:73
 msgid "Required Core Blueprint Base contracts are unavailable."
 msgstr "I contratti Core Blueprint Base richiesti non sono disponibili."
 
-#: core-blueprint-crm.php:169 core-blueprint-crm.php:191
+#: core-blueprint-crm.php:173 core-blueprint-crm.php:195
 msgid "Core Blueprint CRM:"
 msgstr "Core Blueprint CRM:"
 
-#: src/Admin/Admin.php:25 src/Admin/Menu.php:26 src/Admin/UserLinks.php:92
+#: src/Admin/Admin.php:26 src/Admin/Menu.php:30 src/Admin/SettingsPage.php:28
+#: src/Admin/UserLinks.php:92
 #: src/Integration/Builders/Bricks/FormActions.php:128
 #: src/Integration/Builders/Bricks/Queries.php:29
 #: src/Integration/DocsAdmin.php:50 src/Integration/DocsAdmin.php:140
@@ -54,12 +56,12 @@ msgstr "Core Blueprint CRM:"
 msgid "CRM"
 msgstr "CRM"
 
-#: src/Admin/Admin.php:31 src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Admin/Admin.php:32 src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:38
 msgid "Display name"
 msgstr "Nome visualizzato"
 
-#: src/Admin/Admin.php:32 src/Integration/Builders/Bricks/DynamicData.php:30
+#: src/Admin/Admin.php:33 src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:46
 msgid "Organization name"
 msgstr "Nome dell’organizzazione"
@@ -160,7 +162,7 @@ msgstr "Altro"
 
 #: src/Admin/ContactList.php:25 src/Admin/ContactList.php:30
 #: src/Admin/ContactList.php:61 src/Admin/ContactList.php:63
-#: src/Admin/Menu.php:32 src/Admin/Panels/DetailsPanel.php:64
+#: src/Admin/Menu.php:36 src/Admin/Panels/DetailsPanel.php:64
 msgid "WordPress account"
 msgstr "Account WordPress"
 
@@ -169,17 +171,17 @@ msgstr "Account WordPress"
 msgid "Linked WordPress account"
 msgstr "Account WordPress collegato"
 
-#: src/Admin/Menu.php:30
+#: src/Admin/Menu.php:34
 msgid "Overview"
 msgstr "Panoramica"
 
-#: src/Admin/Menu.php:31 src/Admin/Menu.php:67 src/Content/PostTypes.php:22
+#: src/Admin/Menu.php:35 src/Admin/Menu.php:87 src/Content/PostTypes.php:22
 #: src/Integration/Builders/Bricks/Queries.php:31
 #: src/Integration/DocsAdmin.php:142
 msgid "Contacts"
 msgstr "Contatti"
 
-#: src/Admin/Menu.php:39 src/Admin/Menu.php:68
+#: src/Admin/Menu.php:43 src/Admin/Menu.php:88
 #: src/Admin/Panels/OrganizationsPanel.php:17 src/Content/PostTypes.php:40
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/Queries.php:32
@@ -187,25 +189,34 @@ msgstr "Contatti"
 msgid "Organizations"
 msgstr "Organizzazioni"
 
-#: src/Admin/Menu.php:40
+#: src/Admin/Menu.php:44
 msgid "Tags"
 msgstr "Tag"
 
-#: src/Admin/Menu.php:65 src/Admin/UserLinkActions.php:85
-#: src/Admin/UserLinks.php:43
+#: src/Admin/Menu.php:51 src/Admin/SalesPage.php:293
+msgid "Leads"
+msgstr "Lead"
+
+#: src/Admin/Menu.php:52 src/Admin/SalesPage.php:293
+msgid "Opportunities"
+msgstr "Opportunità"
+
+#: src/Admin/Menu.php:85 src/Admin/SettingsPage.php:42
+#: src/Admin/UserLinkActions.php:85 src/Admin/UserLinks.php:43
 #: src/Integration/Builders/Bricks/FormActions.php:118
 msgid "You do not have permission to manage CRM data."
 msgstr "Non hai l’autorizzazione per gestire i dati CRM."
 
-#: src/Admin/Menu.php:67
+#: src/Admin/Menu.php:87
 msgid "People, identity and customer context."
 msgstr "Persone, identità e contesto cliente."
 
-#: src/Admin/Menu.php:68
+#: src/Admin/Menu.php:88
 msgid "Companies, institutions and customer relationships."
 msgstr "Aziende, istituzioni e relazioni con i clienti."
 
-#: src/Admin/Menu.php:72
+#: src/Admin/Menu.php:92 src/Admin/SettingsPage.php:29
+#: src/Admin/SettingsPage.php:47
 msgid ""
 "Customer identity, organizations, context and customer-specific service "
 "agreements. The service catalog and VAT are managed by Core Blueprint Work."
@@ -214,7 +225,7 @@ msgstr ""
 "specifici del cliente. Il catalogo dei servizi e l’IVA sono gestiti da Core "
 "Blueprint Work."
 
-#: src/Admin/Menu.php:73
+#: src/Admin/Menu.php:93 src/Admin/SettingsPage.php:49
 msgid "Manage"
 msgstr "Gestisci"
 
@@ -303,8 +314,10 @@ msgstr "WhatsApp"
 msgid "CRM Details"
 msgstr "Dettagli CRM"
 
-#: src/Admin/Panels/DetailsPanel.php:37 src/Admin/ServiceAgreements.php:82
-#: src/Admin/UserLinks.php:35 src/Admin/UserLinks.php:101
+#: src/Admin/Panels/DetailsPanel.php:37 src/Admin/SalesPage.php:84
+#: src/Admin/SalesPage.php:106 src/Admin/SalesPage.php:164
+#: src/Admin/ServiceAgreements.php:82 src/Admin/UserLinks.php:35
+#: src/Admin/UserLinks.php:101
 #: src/Integration/Builders/Bricks/Conditions.php:30
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:42
@@ -465,6 +478,170 @@ msgstr "Aggiungi organizzazione"
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 msgid "Primary organization"
 msgstr "Organizzazione principale"
+
+#: src/Admin/SalesPage.php:33
+msgid "You do not have permission to view CRM Sales."
+msgstr "Non hai il permesso di visualizzare CRM Sales."
+
+#: src/Admin/SalesPage.php:81
+msgid "Internal staff records. Read-only overview."
+msgstr "Record interni del personale. Panoramica di sola lettura."
+
+#: src/Admin/SalesPage.php:86
+msgid "All statuses"
+msgstr "Tutti gli stati"
+
+#: src/Admin/SalesPage.php:91 src/Admin/SalesPage.php:107
+#: src/Admin/SalesPage.php:165
+msgid "Owner"
+msgstr "Responsabile"
+
+#: src/Admin/SalesPage.php:93
+msgid "All records"
+msgstr "Tutti i record"
+
+#: src/Admin/SalesPage.php:94
+msgid "Assigned to me"
+msgstr "Assegnati a me"
+
+#: src/Admin/SalesPage.php:96
+msgid "Filter"
+msgstr "Filtra"
+
+#: src/Admin/SalesPage.php:97
+msgid "Reset filters"
+msgstr "Reimposta i filtri"
+
+#: src/Admin/SalesPage.php:105
+msgid "Title"
+msgstr "Titolo"
+
+#: src/Admin/SalesPage.php:108 src/Admin/SalesPage.php:169
+msgid "Next action"
+msgstr "Prossima azione"
+
+#: src/Admin/SalesPage.php:109 src/Admin/SalesPage.php:171
+msgid "Updated"
+msgstr "Aggiornato"
+
+#: src/Admin/SalesPage.php:114
+msgid "No matching records."
+msgstr "Nessun record corrispondente."
+
+#: src/Admin/SalesPage.php:131 src/Admin/SalesPage.php:210
+msgid "Sales pagination"
+msgstr "Paginazione vendite"
+
+#: src/Admin/SalesPage.php:133 src/Admin/SalesPage.php:212
+msgid "First page"
+msgstr "Prima pagina"
+
+#: src/Admin/SalesPage.php:136 src/Admin/SalesPage.php:215
+msgid "Next page"
+msgstr "Pagina successiva"
+
+#: src/Admin/SalesPage.php:154
+msgid "Back to overview"
+msgstr "Torna alla panoramica"
+
+#: src/Admin/SalesPage.php:156
+msgid "Record not found."
+msgstr "Record non trovato."
+
+#: src/Admin/SalesPage.php:161
+msgid "Read-only detail. Changes are not available on this screen."
+msgstr ""
+"Dettaglio di sola lettura. Le modifiche non sono disponibili in questa "
+"schermata."
+
+#: src/Admin/SalesPage.php:166
+msgid "Pipeline ID"
+msgstr "ID della pipeline"
+
+#: src/Admin/SalesPage.php:167
+msgid "Stage ID"
+msgstr "ID della fase"
+
+#: src/Admin/SalesPage.php:168 src/Admin/SalesPage.php:202
+msgid "Revision"
+msgstr "Revisione"
+
+#: src/Admin/SalesPage.php:170 src/Admin/SalesPage.php:202
+msgid "Created"
+msgstr "Creato"
+
+#: src/Admin/SalesPage.php:176
+msgid "Source"
+msgstr "Fonte"
+
+#: src/Admin/SalesPage.php:177
+msgid "Converted Opportunity ID"
+msgstr "ID opportunità convertita"
+
+#: src/Admin/SalesPage.php:179
+msgid "Amount (minor units)"
+msgstr "Importo (unità monetaria minima)"
+
+#: src/Admin/SalesPage.php:180
+msgid "Currency"
+msgstr "Valuta"
+
+#: src/Admin/SalesPage.php:181
+msgid "Source Lead ID"
+msgstr "ID lead di origine"
+
+#: src/Admin/SalesPage.php:185
+msgid "Participants"
+msgstr "Partecipanti"
+
+#: src/Admin/SalesPage.php:187
+msgid "No participants."
+msgstr "Nessun partecipante."
+
+#: src/Admin/SalesPage.php:196
+msgid "Activity history"
+msgstr "Cronologia delle attività"
+
+#: src/Admin/SalesPage.php:202
+msgid "Event"
+msgstr "Evento"
+
+#: src/Admin/SalesPage.php:202
+msgid "Actor ID"
+msgstr "ID dell’attore"
+
+#: src/Admin/SalesPage.php:204
+msgid "No history entries."
+msgstr "Nessuna voce nella cronologia."
+
+#: src/Admin/SalesPage.php:227
+msgid "Unable to display CRM Sales records. Check the filters or your access."
+msgstr ""
+"Impossibile mostrare i record di CRM Sales. Controlla i filtri o i permessi."
+
+#: src/Admin/SalesPage.php:277 src/Admin/SalesPage.php:282
+msgid "Open"
+msgstr "Aperto"
+
+#: src/Admin/SalesPage.php:278
+msgid "Qualified"
+msgstr "Qualificato"
+
+#: src/Admin/SalesPage.php:279
+msgid "Disqualified"
+msgstr "Squalificato"
+
+#: src/Admin/SalesPage.php:280
+msgid "Converted"
+msgstr "Convertito"
+
+#: src/Admin/SalesPage.php:283
+msgid "Won"
+msgstr "Vinto"
+
+#: src/Admin/SalesPage.php:284
+msgid "Lost"
+msgstr "Perso"
 
 #: src/Admin/Save.php:53
 msgid "WordPress account link"
@@ -647,11 +824,11 @@ msgstr "Non hai l’autorizzazione per cercare utenti WordPress."
 msgid "CRM record details updated"
 msgstr "Dettagli del record CRM aggiornati"
 
-#: src/Capabilities.php:24
+#: src/Capabilities.php:30
 msgid "Manage CRM"
 msgstr "Gestisci CRM"
 
-#: src/Capabilities.php:27
+#: src/Capabilities.php:33
 msgid ""
 "View and manage CRM contacts, organizations, relationships, service "
 "agreements, notes and activity."
@@ -878,7 +1055,7 @@ msgstr "Nessun ordine WooCommerce per questo utente."
 msgid "WooCommerce order #%1$d changed from %2$s to %3$s"
 msgstr "L’ordine WooCommerce #%1$d è passato da %2$s a %3$s"
 
-#: src/Lifecycle.php:54
+#: src/Lifecycle.php:63
 msgid "Linked WordPress account was deleted"
 msgstr "L’account WordPress collegato è stato eliminato"
 

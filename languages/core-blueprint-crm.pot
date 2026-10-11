@@ -9,15 +9,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27 15:56+0000\n"
+"POT-Creation-Date: 2026-10-11 17:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: core-blueprint-crm\n"
 
 #. Plugin Name of the plugin
 #: core-blueprint-crm.php
-#: src/Admin/Menu.php:71
-#: src/Capabilities.php:25
+#: src/Admin/Menu.php:91
+#: src/Admin/SettingsPage.php:46
+#: src/Capabilities.php:31
+#: src/Capabilities.php:43
 #: src/Integration/Builders/Bricks/Conditions.php:28
 msgid "Core Blueprint CRM"
 msgstr ""
@@ -38,18 +40,19 @@ msgstr ""
 msgid "Core Blueprint"
 msgstr ""
 
-#: core-blueprint-crm.php:120
+#: core-blueprint-crm.php:124
 #: src/Integration/Suite.php:73
 msgid "Required Core Blueprint Base contracts are unavailable."
 msgstr ""
 
-#: core-blueprint-crm.php:169
-#: core-blueprint-crm.php:191
+#: core-blueprint-crm.php:173
+#: core-blueprint-crm.php:195
 msgid "Core Blueprint CRM:"
 msgstr ""
 
-#: src/Admin/Admin.php:25
-#: src/Admin/Menu.php:26
+#: src/Admin/Admin.php:26
+#: src/Admin/Menu.php:30
+#: src/Admin/SettingsPage.php:28
 #: src/Admin/UserLinks.php:92
 #: src/Integration/Builders/Bricks/FormActions.php:128
 #: src/Integration/Builders/Bricks/Queries.php:29
@@ -59,13 +62,13 @@ msgstr ""
 msgid "CRM"
 msgstr ""
 
-#: src/Admin/Admin.php:31
+#: src/Admin/Admin.php:32
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:38
 msgid "Display name"
 msgstr ""
 
-#: src/Admin/Admin.php:32
+#: src/Admin/Admin.php:33
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:46
 msgid "Organization name"
@@ -170,7 +173,7 @@ msgstr ""
 #: src/Admin/ContactList.php:30
 #: src/Admin/ContactList.php:61
 #: src/Admin/ContactList.php:63
-#: src/Admin/Menu.php:32
+#: src/Admin/Menu.php:36
 #: src/Admin/Panels/DetailsPanel.php:64
 msgid "WordPress account"
 msgstr ""
@@ -181,20 +184,20 @@ msgstr ""
 msgid "Linked WordPress account"
 msgstr ""
 
-#: src/Admin/Menu.php:30
+#: src/Admin/Menu.php:34
 msgid "Overview"
 msgstr ""
 
-#: src/Admin/Menu.php:31
-#: src/Admin/Menu.php:67
+#: src/Admin/Menu.php:35
+#: src/Admin/Menu.php:87
 #: src/Content/PostTypes.php:22
 #: src/Integration/Builders/Bricks/Queries.php:31
 #: src/Integration/DocsAdmin.php:142
 msgid "Contacts"
 msgstr ""
 
-#: src/Admin/Menu.php:39
-#: src/Admin/Menu.php:68
+#: src/Admin/Menu.php:43
+#: src/Admin/Menu.php:88
 #: src/Admin/Panels/OrganizationsPanel.php:17
 #: src/Content/PostTypes.php:40
 #: src/Integration/Builders/Bricks/DynamicData.php:30
@@ -203,30 +206,44 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
-#: src/Admin/Menu.php:40
+#: src/Admin/Menu.php:44
 msgid "Tags"
 msgstr ""
 
-#: src/Admin/Menu.php:65
+#: src/Admin/Menu.php:51
+#: src/Admin/SalesPage.php:293
+msgid "Leads"
+msgstr ""
+
+#: src/Admin/Menu.php:52
+#: src/Admin/SalesPage.php:293
+msgid "Opportunities"
+msgstr ""
+
+#: src/Admin/Menu.php:85
+#: src/Admin/SettingsPage.php:42
 #: src/Admin/UserLinkActions.php:85
 #: src/Admin/UserLinks.php:43
 #: src/Integration/Builders/Bricks/FormActions.php:118
 msgid "You do not have permission to manage CRM data."
 msgstr ""
 
-#: src/Admin/Menu.php:67
+#: src/Admin/Menu.php:87
 msgid "People, identity and customer context."
 msgstr ""
 
-#: src/Admin/Menu.php:68
+#: src/Admin/Menu.php:88
 msgid "Companies, institutions and customer relationships."
 msgstr ""
 
-#: src/Admin/Menu.php:72
+#: src/Admin/Menu.php:92
+#: src/Admin/SettingsPage.php:29
+#: src/Admin/SettingsPage.php:47
 msgid "Customer identity, organizations, context and customer-specific service agreements. The service catalog and VAT are managed by Core Blueprint Work."
 msgstr ""
 
-#: src/Admin/Menu.php:73
+#: src/Admin/Menu.php:93
+#: src/Admin/SettingsPage.php:49
 msgid "Manage"
 msgstr ""
 
@@ -317,6 +334,9 @@ msgid "CRM Details"
 msgstr ""
 
 #: src/Admin/Panels/DetailsPanel.php:37
+#: src/Admin/SalesPage.php:84
+#: src/Admin/SalesPage.php:106
+#: src/Admin/SalesPage.php:164
 #: src/Admin/ServiceAgreements.php:82
 #: src/Admin/UserLinks.php:35
 #: src/Admin/UserLinks.php:101
@@ -482,6 +502,176 @@ msgstr ""
 #: src/Admin/Panels/OrganizationsPanel.php:50
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 msgid "Primary organization"
+msgstr ""
+
+#: src/Admin/SalesPage.php:33
+msgid "You do not have permission to view CRM Sales."
+msgstr ""
+
+#: src/Admin/SalesPage.php:81
+msgid "Internal staff records. Read-only overview."
+msgstr ""
+
+#: src/Admin/SalesPage.php:86
+msgid "All statuses"
+msgstr ""
+
+#: src/Admin/SalesPage.php:91
+#: src/Admin/SalesPage.php:107
+#: src/Admin/SalesPage.php:165
+msgid "Owner"
+msgstr ""
+
+#: src/Admin/SalesPage.php:93
+msgid "All records"
+msgstr ""
+
+#: src/Admin/SalesPage.php:94
+msgid "Assigned to me"
+msgstr ""
+
+#: src/Admin/SalesPage.php:96
+msgid "Filter"
+msgstr ""
+
+#: src/Admin/SalesPage.php:97
+msgid "Reset filters"
+msgstr ""
+
+#: src/Admin/SalesPage.php:105
+msgid "Title"
+msgstr ""
+
+#: src/Admin/SalesPage.php:108
+#: src/Admin/SalesPage.php:169
+msgid "Next action"
+msgstr ""
+
+#: src/Admin/SalesPage.php:109
+#: src/Admin/SalesPage.php:171
+msgid "Updated"
+msgstr ""
+
+#: src/Admin/SalesPage.php:114
+msgid "No matching records."
+msgstr ""
+
+#: src/Admin/SalesPage.php:131
+#: src/Admin/SalesPage.php:210
+msgid "Sales pagination"
+msgstr ""
+
+#: src/Admin/SalesPage.php:133
+#: src/Admin/SalesPage.php:212
+msgid "First page"
+msgstr ""
+
+#: src/Admin/SalesPage.php:136
+#: src/Admin/SalesPage.php:215
+msgid "Next page"
+msgstr ""
+
+#: src/Admin/SalesPage.php:154
+msgid "Back to overview"
+msgstr ""
+
+#: src/Admin/SalesPage.php:156
+msgid "Record not found."
+msgstr ""
+
+#: src/Admin/SalesPage.php:161
+msgid "Read-only detail. Changes are not available on this screen."
+msgstr ""
+
+#: src/Admin/SalesPage.php:166
+msgid "Pipeline ID"
+msgstr ""
+
+#: src/Admin/SalesPage.php:167
+msgid "Stage ID"
+msgstr ""
+
+#: src/Admin/SalesPage.php:168
+#: src/Admin/SalesPage.php:202
+msgid "Revision"
+msgstr ""
+
+#: src/Admin/SalesPage.php:170
+#: src/Admin/SalesPage.php:202
+msgid "Created"
+msgstr ""
+
+#: src/Admin/SalesPage.php:176
+msgid "Source"
+msgstr ""
+
+#: src/Admin/SalesPage.php:177
+msgid "Converted Opportunity ID"
+msgstr ""
+
+#: src/Admin/SalesPage.php:179
+msgid "Amount (minor units)"
+msgstr ""
+
+#: src/Admin/SalesPage.php:180
+msgid "Currency"
+msgstr ""
+
+#: src/Admin/SalesPage.php:181
+msgid "Source Lead ID"
+msgstr ""
+
+#: src/Admin/SalesPage.php:185
+msgid "Participants"
+msgstr ""
+
+#: src/Admin/SalesPage.php:187
+msgid "No participants."
+msgstr ""
+
+#: src/Admin/SalesPage.php:196
+msgid "Activity history"
+msgstr ""
+
+#: src/Admin/SalesPage.php:202
+msgid "Event"
+msgstr ""
+
+#: src/Admin/SalesPage.php:202
+msgid "Actor ID"
+msgstr ""
+
+#: src/Admin/SalesPage.php:204
+msgid "No history entries."
+msgstr ""
+
+#: src/Admin/SalesPage.php:227
+msgid "Unable to display CRM Sales records. Check the filters or your access."
+msgstr ""
+
+#: src/Admin/SalesPage.php:277
+#: src/Admin/SalesPage.php:282
+msgid "Open"
+msgstr ""
+
+#: src/Admin/SalesPage.php:278
+msgid "Qualified"
+msgstr ""
+
+#: src/Admin/SalesPage.php:279
+msgid "Disqualified"
+msgstr ""
+
+#: src/Admin/SalesPage.php:280
+msgid "Converted"
+msgstr ""
+
+#: src/Admin/SalesPage.php:283
+msgid "Won"
+msgstr ""
+
+#: src/Admin/SalesPage.php:284
+msgid "Lost"
 msgstr ""
 
 #: src/Admin/Save.php:53
@@ -670,11 +860,11 @@ msgstr ""
 msgid "CRM record details updated"
 msgstr ""
 
-#: src/Capabilities.php:24
+#: src/Capabilities.php:30
 msgid "Manage CRM"
 msgstr ""
 
-#: src/Capabilities.php:27
+#: src/Capabilities.php:33
 msgid "View and manage CRM contacts, organizations, relationships, service agreements, notes and activity."
 msgstr ""
 
@@ -897,7 +1087,7 @@ msgstr ""
 msgid "WooCommerce order #%1$d changed from %2$s to %3$s"
 msgstr ""
 
-#: src/Lifecycle.php:54
+#: src/Lifecycle.php:63
 msgid "Linked WordPress account was deleted"
 msgstr ""
 
