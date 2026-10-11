@@ -41,6 +41,8 @@ namespace CB\CRM\Repository\Sales {
 }
 
 namespace {
+	use CB\CRM\Application\Sales\StaffActions;
+
 	$root = dirname( __DIR__ );
 	define( 'ABSPATH', $root . '/' );
 	define( 'CB_CRM_SCHEMA_VERSION', '1.6' );
@@ -108,8 +110,6 @@ namespace {
 	$GLOBALS['c2_schema'] = '1.5';
 	$assert_denied( 'incorrect schema' );
 	$GLOBALS['c2_schema'] = '1.6';
-
-	use CB\CRM\Application\Sales\StaffActions;
 
 	$lead = [ 'title' => 'Synthetic Lead', 'pipeline_id' => 2, 'stage_id' => 8 ];
 	$deal = [ 'title' => 'Synthetic Deal', 'pipeline_id' => 4, 'stage_id' => 12, 'amount_minor' => 12345, 'currency' => 'EUR' ];
