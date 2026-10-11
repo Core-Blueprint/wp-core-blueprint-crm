@@ -160,6 +160,7 @@ namespace {
 	require $root . '/src/Database/Schema.php';
 	require $root . '/src/Domain/Sales/Rules.php';
 	require $root . '/src/Repository/Sales/LifecycleCleanup.php';
+	require $root . '/src/Repository/LifecycleRecovery.php';
 	require $root . '/src/Lifecycle.php';
 
 	use CB\CRM\Lifecycle;

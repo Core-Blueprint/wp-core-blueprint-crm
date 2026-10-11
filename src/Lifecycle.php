@@ -10,12 +10,14 @@ use CB\CRM\Content\PostTypes;
 use CB\CRM\Database\Schema;
 use CB\CRM\Repository\Activity;
 use CB\CRM\Repository\DocumentLinks;
+use CB\CRM\Repository\LifecycleRecovery;
 use CB\CRM\Repository\Sales\LifecycleCleanup;
 
 defined( 'ABSPATH' ) || exit;
 
 final class Lifecycle {
 	public static function init(): void {
+		LifecycleRecovery::init();
 		add_action( 'deleted_post', [ __CLASS__, 'deleted_post' ], 20, 2 );
 		add_action( 'deleted_user', [ __CLASS__, 'deleted_user' ], 20, 1 );
 		add_action( 'wpmu_delete_user', [ __CLASS__, 'deleted_user' ], 20, 1 );
@@ -32,8 +34,11 @@ final class Lifecycle {
 		}
 
 		if ( ! self::cleanup_record( $owner_type, $post_id ) ) {
-			Governance::record_cleanup_failed( $owner_type, $post_id );
-			error_log( sprintf( '[Core Blueprint CRM] Relational cleanup failed after deleting %s #%d.', $owner_type, $post_id ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			LifecycleRecovery::retry_failed( $owner_type, $post_id );
+			return;
+		}
+		if ( ! LifecycleRecovery::complete( $owner_type, $post_id ) ) {
+			LifecycleRecovery::retry_failed( $owner_type, $post_id );
 			return;
 		}
 		Governance::record_record_deleted( $owner_type, $post_id );
@@ -58,6 +63,12 @@ final class Lifecycle {
 			Governance::record_data_updated( Entity::CONTACT, $contact_id, 'wordpress_user' );
 			Activity::record( Entity::CONTACT, $contact_id, 'wordpress_user_unlinked', __( 'Linked WordPress account was deleted', 'core-blueprint-crm' ), 'wordpress', get_current_user_id(), 'user', (string) $user_id );
 		}
+	}
+
+	/** Internal retry; requires a persisted intent and an uncached absent-post check. */
+	public static function reconcile_deleted_identity( string $type, int $id ): bool {
+		return LifecycleRecovery::may_reconcile( $type, $id )
+			&& self::cleanup_record( $type, $id );
 	}
 
 	private static function owner_type( \WP_Post $post ): string {
