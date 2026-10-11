@@ -124,6 +124,14 @@ echo '==> Seed and snapshot canonical CRM schema 1.5'
 CB_CRM_UPGRADE_PHASE=seed CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 
+# Optional controlled lock-contention scenario, only in this random test DB.
+# Never lock or unlock a schema in an existing WordPress installation.
+if [[ "${CB_CRM_TEST_INTERRUPT:-0}" == "1" ]]; then
+  echo '==> Hold isolated Base CRM migration lock before switching code'
+  CB_CRM_UPGRADE_PHASE=lock CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+fi
+
 # Swap ONLY the randomly generated test plugin folder, never a live repository.
 # Keep v1.5 source for diagnosis on failure; no rm -rf and no external writes.
 [[ "$wp_root" == "$run_root/wordpress" ]] || fail 'Unexpected upgrade test WordPress root'
@@ -134,6 +142,16 @@ mv "$wp_root/wp-content/plugins/core-blueprint-crm" "$run_root/retired-schema-15
 mkdir -p "$wp_root/wp-content/plugins/core-blueprint-crm"
 git -C "$ROOT" archive --format=tar "$crm_sha" \
   | tar -xf - -C "$wp_root/wp-content/plugins/core-blueprint-crm"
+
+if [[ "${CB_CRM_TEST_INTERRUPT:-0}" == "1" ]]; then
+  echo '==> Verify held migration lock prevents premature schema commit'
+  CB_CRM_UPGRADE_PHASE=blocked CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+
+  echo '==> Release only the disposable, fixture-owned migration lock'
+  CB_CRM_UPGRADE_PHASE=unlock CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+fi
 
 echo '==> Verify real Base SchemaRegistry upgrade to CRM 1.6'
 CB_CRM_UPGRADE_PHASE=verify CB_CRM_INTEGRATION_TEST_FILE="$fixture" \

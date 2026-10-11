@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A: real schema upgrade 1.5 to 1.6
 
-**State: source candidate, local WordPress/MariaDB run not yet executed.**
+**State: normal 1.5-to-1.6 real WordPress/MariaDB upgrade PASS locally (2026-10-11); controlled interruption mode is new and NOT YET RUN.**
 This is the next increment after the separate fresh-install real MariaDB test passed in the user's isolated WordPress test database (October 11, 2026).
 
 ## Objective
@@ -69,3 +69,24 @@ As this increment changes only docs/tools/tests, the release ZIP should remain b
 ## Acceptance limits and follow-ups
 
 This verifies a complete 1.5 to 1.6 upgrade in one isolated fresh environment, not a broad migration compatibility matrix. A future incremental test must still cover interrupted migrations, concurrency/race handling, user-deletion cleanup, privacy retention/export/erasure, and production cron reliability. Do not infer live-site readiness, request GitHub Actions, merge, deploy, or publish from a green test alone.
+
+## Actual local upgrade evidence (October 11, 2026)
+
+The user executed the normal `./tools/check-sales-schema-upgrade` runner with CRM v1.5 `42e6915263694210698511735e9b9cd80dd01a40`, CRM v1.6 `f0bc3022895f78ba0e98aa82c2ae22135d286346`, and Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`. Isolated DB: `cb_crm_up_jtm5mxjc`. **PASS:** all nine legacy tables and three WordPress records preserved, v1-to-v2 role policy migrated without invalidating Base's signed approval, six InnoDB Sales tables present, two pipelines/seven stages, second verify request idempotent. The unrelated missing-sendmail warnings were nonblocking. This is verified local evidence; it does not prove every failure path.
+
+## Controlled interruption/retry test (candidate)
+
+Base `CoreBlueprint\\Core\\DB` uses a per-schema option lock and will NOT advance `cb_crm_db_version` before a healthy installation. A separate, optional runner mode deliberately holds a **test-owned migration lock** after seeding CRM 1.5 and before switching plugin code to 1.6. On the first 1.6 request it asserts:
+
+- all nine legacy relational table hashes and three WordPress records remain unchanged;
+- CRM schema marker remains `1.5`;
+- new Sales tables/default pipeline marker are not created;
+- an attempted Sales write is rejected because the schema is not ready.
+
+The test releases only its exact owned lock in the same randomly named test database. On the subsequent WordPress request Base must complete schema 1.6, seed the two default pipelines/seven stages, preserve the stored legacy data and Base signed trust, and pass a second verify request.
+
+This is **lock-contended interrupted migration**, not a simulated MariaDB crash midway through DDL. No existing installations/databases are reused or modified. It allocates a *new* `cb_crm_up_*` database. Run only on the developer machine:
+
+    CB_CRM_TEST_INTERRUPT=1 ./tools/check-sales-schema-upgrade
+
+The normal runner without `CB_CRM_TEST_INTERRUPT=1` retains its previous successful behavior. The new mode must be validated locally before acceptance. An unexpected failure leaves its test-only database and files for forensic review; do not reset any schema marker manually.

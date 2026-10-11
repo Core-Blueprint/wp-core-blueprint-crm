@@ -30,8 +30,8 @@ $assert = static function ( bool $condition, string $message ) use ( $fail ): vo
 };
 
 $phase = getenv( 'CB_CRM_UPGRADE_PHASE' );
-$assert( in_array( $phase, [ 'seed', 'verify' ], true ), 'unknown seed/verify phase' );
-$expected_schema = 'seed' === $phase ? '1.5' : '1.6';
+$assert( in_array( $phase, [ 'seed', 'lock', 'blocked', 'unlock', 'verify' ], true ), 'unknown upgrade phase' );
+$expected_schema = 'verify' === $phase ? '1.6' : '1.5';
 $assert( defined( 'CB_CRM_SCHEMA_VERSION' ) && CB_CRM_SCHEMA_VERSION === $expected_schema, 'wrong CRM source schema for phase' );
 $assert( (string) get_option( Schema::OPTION, '' ) === $expected_schema, 'Base schema registry has not committed expected schema' );
 $assert( function_exists( 'cb_crm_runtime_ready' ) && cb_crm_runtime_ready(), 'CRM runtime not ready' );
@@ -64,6 +64,19 @@ $snapshot = static function () use ( $wpdb, $legacy, $assert ): array {
 };
 
 $manifest_option = 'cb_crm_sales_upgrade_fixture';
+$lock_key = 'cb_core_schema_lock_' . md5( 'core-blueprint-crm' );
+$lock_owner = 'crm-upgrade-test-' . DB_NAME;
+
+if ( 'lock' === $phase ) {
+	$assert( is_array( get_option( $manifest_option, false ) ), 'legacy seed missing before lock injection' );
+	$assert( false === get_option( $lock_key, false ), 'refusing to replace another migration lock' );
+	$assert(
+		add_option( $lock_key, [ 'owner' => $lock_owner, 'acquired_at' => time() ], '', false ),
+		'could not hold isolated Base schema lock'
+	);
+	echo "PASS: isolated Base migration lock held before CRM 1.6 bootstrap\n";
+	return;
+}
 if ( 'seed' === $phase ) {
 	$assert( false === get_option( $manifest_option, false ), 'fixture already present, will not overwrite' );
 	$assert( '1' === (string) get_option( 'cb_crm_install_version', '' ), 'schema 1.5 should have role policy v1' );
@@ -128,6 +141,34 @@ $assert( get_post_type( (int) $manifest['document_id'] ) === 'post', 'legacy doc
 $assert( get_post_status( (int) $manifest['contact_id'] ) === 'publish', 'legacy Contact status changed' );
 $assert( get_post_status( (int) $manifest['organization_id'] ) === 'publish', 'legacy Organization status changed' );
 echo "PASS: all nine v1.5 CRM relational tables and three WordPress records preserved\n";
+
+// A held Base schema lock must prevent marker advancement and ALL Sales writes.
+// This checks the real Base lock, not an artificially edited version option.
+if ( 'blocked' === $phase ) {
+	$assert( '1.5' === (string) get_option( Schema::OPTION, '' ), 'failed migration prematurely committed 1.6' );
+	$held = get_option( $lock_key, false );
+	$assert( is_array( $held ) && $lock_owner === ( $held['owner'] ?? '' ), 'expected owned migration lock absent' );
+	$assert( '1' !== (string) get_option( 'cb_crm_sales_defaults_version', '' ), 'Sales defaults seeded before schema was ready' );
+	$found_sales = $wpdb->get_var(
+		$wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->prefix . 'cb_crm_sales_pipelines' ) )
+	);
+	$assert( null === $found_sales, 'Sales DDL was applied despite an active Base migration lock' );
+	$attempt = \CB\CRM\Repository\Sales\Records::create_lead(
+		[ 'title' => 'Must remain unavailable', 'pipeline_id' => 1, 'stage_id' => 1 ],
+		[]
+	);
+	$assert( $attempt instanceof WP_Error, 'Sales write allowed before schema reconciliation' );
+	echo "PASS: held migration lock keeps marker at 1.5 and Sales writes fail closed\n";
+	return;
+}
+if ( 'unlock' === $phase ) {
+	$assert( '1.5' === (string) get_option( Schema::OPTION, '' ), 'unexpected migration before lock release' );
+	$held = get_option( $lock_key, false );
+	$assert( is_array( $held ) && $lock_owner === ( $held['owner'] ?? '' ), 'refusing to delete an unowned lock' );
+	$assert( delete_option( $lock_key ), 'could not release owned Base migration lock' );
+	echo "PASS: only isolated owned migration lock released for retry\n";
+	return;
+}
 
 $assert( '2' === (string) get_option( 'cb_crm_install_version', '' ), 'CRM role policy was not migrated from v1 to v2' );
 foreach ( [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ] as $cap ) {
