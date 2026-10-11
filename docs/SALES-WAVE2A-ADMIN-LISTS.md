@@ -44,7 +44,7 @@
 - tests/sales-admin-w2a-smoke.php: real Menu, SalesPage and Assets classes with deterministic WordPress stubs; menu placement and Base theme, viewer-vs-manager capability, no editor JS, HTML escaping, strict typed GET filters, link/cursor preservation, read-only detail/history and fail-closed invalid/unauthorized calls.
 - tests/integration/sales-admin-w2a.php: safe disposable real WP 7.0/7.1 + MariaDB 10.11.19 with synthetic Contact/Lead/Opportunity, staff-only render, status/owner filtering, injected synthetic untrusted title escaping, no mutations and historical C1 audit detail; B1–C3 existing checks continue.
 - tools/check and tools/check-sales-integration include W2A alongside all Golden regression tests, including the two-process B2 replay race.
-- Six-locale translations are supplied as reviewed mappings in tools/i18n/catalog.py. **The generated POT/PO/MO files are not yet committed**: the local operator must regenerate them using canonical ./tools/i18n/update and record the results before running ./tools/check. No partial or fake i18n PASS is allowed.
+- Six-locale translations are stored in product-specific tools/i18n/sales-w2a-translations.json and prepared by tools/i18n/seed-sales-w2a.py. The canonical tools/i18n/catalog.py remains byte-identical to the pinned 1.1.0 reference (Git blob 4330b86f693e31ae85f46e7054204f45c83ce535). **The generated POT/PO/MO files are not yet committed**: run the product seeder once, then the unmodified canonical ./tools/i18n/update, and record the results before ./tools/check. No partial or fake i18n PASS is allowed.
 
 ### Operator commands: safe checkout with narrow remote refspec
 
@@ -66,12 +66,14 @@ git diff --name-status 9639696ab4755bc8e4964f3f7252855513431c7e HEAD
 php -l src/Admin/SalesPage.php
 php -l tests/sales-admin-w2a-smoke.php
 php -l tests/integration/sales-admin-w2a.php
-python3 -m py_compile tools/i18n/catalog.py
+python3 -m py_compile tools/i18n/seed-sales-w2a.py
 bash -n tools/check
 bash -n tools/check-sales-integration
 php tests/sales-admin-w2a-smoke.php
 
-# REQUIRED ONCE FOR THIS NEW UI STRING SET: do not skip or call check first.
+# REQUIRED ONCE FOR THIS NEW UI STRING SET: preseed 42 reviewed strings,
+# then regenerate catalogs with the UNMODIFIED canonical reference engine.
+python3 tools/i18n/seed-sales-w2a.py
 ./tools/i18n/update
 git status --short
 
