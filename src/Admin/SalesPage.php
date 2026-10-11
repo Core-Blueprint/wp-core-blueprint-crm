@@ -40,6 +40,9 @@ final class SalesPage {
 		?>
 		<div class="wrap cb-crm-sales">
 			<h1><?php echo esc_html( $label ); ?></h1>
+			<?php if ( isset( $_GET['sales_notice'] ) && is_string( $_GET['sales_notice'] ) && 'updated' === wp_unslash( $_GET['sales_notice'] ) ) : ?>
+				<div class="notice notice-success inline" role="status"><p><?php esc_html_e( 'Sales record updated.', 'core-blueprint-crm' ); ?></p></div>
+			<?php endif; ?>
 			<?php
 			if ( $record instanceof \WP_Error ) {
 				self::render_error();
@@ -158,7 +161,9 @@ final class SalesPage {
 		}
 		$item = $detail['record'];
 		echo '<h2>' . esc_html( $item['title'] ) . '</h2>';
+		if ( ! Access::can_manage() ) {
 		echo '<p class="description">' . esc_html__( 'Read-only detail. Changes are not available on this screen.', 'core-blueprint-crm' ) . '</p>';
+		}
 		echo '<div class="cb-crm-sales-table-scroll"><table class="widefat striped cb-crm-sales-detail"><tbody>';
 		foreach ( [
 			__( 'Status', 'core-blueprint-crm' ) => self::state_label( $type, $item['state'] ),
@@ -181,6 +186,8 @@ final class SalesPage {
 			self::detail_line( __( 'Source Lead ID', 'core-blueprint-crm' ), $item['source_lead_id'] );
 		}
 		echo '</tbody></table></div>';
+
+		SalesStatusActions::render_for_record( $type, $item );
 
 		echo '<h3>' . esc_html__( 'Participants', 'core-blueprint-crm' ) . '</h3>';
 		if ( [] === $detail['participants'] ) {
