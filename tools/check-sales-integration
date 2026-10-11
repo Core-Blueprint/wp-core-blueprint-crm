@@ -169,6 +169,9 @@ b2_id2="$(sed -n 's/^CONVERTED_ID=\([0-9][0-9]*\)$/\1/p' "$run_root/b2-convert-2
 [[ -n "$b2_id1" && "$b2_id1" == "$b2_id2" ]] \
   || fail 'Concurrent callers did not receive the same durable Opportunity ID'
 b2_eval verify
+echo '==> Verify B3 Won/Lost/Reopen and InnoDB outcome-event rollback'
+CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-outcomes.php" \
+  wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 
 # Optional real single-site WordPress deleted_user SQL-failure/recovery fixture.
