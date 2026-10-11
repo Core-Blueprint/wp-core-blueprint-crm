@@ -109,6 +109,34 @@ try {
 	if ( $created ) { $wpdb->query( "DROP TRIGGER IF EXISTS {$trigger}" ); }
 }
 
+
+// Fail after Opportunity/participants/Lead state have been written but before
+// either Sales event has committed. This is the critical partial-save boundary.
+$event_trigger = 'cb_crm_it_b2_block_event';
+$event_trigger_created = false;
+try {
+	$assert( false !== $wpdb->query(
+		"CREATE TRIGGER {$event_trigger} BEFORE INSERT ON {$events} FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'B2 event failure'"
+	), 'could not install disposable event trigger' );
+	$event_trigger_created = true;
+	$wpdb->suppress_errors( true );
+	$failed = Conversion::convert( $lead_id, 2, $deal_pipeline, $deal_stage );
+	$wpdb->suppress_errors( false );
+	$assert( 'crm_sales_storage_failed' === $code( $failed ), 'event failure did not abort conversion' );
+	$assert( 0 === (int) $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$deals} WHERE source_lead_id = %d", $lead_id
+	) ), 'event failure committed Opportunity' );
+	$after_failure = $wpdb->get_row( $wpdb->prepare(
+		"SELECT status, converted_opportunity_id, revision FROM {$leads} WHERE id = %d", $lead_id
+	), ARRAY_A );
+	$assert( is_array( $after_failure ) && 'qualified' === $after_failure['status']
+		&& null === $after_failure['converted_opportunity_id'] && 2 === (int) $after_failure['revision'],
+		'event failure left partially converted Lead' );
+} finally {
+	$wpdb->suppress_errors( false );
+	if ( $event_trigger_created ) { $wpdb->query( "DROP TRIGGER IF EXISTS {$event_trigger}" ); }
+}
+
 $id = Conversion::convert( $lead_id, 2, $deal_pipeline, $deal_stage );
 $assert( is_int( $id ) && $id > 0, 'conversion did not commit' );
 $lead = $wpdb->get_row( $wpdb->prepare(
