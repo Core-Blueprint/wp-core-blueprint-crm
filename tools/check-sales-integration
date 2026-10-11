@@ -122,6 +122,34 @@ if [[ "${CB_CRM_TEST_USER_RECOVERY:-0}" == "1" ]]; then
     wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 fi
 
+# Optional real WP-CLI inventory and explicitly approved one-ID retry.
+# All fixtures and all writes remain confined to this newly generated DB.
+if [[ "${CB_CRM_TEST_OVERSIGHT:-0}" == "1" ]]; then
+  echo '==> Test approved CRM recovery CLI, keyset pagination and one-ID replay'
+  fixture="$ROOT/tests/integration/recovery-oversight.php"
+  [[ -f "$fixture" ]] || fail 'Recovery oversight fixture missing'
+  CB_CRM_OVERSIGHT_PHASE=seed CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+  if wp cb-crm-recovery status --path="$wp_root" >"$run_root/recovery-unapproved.log" 2>&1; then
+    fail 'Unauthenticated operator unexpectedly accessed the recovery inventory'
+  fi
+  first_page="$(wp --user=crm-it-admin cb-crm-recovery status --after=0 --limit=20 --path="$wp_root")"
+  echo "$first_page"
+  [[ "$first_page" == *"HAS_MORE=yes"* ]] || fail 'Recovery inventory lost continuation before 20 intents'
+  cursor="$(printf '%s\n' "$first_page" | sed -n 's/^NEXT_CURSOR=//p')"
+  [[ "$cursor" =~ ^[0-9]+$ ]] || fail 'Recovery inventory emitted invalid keyset cursor'
+  last_page="$(wp --user=crm-it-admin cb-crm-recovery status --after="$cursor" --limit=20 --path="$wp_root")"
+  echo "$last_page"
+  [[ "$last_page" == *"HAS_MORE=no"* ]] || fail 'Recovery inventory failed to reach final intents'
+  [[ "$last_page" == *"invalid"* ]] || fail 'Malformed recovery intent was silently hidden'
+  if wp --user=crm-it-admin cb-crm-recovery retry --kind=user --id=700000024 --path="$wp_root" >"$run_root/recovery-unconfirmed.log" 2>&1; then
+    fail 'Recovery retry unexpectedly succeeded without explicit confirmation'
+  fi
+  wp --user=crm-it-admin cb-crm-recovery retry --kind=user --id=700000024 --confirm=1 --path="$wp_root"
+  CB_CRM_OVERSIGHT_PHASE=verify CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+    wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+fi
+
 # Optional two-process race, separated from ordinary fresh-install acceptance.
 # Only paths/files inside this newly created randomly named test directory.
 if [[ "${CB_CRM_TEST_CONCURRENT:-0}" == "1" ]]; then
