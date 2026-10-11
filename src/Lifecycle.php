@@ -10,6 +10,7 @@ use CB\CRM\Content\PostTypes;
 use CB\CRM\Database\Schema;
 use CB\CRM\Repository\Activity;
 use CB\CRM\Repository\DocumentLinks;
+use CB\CRM\Repository\Sales\LifecycleCleanup;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -42,6 +43,10 @@ final class Lifecycle {
 		if ( $user_id <= 0 ) {
 			return;
 		}
+		if ( ! LifecycleCleanup::for_deleted_user( $user_id ) ) {
+			Governance::record_cleanup_failed( 'user', $user_id );
+			error_log( sprintf( '[Core Blueprint CRM] Sales user anonymization failed for deleted WordPress user #%d.', $user_id ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
 		foreach ( ContactIdentity::contact_ids_for_user( $user_id ) as $contact_id ) {
 			if ( PostTypes::CONTACT !== get_post_type( $contact_id ) ) {
 				continue;
@@ -65,7 +70,9 @@ final class Lifecycle {
 
 	private static function cleanup_record( string $owner_type, int $owner_id ): bool {
 		global $wpdb;
-		$wpdb->query( 'START TRANSACTION' );
+		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
+			return false;
+		}
 		try {
 			$owner_tables = [ Schema::contact_methods_table(), Schema::addresses_table(), Schema::names_table(), Schema::service_agreements_table(), Schema::document_links_table(), Schema::notes_table(), Schema::activities_table() ];
 			foreach ( $owner_tables as $table ) {
@@ -83,7 +90,12 @@ final class Lifecycle {
 			if ( Entity::ORGANIZATION === $owner_type && false === $wpdb->delete( Schema::organization_relations_table(), [ 'organization_id' => $owner_id ], [ '%d' ] ) ) {
 				throw new \RuntimeException( 'organization_relation_cleanup_failed' );
 			}
-			$wpdb->query( 'COMMIT' );
+			if ( ! LifecycleCleanup::for_deleted_identity( $owner_type, $owner_id ) ) {
+				throw new \RuntimeException( 'sales_identity_cleanup_failed' );
+			}
+			if ( false === $wpdb->query( 'COMMIT' ) ) {
+				throw new \RuntimeException( 'owner_cleanup_commit_failed' );
+			}
 			return true;
 		} catch ( \Throwable $e ) {
 			$wpdb->query( 'ROLLBACK' );
