@@ -269,11 +269,13 @@ namespace {
 	$transactions = $GLOBALS['wpdb']->transactions;
 	$assert( true === LifecycleRecovery::retry( 42 ), 'duplicate retry is an idempotent no-op' );
 	$assert( $transactions === $GLOBALS['wpdb']->transactions, 'duplicate retry performs no new relational writes' );
+	$assert( false === Lifecycle::reconcile_deleted_identity( 'contact', 42 ), 'internal recovery cannot delete without a valid intent' );
 
 	// An aborted deletion or a trashed post must never lose its CRM relations.
 	$trashed = new WP_Post( 44, 'cb_crm_contact', 'trash' );
 	$assert( null === LifecycleRecovery::pre_delete_post( null, $trashed, true ), 'Trash permanent-delete path prepares intent' );
 	$before_count = $GLOBALS['wpdb']->transactions;
+	$assert( false === Lifecycle::reconcile_deleted_identity( 'contact', 44 ), 'internal recovery cannot bypass a still-existing post' );
 	unset( $GLOBALS['recovery_cron'][ $cron_key( 44 ) ] );
 	$assert( true === LifecycleRecovery::retry( 44 ), 'recovery defers while WordPress post still exists' );
 	$assert( isset( $GLOBALS['recovery_options'][ $intent_key( 44 ) ] ), 'intent survives an aborted delete' );
@@ -303,6 +305,21 @@ namespace {
 	$GLOBALS['recovery_fail_option_delete'] = false;
 	$assert( true === LifecycleRecovery::retry( 45 ), 'retry after committed cleanup succeeds without data loss' );
 	$assert( ! isset( $GLOBALS['recovery_options'][ $intent_key( 45 ) ] ), 'eventually acknowledged intent cleared' );
+
+	// COMMIT failure must preserve the intent for another clean transaction.
+	$post46 = new WP_Post( 46, 'cb_crm_org' );
+	$assert( null === LifecycleRecovery::pre_delete_post( null, $post46, true ), 'commit-failure fixture prepared' );
+	$GLOBALS['wpdb']->fail_commit = true;
+	$assert( false === LifecycleRecovery::retry( 46 ), 'failed transaction commit does not acknowledge intent' );
+	$assert( isset( $GLOBALS['recovery_options'][ $intent_key( 46 ) ] ), 'commit failure retains recovery intent' );
+	$GLOBALS['wpdb']->fail_commit = false;
+	$assert( true === LifecycleRecovery::retry( 46 ), 'commit retry succeeds after storage returns' );
+	$assert( ! isset( $GLOBALS['recovery_options'][ $intent_key( 46 ) ] ), 'commit retry clears intent' );
+
+	// Unknown/corrupted versions are fail-closed and never deleted automatically.
+	$GLOBALS['recovery_options'][ $intent_key( 47 ) ] = [ 'version' => 99, 'type' => 'contact', 'id' => 47 ];
+	$assert( false === LifecycleRecovery::retry( 47 ), 'unknown recovery intent version fails closed' );
+	$assert( isset( $GLOBALS['recovery_options'][ $intent_key( 47 ) ] ), 'unknown intent retained for operator review' );
 
 	echo "CRM lifecycle recovery smoke passed.\n";
 }
