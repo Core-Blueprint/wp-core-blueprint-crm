@@ -97,8 +97,8 @@ $_GET = [ 'page' => Menu::SALES_LEADS_SLUG, 'state' => 'qualified', 'mine' => '1
 $qualified = $render( [ SalesPage::class, 'render_leads' ] );
 $assert( str_contains( $qualified, 'Synthetic W2A own Lead' )
 	&& ! str_contains( $qualified, 'Synthetic W2A other Lead' )
-	&& str_contains( $qualified, 'value="qualified"  selected="selected"' )
-	&& str_contains( $qualified, 'value="1"  selected="selected"' ),
+	&& 1 === preg_match( '/<option value="qualified"[^>]*selected=/', $qualified )
+	&& 1 === preg_match( '/<option value="1"[^>]*selected=/', $qualified ),
 	'W2A Lead state/owner filter or cursor links failed' );
 $assert( ! str_contains( $qualified, '<script' ) && ! str_contains( $qualified, 'onerror=' ),
 	'W2A filtered list emitted HTML injection' );
