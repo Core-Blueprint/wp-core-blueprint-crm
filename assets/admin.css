@@ -472,3 +472,24 @@
 		width: 135px;
 	}
 }
+
+
+/* CRM Sales W2B1: inline, explicit staff-only POST status actions. */
+.cb-crm-sales-actions {
+	margin: 20px 0;
+	padding: 16px;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: #fff;
+}
+.cb-crm-sales-actions h3 {
+	margin: 0 0 12px;
+}
+.cb-crm-sales-actions form {
+	display: inline-block;
+	margin: 0 10px 8px 0;
+}
+.cb-crm-sales-actions form .button {
+	max-width: 100%;
+	white-space: normal;
+}
