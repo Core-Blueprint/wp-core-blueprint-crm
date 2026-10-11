@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-11
 
-**Status:** WAVE 1A SCHEMA/REPOSITORY LOCALLY GREEN; LIFECYCLE PRIVACY PATCH AWAITS LOCAL VALIDATION
+**Status:** WAVE 1A SCHEMA/REPOSITORY/LIFECYCLE LOCALLY GREEN; DEFAULT PIPELINE PATCH AWAITS LOCAL VALIDATION
 
 **Parent decision:** Design Golden merged by PR #38, into CRM main `42e6915263694210698511735e9b9cd80dd01a40`.
 
@@ -14,9 +14,11 @@
 
 **Second 1A patch (locally validated):** Internal `CB\\CRM\\Repository\\Sales\\Records` now offers capability-gated `create_lead`, `create_opportunity` and staff-only `get`. Creates require version `1.6` readiness, caller actor identity, strictly allowlisted fields, real live CRM Contact/Organization participants, type-matched active pipeline/stage and a database transaction spanning the record, links and creation event. No public endpoints, UI, automation or Work calls are exposed. Isolated `sales-records-persistence-smoke.php` exercises rejected input and rollback and is wired into `tools/check`.
 
-**Third 1A patch (not yet locally validated):** `Repository\\Sales\\LifecycleCleanup` is called inside existing CRM post-deletion transactions, detaching deleted Contacts/Organizations, removing orphaned Sales records plus their events, and anonymising deleted WordPress-user owner/actor IDs. Its isolated regression covers multi-party preservation, deletion of last party, rollback, user anonymisation, failed SQL and pre-1.6 no-op. This cleanup does not replace a full GDPR data-subject export/erasure review, retention schedule or operational recovery for cleanup failure.
+**Third 1A patch (locally validated):** `Repository\\Sales\\LifecycleCleanup` is called inside existing CRM post-deletion transactions, detaching deleted Contacts/Organizations, removing orphaned Sales records plus their events, and anonymising deleted WordPress-user owner/actor IDs. Its isolated regression covers multi-party preservation, deletion of last party, rollback, user anonymisation, failed SQL and pre-1.6 no-op. This cleanup does not replace a full GDPR data-subject export/erasure review, retention schedule or operational recovery for cleanup failure.
 
-**Still blocked for real data / production:** default pipeline+stage provisioning, independent Sales capabilities with tested multi-user scope, full data-subject export/erasure and retention policy, revision-checked updates, transactional conversion, real MariaDB/InnoDB verification and staged schema-upgrade tests. No live installation or merge until these are accepted, even if source smokes pass.
+**Fourth 1A patch (not yet locally validated):** `Application\\Sales\\DefaultPipelines` supplies typed `default_leads` (New, Attempting Contact, Connected, Qualified) and `default_opportunities` (Discovery, Proposal, Decision), using stable stage keys, transactional inserts, and a separate `cb_crm_sales_defaults_version` one-time marker. `Plugin::boot()` calls `maybe_install()` after Base schema migration readiness; neither existing stage names nor active/order settings are overwritten. A retry after failure preserves existing seeded rows, and reserved-key/type collision fails closed. The new `tests/sales-default-pipelines-smoke.php` is a fixture smoke, not a real MariaDB transaction proof. Seed labels are stored as English user-configurable data; future UI presentation needs translation-by-default-key handling without overriding user labels.
+
+**Still blocked for real data / production:** independent Sales capabilities with tested multi-user scope, full data-subject export/erasure and retention policy, revision-checked updates, transactional conversion, real MariaDB/InnoDB verification and staged schema-upgrade tests. Also inspect WordPress `deleted_post` failure recovery: the post deletion occurs outside the CRM relational transaction, so a rollback cannot restore the already-deleted WordPress post. No live installation or merge until these are accepted, even if source smokes pass.
 
 ## Deliverable and scope
 
