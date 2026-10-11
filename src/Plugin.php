@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace CB\CRM;
 
 use CB\CRM\Admin\Admin;
+use CB\CRM\Application\Sales\DefaultPipelines;
 use CB\CRM\Content\PostTypes;
 use CB\CRM\Integration\Bookings;
 use CB\CRM\Integration\Builders\Bootstrap as BuildersBootstrap;
@@ -29,6 +30,9 @@ final class Plugin {
 
 		Install::maybe_upgrade();
 		Capabilities::init();
+		// Sales defaults are written only after Base reports schema 1.6 ready.
+		// Incomplete installation remains retryable without overwriting edits.
+		DefaultPipelines::maybe_install();
 		PostTypes::init();
 		PanelRegistry::init();
 		Governance::init();
