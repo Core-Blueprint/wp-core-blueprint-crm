@@ -42,6 +42,10 @@ namespace CB\CRM\Repository\Sales {
 namespace CB\CRM\Repository {
 	final class Activity {}
 	final class DocumentLinks {}
+	final class UserAnonymizationRecovery {
+		public static function init(): void {}
+		public static function deleted_user( int $user_id ): void {}
+	}
 }
 namespace CB\CRM {
 	final class Governance {

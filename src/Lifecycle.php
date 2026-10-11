@@ -11,6 +11,7 @@ use CB\CRM\Database\Schema;
 use CB\CRM\Repository\Activity;
 use CB\CRM\Repository\DocumentLinks;
 use CB\CRM\Repository\LifecycleRecovery;
+use CB\CRM\Repository\UserAnonymizationRecovery;
 use CB\CRM\Repository\Sales\LifecycleCleanup;
 
 defined( 'ABSPATH' ) || exit;
@@ -18,9 +19,10 @@ defined( 'ABSPATH' ) || exit;
 final class Lifecycle {
 	public static function init(): void {
 		LifecycleRecovery::init();
+		UserAnonymizationRecovery::init();
 		add_action( 'deleted_post', [ __CLASS__, 'deleted_post' ], 20, 2 );
 		add_action( 'deleted_user', [ __CLASS__, 'deleted_user' ], 20, 1 );
-		add_action( 'wpmu_delete_user', [ __CLASS__, 'deleted_user' ], 20, 1 );
+		// wpmu_delete_user is PRE-delete. deleted_user handles the after boundary.
 	}
 
 	public static function deleted_post( int $post_id, \WP_Post $post ): void {
@@ -48,10 +50,7 @@ final class Lifecycle {
 		if ( $user_id <= 0 ) {
 			return;
 		}
-		if ( ! LifecycleCleanup::for_deleted_user( $user_id ) ) {
-			Governance::record_cleanup_failed( 'user', $user_id );
-			error_log( sprintf( '[Core Blueprint CRM] Sales user anonymization failed for deleted WordPress user #%d.', $user_id ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-		}
+		UserAnonymizationRecovery::deleted_user( $user_id );
 		foreach ( ContactIdentity::contact_ids_for_user( $user_id ) as $contact_id ) {
 			if ( PostTypes::CONTACT !== get_post_type( $contact_id ) ) {
 				continue;

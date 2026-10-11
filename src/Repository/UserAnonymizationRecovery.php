@@ -25,7 +25,7 @@ final class UserAnonymizationRecovery {
 	public static function init(): void {
 		add_action( 'delete_user', [ __CLASS__, 'before_delete' ], 10, 1 );
 		add_action( 'wpmu_delete_user', [ __CLASS__, 'before_delete' ], 10, 1 );
-		add_action( 'deleted_user', [ __CLASS__, 'deleted_user' ], 10, 1 );
+		// Lifecycle::deleted_user handles the after-delete callback once.
 		add_action( self::HOOK, [ __CLASS__, 'retry' ], 10, 1 );
 		add_action( 'admin_init', [ __CLASS__, 'reschedule_pending' ], 25, 0 );
 	}
