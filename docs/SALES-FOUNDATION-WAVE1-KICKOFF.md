@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-11
 
-**Status:** WAVE 1A INITIAL SOURCE PATCH PRESENT / NOT VALIDATED FOR INSTALLATION
+**Status:** WAVE 1A DOMAIN/SCHEMA PATCH LOCALLY GREEN; TRANSACTIONAL REPOSITORY PATCH AWAITS LOCAL VALIDATION
 
 **Parent decision:** Design Golden merged by PR #38, into CRM main `42e6915263694210698511735e9b9cd80dd01a40`.
 
@@ -10,7 +10,11 @@
 
 **Branch:** `feature/crm-sales-wave1-foundation-v1`. This branch now contains the **first Wave 1A code patch** following explicit user GO. The earlier kickoff document itself did not authorise source changes. The code patch is for local test/review only and must not be installed or merged before acceptance.
 
-**Implementation status 2026-10-11:** Initial storage-neutral `Rules` and `Access` classes; six Sales tables added to the existing versioned schema `1.6`; updated source/schema smokes and dedicated domain smoke. **Not yet implemented:** governed Sales repository writes, seeded default pipelines, canonical Contact/Organization lookup during Sales mutation, privacy deletion/retention handlers, independent Sales capabilities, conversion transactions, public Sales APIs, UI or Work linkage. These remain implementation gates before CRM Sales can store real data.
+**Implementation status 2026-10-11:** Initial storage-neutral `Rules` and `Access` classes; six Sales tables in versioned schema `1.6`; source, schema and dedicated domain regression smoke. Local baseline `5b7106d28c6ed8b20c05891ad9e1be164c14639b` passed the entire `./tools/check`, i18n, archive and SHA-256 validation (archive `fc7a4337f6c49cc00c6d84b236f36f9856e9305d809a239a7dc8440dce9cc5bd`).
+
+**Second 1A patch (not yet locally validated):** Internal `CB\\CRM\\Repository\\Sales\\Records` now offers capability-gated `create_lead`, `create_opportunity` and staff-only `get`. Creates require version `1.6` readiness, caller actor identity, strictly allowlisted fields, real live CRM Contact/Organization participants, type-matched active pipeline/stage and a database transaction spanning the record, links and creation event. No public endpoints, UI, automation or Work calls are exposed. Isolated `sales-records-persistence-smoke.php` exercises rejected input and rollback and is wired into `tools/check`.
+
+**Still blocked for real data / production:** default pipeline+stage provisioning, independent Sales capabilities with tested multi-user scope, lifecycle/privacy erasure and retention of Sales links/events, revision-checked updates, transactional conversion, real MariaDB/InnoDB verification and staged schema-upgrade tests. No live installation or merge until these are accepted, even if source smokes pass.
 
 ## Deliverable and scope
 
@@ -18,12 +22,12 @@ Establish the **smallest independently testable canonical Sales domain foundatio
 
 ### Wave 1A — contract and storage boundary (first candidate implementation)
 
-**Code candidates (not files already created):**
+**Wave 1A source areas (implemented in increments):**
 
 - `src/Domain/Sales/*`: value rules, valid Lead/Opportunity lifecycle and pipeline-type checks; stable, deterministic identifiers; explicit record-outcome semantics.
-- `src/Database/Schema.php`: add **versioned** sales table definitions only after exact DDL/index and migration review, preserving the existing `CB_CRM_SCHEMA_VERSION = '1.5'` baseline and Base SchemaRegistry orchestration.
-- `src/Repository/Sales/*`: bounded, prepared read/write primitives with integrity checks and revision handling, not public CRUD access.
-- `tests/sales-foundation-*.php`: new test coverage within the repository's existing `tools/check` sequence when the implementation phase is approved.
+- `src/Database/Schema.php`: contains **versioned** Sales DDL under schema `1.6`, migrated from the preserved original `1.5` baseline through Base SchemaRegistry orchestration.
+- `src/Repository/Sales/*`: initial internal prepared creation/read boundary with strict validation and transaction rollback. Revision-checked update support is not implemented yet.
+- `tests/sales-foundation-*.php`: dedicated `tests/sales-domain-foundation-smoke.php` and `tests/sales-records-persistence-smoke.php` permanently wired into the existing `tools/check` sequence.
 
 **Initial entity fields to settle before migration:**
 
@@ -36,7 +40,7 @@ Establish the **smallest independently testable canonical Sales domain foundatio
 | Participant | Entity type+ID, CRM Contact/Organization type+ID, role, uniqueness | Reference a real canonical CRM identity; do not clone PII. |
 | Sales event | Entity/ref, type, previous/new stage/outcome, actor, UTC time, revision, provenance | Never place full messages, secrets or private notes into public audit context. |
 
-**Critical decision before SQL:** choose physical ID type, UUID strategy and unique constraints; verify indexing for owner, pipeline/stage/outcome, created/updated, participant reverse lookup and conversion; define portability/restore treatment. No blanket `dbDelta` migration is acceptable without legacy upgrade, verification and interrupted-write tests.
+**Migration review before any real installation:** six Sales tables already use CRM-style unsigned bigint IDs and canonical unique/query indexes. Independently verify Base SchemaRegistry retries, real MariaDB/InnoDB transactional engine, backup/restore, partial upgrade handling, integrity after deleting Contacts/Organizations and site portability. Isolated dbDelta fixtures do not prove real database transactional behaviour.
 
 **Non-negotiable invariants:** each Lead or Opportunity has at least one valid Contact/Organization participant; one Contact can have many Sales records; no implicit marketing consent; no updates to CRM Contact/Organization `active/inactive/archived`; no Work task status reuse; no silent owner/actor impersonation; no auto-conversion, customer/account or Service Agreement creation.
 
