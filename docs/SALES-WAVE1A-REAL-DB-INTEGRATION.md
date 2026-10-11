@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A: real WordPress/MariaDB integration
 
-**Status:** Authored, NOT YET EXECUTED or accepted locally.
+**Status:** Fresh-install integration PASS locally on 2026-10-11 (CRM runtime 248f131, Base 8544d10); upgrade 1.5 to 1.6 remains a separate unexecuted test.
 **Scope:** Fresh WordPress 7.0/7.1 and real MariaDB 10.11.19, not the 1.5 to 1.6 upgrade yet.
 
 ## Isolation and safety
