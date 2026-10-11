@@ -76,7 +76,8 @@ if ( 'convert' === $phase ) {
 	$worker = (string) getenv( 'CB_CRM_B2_WORKER' );
 	$assert( 1 === preg_match( '#^/tmp/core-blueprint-tests/core-blueprint-crm-sales/run\.[A-Za-z0-9]{8}$#D', $gate ), 'unsafe gate directory' );
 	$assert( in_array( $worker, [ '1', '2' ], true ), 'invalid worker' );
-	$assert( 0 !== file_put_contents( "{$gate}/b2_ready_{$worker}", 'ready' ), 'cannot signal readiness' );
+	$signal = file_put_contents( "{$gate}/b2_ready_{$worker}", 'ready' );
+	$assert( false !== $signal && $signal > 0, 'cannot signal readiness' );
 	$released = false;
 	for ( $attempt = 0; $attempt < 300; ++$attempt ) {
 		if ( is_file( "{$gate}/b2_go" ) ) { $released = true; break; }
