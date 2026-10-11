@@ -18,6 +18,9 @@ $GLOBALS['b2_schema'] = '1.6';
 function cb_crm_runtime_ready(): bool { return $GLOBALS['b2_ready']; }
 function current_user_can( string $capability ): bool { return in_array( $capability, $GLOBALS['b2_caps'], true ); }
 function get_current_user_id(): int { return $GLOBALS['b2_user']; }
+function sanitize_key( string $key ): string {
+	return strtolower( preg_replace( '/[^a-z0-9_\\-]/', '', $key ) ?? '' );
+}
 function get_option( string $key, mixed $default = '' ): mixed {
 	return 'cb_crm_db_version' === $key ? $GLOBALS['b2_schema'] : $default;
 }
