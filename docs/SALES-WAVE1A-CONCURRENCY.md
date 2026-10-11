@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A: canonical identity row locking
 
-**Status:** Candidate patch on feature branch; real concurrent WP-CLI acceptance has NOT yet been run.
+**Status:** Deletion-first two-process WordPress/MariaDB integration PASS locally (2026-10-11); creation-first concurrency and full post-patch regression remain open.
 
 ## Evidence and risk
 
@@ -62,3 +62,11 @@ Unlike the previous docs/test-only commits, this patch changes runtime PHP under
 - `LifecycleRecovery` currently retains inert intents when a delete was vetoed, and WP-Cron reliability/operator queues require review.
 - WordPress user deletion Sales anonymization is transactional, but recovery for failures and privacy-export/erasure/retention policy remain open.
 - No UI, no new external service, no CI, no merge, no staging or production deployment is part of this increment.
+
+## Real deletion-first race evidence (2026-10-11)
+
+At CRM `e1c7306abbd8e0c2bf1857f1e74bca98ffb3cbf4` and Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`, the user executed `CB_CRM_TEST_CONCURRENT=1 ./tools/check-sales-integration` against isolated MariaDB 10.11.19 database `cb_crm_it_yzhajylk` and a disposable WordPress 7.0 site. The fresh-install InnoDB, seed retry, rollback, unique-key, Trash and post-delete cleanup recovery cases passed. In the two-process race, WordPress removed the Contact before Sales issued its canonical locking read; the Sales transaction rejected the now-missing identity despite cached WordPress state; verification found no orphan relation. **Result: PASS for deletion-first ordering only.**
+
+The user then built and verified `dist/core-blueprint-crm.zip`, canonical root `core-blueprint-crm/`, ZIP integrity PASS, checksum file PASS, SHA-256 **`53c0c06b0b404ba2067865156158ccb9613de4106ddd9e4d4f38f249234a55c2`**. The preceding runtime commit added canonical identity locking and appropriately changed the release checksum.
+
+Only the integration command and build were included in the latest supplied output. Run `php tests/sales-records-persistence-smoke.php`, `./tools/check` and `./tools/i18n/check` after the runtime change before treating the patch as fully accepted. Creation-first ordering, true concurrent multi-party writes, and privacy/retention remain open. The isolated DB stays intact, with no staging/production action or merge.
