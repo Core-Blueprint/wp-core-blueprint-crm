@@ -68,7 +68,7 @@ $checks = [
 	'long user identities prefer natural table sizing before fallback wrapping' => str_contains( $styles, '.cb-crm-user-links-page .wp-list-table' ) && str_contains( $styles, 'table-layout: auto;' ) && str_contains( $styles, '.cb-crm-user-login' ) && str_contains( $styles, 'overflow-wrap: anywhere;' ) && str_contains( $styles, 'word-break: normal;' ),
 	'G4 creates no parallel identity storage' => ! str_contains( $g4_source, 'register_post_meta' ) && ! str_contains( $g4_source, 'CREATE TABLE' ),
 	'G4 does not write the canonical link meta directly' => ! preg_match( '/update_post_meta\s*\([^;]*WP_USER_ID/s', $g4_source ),
-	'G4 does not change the Golden schema or plugin candidate version' => str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.5'" ) && str_contains( $bootstrap, "CB_CRM_VERSION', '1.0.0-rc1'" ),
+	'G4 remains compatible with canonical Sales schema 1.6 and keeps plugin candidate version' => str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.6'" ) && str_contains( $bootstrap, "CB_CRM_VERSION', '1.0.0-rc1'" ),
 	'permanent G4 smoke is wired into tools/check' => str_contains( $tools, 'user-links-oversight-smoke.php' ),
 ];
 
