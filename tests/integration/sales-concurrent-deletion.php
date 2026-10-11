@@ -32,6 +32,12 @@ $assert = static function ( bool $ok, string $message ) use ( $fail ): void {
 $phase = getenv( 'CB_CRM_RACE_PHASE' );
 $assert( in_array( $phase, [ 'prepare', 'create', 'delete', 'verify' ], true ), 'unrecognized race phase' );
 $assert( '1.6' === (string) get_option( Schema::OPTION, '' ), 'schema 1.6 not ready' );
+$post_engine = $wpdb->get_var( $wpdb->prepare(
+	'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s',
+	DB_NAME,
+	$wpdb->posts
+) );
+$assert( 'InnoDB' === $post_engine, 'wp_posts must support row-level InnoDB locking for this concurrency contract' );
 $admin = get_user_by( 'login', 'crm-it-admin' );
 $assert( $admin instanceof WP_User, 'integration administrator not found' );
 wp_set_current_user( (int) $admin->ID );
