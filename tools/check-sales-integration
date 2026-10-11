@@ -99,6 +99,10 @@ wp plugin activate core-blueprint --path="$wp_root" --quiet
 wp plugin activate core-blueprint-crm --path="$wp_root" --quiet
 
 echo '==> Running actual WordPress and InnoDB tests'
-wp eval-file "$ROOT/tests/integration/sales-mariadb.php" --path="$wp_root"
+# WP-CLI eval-file passes file contents through eval(), where a strict_types
+# declaration can no longer be the first statement. Require the real file
+# through wp eval instead; PHP then parses it as an independent source file.
+CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-mariadb.php" \
+  wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 echo "Artifacts and isolated database retained for inspection: $run_root | $database"

@@ -52,3 +52,14 @@ Real 1.5-to-1.6 upgrade, concurrent inserts and transaction races, interrupted S
     sha256sum dist/core-blueprint-crm.zip
 
 Tests, tools and docs are excluded from the release ZIP. No merge, manual CI, staging or production installation is authorized.
+
+## Troubleshooting and resume without new database
+
+WP-CLI `eval-file` evaluates source text rather than requiring a PHP module; source modules with `declare(strict_types=1)` fail there before any assertions execute. The runner uses `wp eval` with an ordinary PHP `require` instead. If an earlier run reached the eval-file fatal, reuse its isolated WordPress install rather than running the provisioning script again:
+
+    cd ~/Downloads/wp-core-blueprint-crm
+    CB_CRM_INTEGRATION_TEST_FILE="$PWD/tests/integration/sales-mariadb.php" \\
+      wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' \\
+      --path=/tmp/core-blueprint-tests/core-blueprint-crm-sales/run.jUx4Zaml/wordpress
+
+The path above is the first run's documented test-only path. It must never be replaced by staging, production, or a non-isolated WordPress location. Requiring the file retains PHP strict typing while invoking actual WP-CLI/WordPress APIs.
