@@ -31,6 +31,7 @@ namespace CB\CRM\Domain\Sales {
 	final class Access {
 		public static bool $allowed = false;
 		public static function can_view(): bool { return self::$allowed; }
+		public static function can_manage(): bool { return false; }
 	}
 }
 namespace CB\CRM\Admin {
