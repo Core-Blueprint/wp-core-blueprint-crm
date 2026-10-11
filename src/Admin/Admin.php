@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) || exit;
 final class Admin {
 	public static function init(): void {
 		Menu::init();
+		SalesStatusActions::init();
 		SettingsPage::init();
 		Panels::init();
 		BusinessIdentifiersPanel::init();
