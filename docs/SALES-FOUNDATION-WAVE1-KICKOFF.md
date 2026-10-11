@@ -2,13 +2,15 @@
 
 **Date:** 2026-10-11
 
-**Status:** PREPARED / IMPLEMENTATION NOT YET STARTED
+**Status:** WAVE 1A INITIAL SOURCE PATCH PRESENT / NOT VALIDATED FOR INSTALLATION
 
 **Parent decision:** Design Golden merged by PR #38, into CRM main `42e6915263694210698511735e9b9cd80dd01a40`.
 
 **Architecture:** [Sales Foundation RFC](SALES-FOUNDATION-V1-RFC.md). **Acceptance roadmap:** [Wave plan](SALES-FOUNDATION-V1-IMPLEMENTATION-PLAN.md).
 
-**Branch:** `feature/crm-sales-wave1-foundation-v1`. This branch is for implementation preparation and subsequently independently accepted code increments. No schema change, new runtime service, admin screen, release package or deployment has been authorised by creating this kickoff document.
+**Branch:** `feature/crm-sales-wave1-foundation-v1`. This branch now contains the **first Wave 1A code patch** following explicit user GO. The earlier kickoff document itself did not authorise source changes. The code patch is for local test/review only and must not be installed or merged before acceptance.
+
+**Implementation status 2026-10-11:** Initial storage-neutral `Rules` and `Access` classes; six Sales tables added to the existing versioned schema `1.6`; updated source/schema smokes and dedicated domain smoke. **Not yet implemented:** governed Sales repository writes, seeded default pipelines, canonical Contact/Organization lookup during Sales mutation, privacy deletion/retention handlers, independent Sales capabilities, conversion transactions, public Sales APIs, UI or Work linkage. These remain implementation gates before CRM Sales can store real data.
 
 ## Deliverable and scope
 
@@ -108,7 +110,7 @@ cat dist/core-blueprint-crm.zip.sha256
 
 ## Governance/next step
 
-1. This kickoff documents implementation order and test gates, not source implementation consent.
+1. The user has authorised the initial Wave 1A code patch. Subsequent waves, installation and merge remain separately gated.
 2. Confirm domain/storage/access decisions from the RFC before Wave 1A.
 3. Implement **only Wave 1A** as a separately reviewed patch after explicit GO.
 4. Show exact Git branch/SHA and actual tests, release artifact SHA-256 and non-destructive staging acceptance; no merge, CI manual rerun, production install or public release without separate explicit authorisation.
