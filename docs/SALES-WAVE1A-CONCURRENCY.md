@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A: canonical identity row locking
 
-**Status:** Deletion-first two-process WordPress/MariaDB integration PASS locally (2026-10-11); creation-first concurrency and full post-patch regression remain open.
+**Status:** Deletion-first two-process WordPress/MariaDB integration PASS locally (2026-10-11); creation-first test candidate added, not yet locally run. Full post-runtime regression remains open.
 
 ## Evidence and risk
 
@@ -70,3 +70,25 @@ At CRM `e1c7306abbd8e0c2bf1857f1e74bca98ffb3cbf4` and Base `8544d1097d98c3a241a6
 The user then built and verified `dist/core-blueprint-crm.zip`, canonical root `core-blueprint-crm/`, ZIP integrity PASS, checksum file PASS, SHA-256 **`53c0c06b0b404ba2067865156158ccb9613de4106ddd9e4d4f38f249234a55c2`**. The preceding runtime commit added canonical identity locking and appropriately changed the release checksum.
 
 Only the integration command and build were included in the latest supplied output. Run `php tests/sales-records-persistence-smoke.php`, `./tools/check` and `./tools/i18n/check` after the runtime change before treating the patch as fully accepted. Creation-first ordering, true concurrent multi-party writes, and privacy/retention remain open. The isolated DB stays intact, with no staging/production action or merge.
+
+## Candidate inverse ordering: creation-first
+
+A second, optional real *two-process* integration fixture `tests/integration/sales-concurrent-creation-first.php` exercises the opposite ordering in a fresh, randomly named WordPress/MariaDB database. Process A locks the Contact's canonical InnoDB `wp_posts` row via `SELECT ... FOR UPDATE` while creating a Lead, and pauses after the locking read but before its Sales `INSERT`. Process B starts `wp_delete_post()` and signals entry at `pre_delete_post`. The runner checks that deletion is still pending before it releases process A; process A must commit successfully, then WordPress deletion must complete and invoke transactional CRM/Sales cleanup. Verification requires the Contact, orphaned Sales participant, now-empty Lead and related Sales Event history to all be absent, with no pending recovery intent.
+
+The synchronization uses only files within the disposable test root, two independent WP-CLI processes, and a bounded `timeout` wrapper; `query` and `pre_delete_post` are used as test hooks rather than production hooks. The two process orders do not share any test identities. On failure the per-run DB and logs are retained for diagnosis. No existing test database is reused, no test connects to staging or production, and no schema/privilege bypass is introduced.
+
+Use the combined command to run both orders sequentially in a **new** disposable database:
+
+    CB_CRM_TEST_CONCURRENT=1 CB_CRM_TEST_CREATION_FIRST=1 ./tools/check-sales-integration
+
+Source and regression checks before that command:
+
+    bash -n tools/check-sales-integration
+    php -l tests/integration/sales-concurrent-creation-first.php
+    php tests/sales-records-persistence-smoke.php
+    ./tools/check
+    ./tools/i18n/check
+
+Rebuild after acceptance and record the final artifact checksum with `./tools/build-release`, `unzip -t dist/core-blueprint-crm.zip`, `( cd dist && sha256sum -c core-blueprint-crm.zip.sha256 )`, and `sha256sum dist/core-blueprint-crm.zip`. This second concurrency test is test-only, so absent other runtime changes the previously validated SHA-256 `53c0c06b0b404ba2067865156158ccb9613de4106ddd9e4d4f38f249234a55c2` should remain; do not claim it until locally confirmed.
+
+**Open after both orders:** real multi-identity competing transactions, non-InnoDB site storage contract, abandoned recovery intents and delayed cron, and privacy/retention/export/erasure controls. No merge, manual GitHub Actions, staging deployment or production installation without explicit approval.
