@@ -171,8 +171,11 @@ namespace {
 	$assert( ! isset( $GLOBALS['recovery_user_opts'][ $key( 44 ) ] ), 'unsupported multisite must not silently rewrite network IDs' );
 	$GLOBALS['recovery_user_multisite'] = false;
 	$GLOBALS['recovery_user_schema'] = '1.5';
-	Recovery::before_delete( 44 );
-	$assert( ! isset( $GLOBALS['recovery_user_opts'][ $key( 44 ) ] ), 'schema 1.5 no-op' );
+	try {
+		Recovery::before_delete( 44 );
+		$assert( false, 'schema 1.5 marker must block user deletion on 1.6 source' );
+	} catch ( CRM_Deletion_Blocked ) {}
+	$assert( ! isset( $GLOBALS['recovery_user_opts'][ $key( 44 ) ] ), 'incomplete schema did not invent intent' );
 	$assert( Governance::$failures !== [], 'failure evidence is recorded' );
 
 	echo "CRM Sales user anonymization recovery smoke passed.\n";

@@ -32,8 +32,19 @@ final class UserAnonymizationRecovery {
 
 	/** Pre-delete hook: persists intent before the irreversible WP operation. */
 	public static function before_delete( int $user_id ): void {
-		if ( ! self::supported() || $user_id <= 0 ) {
+		if ( $user_id <= 0 || is_multisite() || ! defined( 'CB_CRM_SCHEMA_VERSION' )
+			|| version_compare( CB_CRM_SCHEMA_VERSION, '1.6', '<' ) ) {
 			return;
+		}
+		if ( ! self::supported() ) {
+			// Schema 1.6 code exists but reconciliation is still incomplete.
+			// Do not destroy a login while we cannot reliably minimize Sales IDs.
+			self::report_failure( $user_id );
+			wp_die(
+				'CRM user deletion blocked: Sales schema reconciliation is incomplete.',
+				'CRM deletion safety',
+				[ 'response' => 503 ]
+			);
 		}
 		if ( ! self::remember( $user_id ) ) {
 			self::report_failure( $user_id );
