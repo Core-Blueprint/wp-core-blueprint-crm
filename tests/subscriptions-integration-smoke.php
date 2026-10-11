@@ -22,7 +22,7 @@ $checks = [
 	'adapter is Contact-only and read-only' => str_contains( $adapter, "'post_types' => [ Entity::CONTACT ]" ) && ! str_contains( $adapter, 'update_post_meta' ) && ! str_contains( $adapter, 'wp_insert_post' ),
 	'adapter follows the Subscriptions staff authorization boundary' => str_contains( $adapter, "current_user_can( 'manage_woocommerce' )" ) && str_contains( $adapter, "current_user_can( 'manage_options' )" ),
 	'adapter does not create parallel subscription storage' => ! str_contains( $adapter, 'CREATE TABLE' ) && ! str_contains( $adapter, 'register_post_meta' ),
-	'integration does not change CRM candidate or schema version' => str_contains( $bootstrap, "CB_CRM_VERSION', '1.0.0-rc1'" ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.5'" ),
+	'Subscriptions integration preserves the CRM rc1 candidate on canonical Sales schema 1.6' => str_contains( $bootstrap, "CB_CRM_VERSION', '1.0.0-rc1'" ) && str_contains( $bootstrap, "CB_CRM_SCHEMA_VERSION', '1.6'" ),
 	'permanent subscriptions smoke is wired into tools/check' => str_contains( $tools, 'subscriptions-integration-smoke.php' ),
 ];
 
