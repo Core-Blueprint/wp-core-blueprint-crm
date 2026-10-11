@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-11 17:22+0000\n"
+"POT-Creation-Date: 2026-10-11 17:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: core-blueprint-crm\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Core Blueprint CRM:"
 msgstr ""
 
-#: src/Admin/Admin.php:26
+#: src/Admin/Admin.php:27
 #: src/Admin/Menu.php:30
 #: src/Admin/SettingsPage.php:28
 #: src/Admin/UserLinks.php:92
@@ -62,13 +62,13 @@ msgstr ""
 msgid "CRM"
 msgstr ""
 
-#: src/Admin/Admin.php:32
+#: src/Admin/Admin.php:33
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:38
 msgid "Display name"
 msgstr ""
 
-#: src/Admin/Admin.php:33
+#: src/Admin/Admin.php:34
 #: src/Integration/Builders/Bricks/DynamicData.php:30
 #: src/Integration/Builders/Bricks/FormActions.php:46
 msgid "Organization name"
@@ -211,12 +211,12 @@ msgid "Tags"
 msgstr ""
 
 #: src/Admin/Menu.php:51
-#: src/Admin/SalesPage.php:293
+#: src/Admin/SalesPage.php:302
 msgid "Leads"
 msgstr ""
 
 #: src/Admin/Menu.php:52
-#: src/Admin/SalesPage.php:293
+#: src/Admin/SalesPage.php:302
 msgid "Opportunities"
 msgstr ""
 
@@ -334,9 +334,9 @@ msgid "CRM Details"
 msgstr ""
 
 #: src/Admin/Panels/DetailsPanel.php:37
-#: src/Admin/SalesPage.php:84
-#: src/Admin/SalesPage.php:106
-#: src/Admin/SalesPage.php:164
+#: src/Admin/SalesPage.php:87
+#: src/Admin/SalesPage.php:109
+#: src/Admin/SalesPage.php:169
 #: src/Admin/ServiceAgreements.php:82
 #: src/Admin/UserLinks.php:35
 #: src/Admin/UserLinks.php:101
@@ -508,170 +508,208 @@ msgstr ""
 msgid "You do not have permission to view CRM Sales."
 msgstr ""
 
-#: src/Admin/SalesPage.php:81
+#: src/Admin/SalesPage.php:44
+msgid "Sales record updated."
+msgstr ""
+
+#: src/Admin/SalesPage.php:84
 msgid "Internal staff records. Read-only overview."
 msgstr ""
 
-#: src/Admin/SalesPage.php:86
+#: src/Admin/SalesPage.php:89
 msgid "All statuses"
 msgstr ""
 
-#: src/Admin/SalesPage.php:91
-#: src/Admin/SalesPage.php:107
-#: src/Admin/SalesPage.php:165
+#: src/Admin/SalesPage.php:94
+#: src/Admin/SalesPage.php:110
+#: src/Admin/SalesPage.php:170
 msgid "Owner"
 msgstr ""
 
-#: src/Admin/SalesPage.php:93
+#: src/Admin/SalesPage.php:96
 msgid "All records"
 msgstr ""
 
-#: src/Admin/SalesPage.php:94
+#: src/Admin/SalesPage.php:97
 msgid "Assigned to me"
 msgstr ""
 
-#: src/Admin/SalesPage.php:96
+#: src/Admin/SalesPage.php:99
 msgid "Filter"
 msgstr ""
 
-#: src/Admin/SalesPage.php:97
+#: src/Admin/SalesPage.php:100
 msgid "Reset filters"
 msgstr ""
 
-#: src/Admin/SalesPage.php:105
+#: src/Admin/SalesPage.php:108
 msgid "Title"
 msgstr ""
 
-#: src/Admin/SalesPage.php:108
-#: src/Admin/SalesPage.php:169
+#: src/Admin/SalesPage.php:111
+#: src/Admin/SalesPage.php:174
 msgid "Next action"
 msgstr ""
 
-#: src/Admin/SalesPage.php:109
-#: src/Admin/SalesPage.php:171
+#: src/Admin/SalesPage.php:112
+#: src/Admin/SalesPage.php:176
 msgid "Updated"
 msgstr ""
 
-#: src/Admin/SalesPage.php:114
+#: src/Admin/SalesPage.php:117
 msgid "No matching records."
 msgstr ""
 
-#: src/Admin/SalesPage.php:131
-#: src/Admin/SalesPage.php:210
+#: src/Admin/SalesPage.php:134
+#: src/Admin/SalesPage.php:219
 msgid "Sales pagination"
 msgstr ""
 
-#: src/Admin/SalesPage.php:133
-#: src/Admin/SalesPage.php:212
+#: src/Admin/SalesPage.php:136
+#: src/Admin/SalesPage.php:221
 msgid "First page"
 msgstr ""
 
-#: src/Admin/SalesPage.php:136
-#: src/Admin/SalesPage.php:215
+#: src/Admin/SalesPage.php:139
+#: src/Admin/SalesPage.php:224
 msgid "Next page"
 msgstr ""
 
-#: src/Admin/SalesPage.php:154
+#: src/Admin/SalesPage.php:157
 msgid "Back to overview"
 msgstr ""
 
-#: src/Admin/SalesPage.php:156
+#: src/Admin/SalesPage.php:159
 msgid "Record not found."
 msgstr ""
 
-#: src/Admin/SalesPage.php:161
+#: src/Admin/SalesPage.php:165
 msgid "Read-only detail. Changes are not available on this screen."
 msgstr ""
 
-#: src/Admin/SalesPage.php:166
+#: src/Admin/SalesPage.php:171
 msgid "Pipeline ID"
 msgstr ""
 
-#: src/Admin/SalesPage.php:167
+#: src/Admin/SalesPage.php:172
 msgid "Stage ID"
 msgstr ""
 
-#: src/Admin/SalesPage.php:168
-#: src/Admin/SalesPage.php:202
+#: src/Admin/SalesPage.php:173
+#: src/Admin/SalesPage.php:211
 msgid "Revision"
 msgstr ""
 
-#: src/Admin/SalesPage.php:170
-#: src/Admin/SalesPage.php:202
+#: src/Admin/SalesPage.php:175
+#: src/Admin/SalesPage.php:211
 msgid "Created"
 msgstr ""
 
-#: src/Admin/SalesPage.php:176
+#: src/Admin/SalesPage.php:181
 msgid "Source"
 msgstr ""
 
-#: src/Admin/SalesPage.php:177
+#: src/Admin/SalesPage.php:182
 msgid "Converted Opportunity ID"
 msgstr ""
 
-#: src/Admin/SalesPage.php:179
+#: src/Admin/SalesPage.php:184
 msgid "Amount (minor units)"
 msgstr ""
 
-#: src/Admin/SalesPage.php:180
+#: src/Admin/SalesPage.php:185
 msgid "Currency"
 msgstr ""
 
-#: src/Admin/SalesPage.php:181
+#: src/Admin/SalesPage.php:186
 msgid "Source Lead ID"
 msgstr ""
 
-#: src/Admin/SalesPage.php:185
+#: src/Admin/SalesPage.php:194
 msgid "Participants"
 msgstr ""
 
-#: src/Admin/SalesPage.php:187
+#: src/Admin/SalesPage.php:196
 msgid "No participants."
 msgstr ""
 
-#: src/Admin/SalesPage.php:196
+#: src/Admin/SalesPage.php:205
 msgid "Activity history"
 msgstr ""
 
-#: src/Admin/SalesPage.php:202
+#: src/Admin/SalesPage.php:211
 msgid "Event"
 msgstr ""
 
-#: src/Admin/SalesPage.php:202
+#: src/Admin/SalesPage.php:211
 msgid "Actor ID"
 msgstr ""
 
-#: src/Admin/SalesPage.php:204
+#: src/Admin/SalesPage.php:213
 msgid "No history entries."
 msgstr ""
 
-#: src/Admin/SalesPage.php:227
+#: src/Admin/SalesPage.php:236
 msgid "Unable to display CRM Sales records. Check the filters or your access."
 msgstr ""
 
-#: src/Admin/SalesPage.php:277
-#: src/Admin/SalesPage.php:282
+#: src/Admin/SalesPage.php:286
+#: src/Admin/SalesPage.php:291
 msgid "Open"
 msgstr ""
 
-#: src/Admin/SalesPage.php:278
+#: src/Admin/SalesPage.php:287
 msgid "Qualified"
 msgstr ""
 
-#: src/Admin/SalesPage.php:279
+#: src/Admin/SalesPage.php:288
 msgid "Disqualified"
 msgstr ""
 
-#: src/Admin/SalesPage.php:280
+#: src/Admin/SalesPage.php:289
 msgid "Converted"
 msgstr ""
 
-#: src/Admin/SalesPage.php:283
+#: src/Admin/SalesPage.php:292
 msgid "Won"
 msgstr ""
 
-#: src/Admin/SalesPage.php:284
+#: src/Admin/SalesPage.php:293
 msgid "Lost"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:26
+msgid "Qualify lead"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:27
+msgid "Disqualify lead"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:28
+msgid "Mark won"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:29
+msgid "Mark lost"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:30
+msgid "Reopen opportunity"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:70
+#: src/Admin/SalesStatusActions.php:71
+msgid "Sales actions"
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:147
+#: src/Admin/SalesStatusActions.php:163
+msgid "Invalid Sales request."
+msgstr ""
+
+#: src/Admin/SalesStatusActions.php:154
+msgid "The Sales action could not be completed. Reload the record and try again."
 msgstr ""
 
 #: src/Admin/Save.php:53
