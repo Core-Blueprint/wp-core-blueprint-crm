@@ -11,7 +11,7 @@ umask 077
 
 fail() { printf 'CRM Sales integration FAIL: %s\n' "$*" >&2; exit 1; }
 [[ "$WP_VERSION" == "7.0" || "$WP_VERSION" == "7.1" ]] || fail 'Unsupported WordPress version'
-for command in php wp docker git tar mktemp cut tr; do
+for command in php wp docker git tar mktemp cut tr timeout; do
   command -v "$command" >/dev/null || fail "Missing command: $command"
 done
 php -r 'exit(version_compare(PHP_VERSION,"8.4",">=") && extension_loaded("mysqli") && extension_loaded("mbstring") ? 0 : 1);' \
@@ -160,5 +160,82 @@ if [[ "${CB_CRM_TEST_CONCURRENT:-0}" == "1" ]]; then
   trap - EXIT
   cat "$run_root/race-create.log"
   race_eval verify
+fi
+# Optional inverse ordering, using a separate identity from deletion-first.
+# Process A holds a canonical wp_posts FOR UPDATE lock. Process B starts
+# wp_delete_post but must not complete until A commits Lead + participant.
+if [[ "${CB_CRM_TEST_CREATION_FIRST:-0}" == "1" ]]; then
+  echo '==> Test real creation-first row locking and subsequent WordPress deletion'
+  fixture="$ROOT/tests/integration/sales-concurrent-creation-first.php"
+  [[ -f "$fixture" ]] || fail 'Creation-first concurrency PHP fixture missing'
+  race2_eval() {
+    CB_CRM_RACE_PHASE="$1" CB_CRM_RACE_GATE_DIR="$run_root" CB_CRM_INTEGRATION_TEST_FILE="$fixture" \
+      timeout 50s wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+  }
+  race2_eval prepare
+
+  race2_eval create >"$run_root/creation-first-create.log" 2>&1 &
+  creator_pid=$!
+  deleter_pid=""
+  release_creator_and_children() {
+    : >"$run_root/creation_first_go"
+    if [[ -n "${creator_pid:-}" ]]; then wait "$creator_pid" || true; fi
+    if [[ -n "${deleter_pid:-}" ]]; then wait "$deleter_pid" || true; fi
+  }
+  trap release_creator_and_children EXIT
+
+  ticks=0
+  while [[ ! -f "$run_root/creation_first_identity_locked" ]]; do
+    if ! kill -0 "$creator_pid" 2>/dev/null; then
+      cat "$run_root/creation-first-create.log"
+      fail 'Creator exited before completing canonical identity lock'
+    fi
+    if (( ticks >= 200 )); then
+      cat "$run_root/creation-first-create.log"
+      fail 'Creator did not reach locked pre-insert pause in 20 seconds'
+    fi
+    sleep 0.1
+    ticks=$(( ticks + 1 ))
+  done
+
+  race2_eval delete >"$run_root/creation-first-delete.log" 2>&1 &
+  deleter_pid=$!
+  ticks=0
+  while [[ ! -f "$run_root/creation_first_delete_entered" ]]; do
+    if ! kill -0 "$deleter_pid" 2>/dev/null; then
+      cat "$run_root/creation-first-delete.log"
+      fail 'Deleter exited before entering WordPress deletion hooks'
+    fi
+    if (( ticks >= 200 )); then
+      cat "$run_root/creation-first-delete.log"
+      fail 'Deleter did not enter deletion hook in 20 seconds'
+    fi
+    sleep 0.1
+    ticks=$(( ticks + 1 ))
+  done
+
+  # Deleter must remain pending while the creator holds the post row lock.
+  sleep 1
+  if ! kill -0 "$deleter_pid" 2>/dev/null; then
+    cat "$run_root/creation-first-delete.log"
+    fail 'WordPress deletion finished before Sales released its post lock'
+  fi
+  echo 'PASS: deleting WordPress request waits for committed Sales identity lock'
+  : >"$run_root/creation_first_go"
+
+  if ! wait "$creator_pid"; then
+    cat "$run_root/creation-first-create.log"
+    fail 'Sales creator failed after releasing its post row lock'
+  fi
+  creator_pid=""
+  if ! wait "$deleter_pid"; then
+    cat "$run_root/creation-first-delete.log"
+    fail 'WordPress deletion did not complete after Sales commit'
+  fi
+  deleter_pid=""
+  trap - EXIT
+  cat "$run_root/creation-first-create.log"
+  cat "$run_root/creation-first-delete.log"
+  race2_eval verify
 fi
 echo "Artifacts and isolated database retained for inspection: $run_root | $database"
