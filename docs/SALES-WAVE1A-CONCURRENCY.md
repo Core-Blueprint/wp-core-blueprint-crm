@@ -1,6 +1,6 @@
 # CRM Sales Wave 1A: canonical identity row locking
 
-**Status:** Deletion-first two-process WordPress/MariaDB integration PASS locally (2026-10-11); creation-first test candidate added, not yet locally run. Full post-runtime regression remains open.
+**Status:** GOLDEN: both real two-process WordPress/MariaDB concurrency orders and full post-runtime regression PASS locally on 2026-10-11.
 
 ## Evidence and risk
 
@@ -92,3 +92,15 @@ Source and regression checks before that command:
 Rebuild after acceptance and record the final artifact checksum with `./tools/build-release`, `unzip -t dist/core-blueprint-crm.zip`, `( cd dist && sha256sum -c core-blueprint-crm.zip.sha256 )`, and `sha256sum dist/core-blueprint-crm.zip`. This second concurrency test is test-only, so absent other runtime changes the previously validated SHA-256 `53c0c06b0b404ba2067865156158ccb9613de4106ddd9e4d4f38f249234a55c2` should remain; do not claim it until locally confirmed.
 
 **Open after both orders:** real multi-identity competing transactions, non-InnoDB site storage contract, abandoned recovery intents and delayed cron, and privacy/retention/export/erasure controls. No merge, manual GitHub Actions, staging deployment or production installation without explicit approval.
+
+## Golden acceptance: both process orders (2026-10-11)
+
+User validated CRM feature source `a217e08577a9e225fde2e81dad43cb99be3cf5ba` and Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`. Actual WordPress 7.0/MariaDB 10.11.19 isolated database: `cb_crm_it_nagmwpit`, root `/tmp/core-blueprint-tests/core-blueprint-crm-sales/run.NaGMwpIt`. Combined command:
+
+    CB_CRM_TEST_CONCURRENT=1 CB_CRM_TEST_CREATION_FIRST=1 ./tools/check-sales-integration
+
+**PASS:** independent fresh-install/InnoDB, rollback, unique index, Trash, deletion failure injection and durable recovery. **PASS deletion-first:** SQL row absent after concurrent WordPress deletion, Sales refuses stale cached Contact. **PASS creation-first:** WordPress deletion remained pending while Sales held the Contact InnoDB lock; Sales Lead committed, then WordPress deletion completed and the Lead, final participant and associated Events were removed by CRM lifecycle cleanup. No orphan remained.
+
+`php tests/sales-records-persistence-smoke.php`, `./tools/check`, `./tools/i18n/check` all PASS. Six-locale PO headers still issue nonfatal `MIME-Version` and `Content-Transfer-Encoding` warnings. `./tools/build-release`, `unzip -t`, and the artifact checksum-file verification all PASS; deterministic release ZIP SHA-256 remains `53c0c06b0b404ba2067865156158ccb9613de4106ddd9e4d4f38f249234a55c2` (no runtime changes in this increment).
+
+**Boundary:** verified only the two intentional process interleavings on supported InnoDB storage. Multi-participant competing writers, MyISAM sites, real failure midway through post cleanup, operator cron queues, and data-subject export/erasure/retention are separate open gates. No merge, CI/CD, staging or production permission is implied by these results.

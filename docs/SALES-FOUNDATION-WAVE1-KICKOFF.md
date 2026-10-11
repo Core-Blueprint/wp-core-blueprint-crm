@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-11
 
-**Status:** WAVE 1A SCHEMA/REPOSITORY/LIFECYCLE LOCALLY GREEN; DEFAULT PIPELINE PATCH AWAITS LOCAL VALIDATION
+**Status:** WAVE 1A SCHEMA / REPOSITORY / LIFECYCLE / DEFAULT PIPELINES / TWO-WAY CONCURRENCY GOLDEN (LOCAL); PRIVACY AND RECOVERY GATES OPEN
 
 **Parent decision:** Design Golden merged by PR #38, into CRM main `42e6915263694210698511735e9b9cd80dd01a40`.
 
@@ -129,3 +129,5 @@ cat dist/core-blueprint-crm.zip.sha256
 
 
 **Seventh Wave 1A patch (post-delete recovery, pending local acceptance):** A typed, per-identity non-autoloaded WordPress option records the minimal deletion intent *before* WordPress permanently deletes Contact/Organization posts. Missing intent or failed WP-Cron schedule vetoes the deletion via pre_delete_post, preserving the post. WordPress Trash alone never triggers cleanup or a deletion intent. deleted_post retains the existing transactional relational cleanup; failed cleanup leaves its intent for per-identity WP-Cron retry. Retry requires BOTH a matching saved intent and direct uncached wp_posts absence (never get_post cache); repeats are idempotent for relation storage. An admin-only bounded 20-item index scan re-schedules lost cron events, but does not mutate CRM records. A vetoed deletion may leave an inert intent; it is never automatically discarded while a post exists. Events are at-least-once if intent deletion fails after SQL commit. Cron execution is traffic/hosting dependent, and a large stalled queue may require future operator tooling; MariaDB concurrency, recovery with disabled WP-Cron, and controlled operator review remain unverified. No schema changes, external services or WordPress record resurrection are introduced.
+
+**2026-10-11 tested Wave 1A Golden checkpoint:** source `a217e08577a9e225fde2e81dad43cb99be3cf5ba` (Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`) passed the full local regression suite, i18n, independent real WordPress/MariaDB schema 1.6 install, real 1.5→1.6 upgrade, lock-interrupted schema migration and retry, real post-deletion failure/recovery, and two controlled concurrent delete/create orderings. Canonical `dist/core-blueprint-crm.zip` SHA-256 `53c0c06b0b404ba2067865156158ccb9613de4106ddd9e4d4f38f249234a55c2`. See `SALES-WAVE1A-CONCURRENCY.md` for evidence. This checkpoint does not cover privacy erasure/export, failed deleted-user anonymization recovery, abandoned intent/cron queue, mixed participant write races or non-InnoDB hosts. No merge authorized.
