@@ -272,7 +272,7 @@ namespace {
 		$_GET = array_merge( [ 'page' => $menu::SALES_LEADS_SLUG ], $input );
 		$before = count( $source::$calls );
 		$render( [ $page, 'render_leads' ] );
-		$assert( $before === count( $source::$calls ) || isset( $input['history_after'] ),
+		$assert( $before === count( $source::$calls ),
 			'invalid Sales URL caused unintended data read' );
 	}
 	$source::$fail = true;
