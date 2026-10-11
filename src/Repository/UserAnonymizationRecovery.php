@@ -37,6 +37,14 @@ final class UserAnonymizationRecovery {
 		}
 		if ( ! self::remember( $user_id ) ) {
 			self::report_failure( $user_id );
+			// WordPress exposes this as an ACTION, not a cancellable filter.
+			// Fail closed: a normal return would allow an irreversible deletion
+			// without any durable work item for the remaining Sales user IDs.
+			wp_die(
+				'CRM user deletion blocked: durable Sales anonymization recovery is unavailable.',
+				'CRM deletion safety',
+				[ 'response' => 503 ]
+			);
 		}
 	}
 
@@ -164,7 +172,9 @@ final class UserAnonymizationRecovery {
 
 	private static function report_failure( int $user_id ): void {
 		Governance::record_cleanup_failed( 'user', $user_id );
-		self::schedule( $user_id );
+		if ( self::valid( get_option( self::key( $user_id ), null ), $user_id ) ) {
+			self::schedule( $user_id );
+		}
 		error_log( sprintf( '[Core Blueprint CRM] Sales user anonymization recovery pending for WordPress user #%d.', $user_id ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 }
