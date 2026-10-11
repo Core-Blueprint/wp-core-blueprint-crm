@@ -56,7 +56,7 @@ final class DefaultPipelines {
 
 		// Never run Sales DML while Base's schema migration is incomplete.
 		if ( ! defined( 'CB_CRM_SCHEMA_VERSION' )
-			|| '1.6' !== (string) CB_CRM_SCHEMA_VERSION
+			|| version_compare( (string) CB_CRM_SCHEMA_VERSION, '1.6', '<' )
 			|| CB_CRM_SCHEMA_VERSION !== (string) get_option( Schema::OPTION, '' ) ) {
 			return false;
 		}
