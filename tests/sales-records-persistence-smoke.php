@@ -188,6 +188,7 @@ $assert( 1 === count( $wpdb->rows['wp_cb_crm_sales_participants'] ), 'participan
 $assert( 'other' === $wpdb->rows['wp_cb_crm_sales_participants'][0]['role'], 'default role persisted' );
 $assert( 1 === count( $wpdb->rows['wp_cb_crm_sales_events'] ), 'created event stored atomically' );
 $assert( 'created' === $wpdb->rows['wp_cb_crm_sales_events'][0]['event_type'], 'created audit event type' );
+$assert( '' === $wpdb->rows['wp_cb_crm_sales_events'][0]['to_outcome'], 'Lead status must not masquerade as deal outcome' );
 $assert( is_array( Records::get( 'lead', $id ) ), 'authorised staff can read Lead' );
 $assert( null === Records::get( 'lead', 999 ), 'missing Sales record is null' );
 
@@ -199,6 +200,7 @@ $deal_id = Records::create_opportunity( $deal, [ $parties[0], [ 'party_type' => 
 $assert( is_int( $deal_id ) && $deal_id > 0, 'Opportunity created' );
 $assert( 129900 === $wpdb->rows['wp_cb_crm_sales_opportunities'][0]['amount_minor'], 'amount stored in minor units' );
 $assert( 'EUR' === $wpdb->rows['wp_cb_crm_sales_opportunities'][0]['currency'], 'ISO currency stored' );
+$assert( 'open' === $wpdb->rows['wp_cb_crm_sales_events'][1]['to_outcome'], 'Opportunity outcome belongs to deal history' );
 $assert( 3 === count( $wpdb->rows['wp_cb_crm_sales_participants'] ), 'multiple opportunity participants supported' );
 
 $before = serialize( $wpdb->rows );
