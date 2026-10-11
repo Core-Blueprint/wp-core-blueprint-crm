@@ -93,7 +93,7 @@ final class SalesPage {
 				<option value=""><?php esc_html_e( 'All records', 'core-blueprint-crm' ); ?></option>
 				<option value="1" <?php selected( $mine, true ); ?>><?php esc_html_e( 'Assigned to me', 'core-blueprint-crm' ); ?></option>
 			</select>
-			<button type="submit" class="button"><?php esc_html_e( 'Filter' ); ?></button>
+			<button type="submit" class="button"><?php esc_html_e( 'Filter', 'core-blueprint-crm' ); ?></button>
 			<a class="button-link" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Reset filters', 'core-blueprint-crm' ); ?></a>
 		</form>
 
@@ -102,7 +102,7 @@ final class SalesPage {
 				<caption class="screen-reader-text"><?php echo esc_html( self::heading( $type ) ); ?></caption>
 				<thead>
 					<tr>
-						<th scope="col"><?php esc_html_e( 'Title' ); ?></th>
+						<th scope="col"><?php esc_html_e( 'Title', 'core-blueprint-crm' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Status', 'core-blueprint-crm' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Owner', 'core-blueprint-crm' ); ?></th>
 						<th scope="col"><?php esc_html_e( 'Next action', 'core-blueprint-crm' ); ?></th>
