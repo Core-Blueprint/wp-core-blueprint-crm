@@ -185,7 +185,7 @@ final class Records {
 					'entity_id' => $id,
 					'event_type' => 'created',
 					'to_stage_id' => $stage_id,
-					'to_outcome' => Rules::LEAD === $type ? Rules::LEAD_OPEN : Rules::DEAL_OPEN,
+					'to_outcome' => Rules::LEAD === $type ? '' : Rules::DEAL_OPEN,
 					'actor_user_id' => $actor,
 					'revision' => 1,
 					'created_at' => $now,
