@@ -24,6 +24,7 @@ namespace CB\CRM\Repository\Sales {
 }
 namespace {
 	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
+	define( 'ARRAY_A', 'ARRAY_A' );
 	define( 'CB_CRM_SCHEMA_VERSION', '1.6' );
 	$GLOBALS['recovery_user_opts'] = [];
 	$GLOBALS['recovery_user_cron'] = [];
@@ -39,6 +40,10 @@ namespace {
 	function get_option( string $key, mixed $default = false ): mixed {
 		if ( 'cb_crm_db_version' === $key ) { return $GLOBALS['recovery_user_schema']; }
 		return $GLOBALS['recovery_user_opts'][ $key ] ?? $default;
+	}
+	function update_option( string $key, mixed $value, bool $autoload = false ): bool {
+		$GLOBALS['recovery_user_opts'][ $key ] = $value;
+		return true;
 	}
 	function add_option( string $key, mixed $value, string $deprecated = '', bool $autoload = false ): bool {
 		if ( $autoload || $GLOBALS['recovery_user_fail_add'] || isset( $GLOBALS['recovery_user_opts'][ $key ] ) ) { return false; }
@@ -89,6 +94,24 @@ namespace {
 			return isset( $this->existing[ (int) $m[1] ] ) ? (int) $m[1] : null;
 		}
 		public function esc_like( string $value ): string { return $value; }
+		public function get_results( string $sql, string $format ): ?array {
+			if ( 'ARRAY_A' !== $format
+				|| ! preg_match( '/option_id > ([0-9]+).*LIMIT 20/s', $sql, $match )
+				|| ! str_contains( $sql, 'ORDER BY option_id ASC' )
+				|| ! str_contains( $sql, 'cb_crm_' ) ) {
+				throw new \RuntimeException( 'Unexpected cursor-based recovery SQL' );
+			}
+			$rows = [];
+			$next_id = 1;
+			foreach ( $GLOBALS['recovery_user_opts'] as $name => $payload ) {
+				if ( $next_id > (int) $match[1] && str_starts_with( $name, 'cb_crm_user_anonymize_intent_' ) ) {
+					$rows[] = [ 'option_id' => $next_id, 'option_name' => $name ];
+				}
+				++$next_id;
+			}
+			return array_slice( $rows, 0, 20 );
+		}
+
 		public function get_col( string $sql ): array {
 			if ( ! str_contains( $sql, 'LIMIT 20' ) ) { throw new \RuntimeException( 'Unbounded admin recovery lookup' ); }
 			return array_slice(
@@ -101,6 +124,7 @@ namespace {
 		}
 	}
 	$GLOBALS['wpdb'] = new CRM_User_Recovery_Db();
+	require dirname( __DIR__ ) . '/src/Repository/RecoveryQueueScanner.php';
 	require dirname( __DIR__ ) . '/src/Repository/UserAnonymizationRecovery.php';
 
 	use CB\CRM\Repository\UserAnonymizationRecovery as Recovery;

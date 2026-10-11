@@ -58,6 +58,7 @@ namespace CB\CRM {
 namespace {
 	$root = dirname( __DIR__ );
 	define( 'ABSPATH', $root . '/' );
+	define( 'ARRAY_A', 'ARRAY_A' );
 	final class WP_Post {
 		public function __construct(
 			public int $ID,
@@ -75,6 +76,10 @@ namespace {
 	$GLOBALS['recovery_admin'] = false;
 	function get_option( string $key, mixed $default = false ): mixed {
 		return $GLOBALS['recovery_options'][ $key ] ?? $default;
+	}
+	function update_option( string $key, mixed $value, bool $autoload = false ): bool {
+		$GLOBALS['recovery_options'][ $key ] = $value;
+		return true;
 	}
 	function add_option( string $key, mixed $value, string $deprecated = '', bool $autoload = false ): bool {
 		if ( $GLOBALS['recovery_fail_option_add'] || array_key_exists( $key, $GLOBALS['recovery_options'] ) || $autoload ) {
@@ -158,6 +163,24 @@ namespace {
 			return isset( $this->existing_posts[ (int) $m[1] ] ) ? (int) $m[1] : null;
 		}
 		public function esc_like( string $value ): string { return $value; }
+		public function get_results( string $sql, string $format ): ?array {
+			if ( 'ARRAY_A' !== $format
+				|| ! preg_match( '/option_id > ([0-9]+).*LIMIT 20/s', $sql, $match )
+				|| ! str_contains( $sql, 'ORDER BY option_id ASC' )
+				|| ! str_contains( $sql, 'cb_crm_' ) ) {
+				throw new \RuntimeException( 'Unexpected cursor-based recovery SQL' );
+			}
+			$rows = [];
+			$next_id = 1;
+			foreach ( $GLOBALS['recovery_options'] as $name => $payload ) {
+				if ( $next_id > (int) $match[1] && str_starts_with( $name, 'cb_crm_delete_intent_' ) ) {
+					$rows[] = [ 'option_id' => $next_id, 'option_name' => $name ];
+				}
+				++$next_id;
+			}
+			return array_slice( $rows, 0, 20 );
+		}
+
 		public function get_col( string $sql ): array {
 			if ( ! str_contains( $sql, 'FROM wp_options' ) || ! str_contains( $sql, 'LIMIT 20' ) ) {
 				throw new \RuntimeException( 'Unbounded recovery listing' );
@@ -216,6 +239,7 @@ namespace {
 	}
 	$GLOBALS['wpdb'] = new CRM_Recovery_Db();
 
+	require $root . '/src/Repository/RecoveryQueueScanner.php';
 	require $root . '/src/Repository/LifecycleRecovery.php';
 	require $root . '/src/Lifecycle.php';
 
