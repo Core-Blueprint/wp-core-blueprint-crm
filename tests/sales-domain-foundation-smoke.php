@@ -5,11 +5,11 @@ $root = dirname( __DIR__ );
 define( 'ABSPATH', $root . '/' );
 
 $GLOBALS['crm_sales_runtime_ready'] = false;
-$GLOBALS['crm_sales_capability'] = false;
+$GLOBALS['crm_sales_capabilities'] = [];
 
 function cb_crm_runtime_ready(): bool { return $GLOBALS['crm_sales_runtime_ready']; }
 function current_user_can( string $capability ): bool {
-	return 'cb_manage_crm' === $capability && $GLOBALS['crm_sales_capability'];
+	return in_array( $capability, $GLOBALS['crm_sales_capabilities'], true );
 }
 
 require $root . '/src/Capabilities.php';
@@ -66,9 +66,16 @@ $assert( ! Rules::valid_participants( [ [ 'party_type' => 'contact', 'party_id' 
 $assert( ! Access::can_view() && ! Access::can_manage(), 'fail closed with unavailable Base runtime' );
 $GLOBALS['crm_sales_runtime_ready'] = true;
 $assert( ! Access::can_view() && ! Access::can_manage(), 'fail closed without CRM capability' );
-$GLOBALS['crm_sales_capability'] = true;
-$assert( Access::can_view() && Access::can_manage(), 'staff permitted only with live runtime and capability' );
+$GLOBALS['crm_sales_capabilities'] = [ 'cb_manage_crm' ];
+$assert( ! Access::can_view() && ! Access::can_manage(), 'legacy CRM manager alone has no Sales access' );
+$GLOBALS['crm_sales_capabilities'] = [ 'cb_manage_crm', 'cb_view_crm_sales' ];
+$assert( Access::can_view() && ! Access::can_manage(), 'CRM staff with Sales view is read-only' );
+$GLOBALS['crm_sales_capabilities'] = [ 'cb_manage_crm', 'cb_manage_crm_sales' ];
+$assert( Access::can_view() && Access::can_manage(), 'Sales manager may also read' );
+$GLOBALS['crm_sales_capabilities'] = [ 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
+$assert( ! Access::can_view() && ! Access::can_manage(), 'Sales capabilities cannot bypass canonical CRM grant' );
+$GLOBALS['crm_sales_capabilities'] = [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
 $GLOBALS['crm_sales_runtime_ready'] = false;
-$assert( ! Access::can_manage(), 'capability alone cannot bypass unavailable runtime' );
+$assert( ! Access::can_view() && ! Access::can_manage(), 'capabilities cannot bypass unavailable runtime' );
 
 echo "CRM Sales domain foundation smoke passed.\n";

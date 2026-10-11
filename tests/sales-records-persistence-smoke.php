@@ -17,6 +17,7 @@ final class WP_Error {
 
 $GLOBALS['sales_ready'] = false;
 $GLOBALS['sales_authorized'] = false;
+$GLOBALS['sales_allowed_caps'] = [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
 $GLOBALS['sales_actor'] = 17;
 $GLOBALS['sales_schema_version'] = '1.6';
 $GLOBALS['sales_identity'] = [
@@ -27,7 +28,7 @@ $GLOBALS['sales_identity'] = [
 ];
 function cb_crm_runtime_ready(): bool { return $GLOBALS['sales_ready']; }
 function current_user_can( string $capability ): bool {
-	return 'cb_manage_crm' === $capability && $GLOBALS['sales_authorized'];
+	return $GLOBALS['sales_authorized'] && in_array( $capability, $GLOBALS['sales_allowed_caps'], true );
 }
 function get_current_user_id(): int { return $GLOBALS['sales_actor']; }
 function get_option( string $key, mixed $default = '' ): mixed {
@@ -191,6 +192,12 @@ $assert( 'created' === $wpdb->rows['wp_cb_crm_sales_events'][0]['event_type'], '
 $assert( '' === $wpdb->rows['wp_cb_crm_sales_events'][0]['to_outcome'], 'Lead status must not masquerade as deal outcome' );
 $assert( is_array( Records::get( 'lead', $id ) ), 'authorised staff can read Lead' );
 $assert( null === Records::get( 'lead', 999 ), 'missing Sales record is null' );
+$GLOBALS['sales_allowed_caps'] = [ 'cb_manage_crm', 'cb_view_crm_sales' ];
+$assert( is_array( Records::get( 'lead', $id ) ), 'Sales viewer can read Lead' );
+$assert( 'crm_sales_forbidden' === $code( Records::create_lead( $lead, $parties ) ), 'Sales viewer cannot create Lead' );
+$GLOBALS['sales_allowed_caps'] = [ 'cb_manage_crm', 'cb_manage_crm_sales' ];
+$assert( is_array( Records::get( 'lead', $id ) ), 'Sales manager read needs no separate viewer grant' );
+$GLOBALS['sales_allowed_caps'] = [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ];
 
 $deal = [ 'title' => 'Proposal', 'pipeline_id' => 11, 'stage_id' => 21, 'amount_minor' => 129900, 'currency' => 'EUR' ];
 $assert( 'crm_sales_invalid_input' === $code( Records::create_opportunity( $deal + [ 'invalid' => true ], $parties ) ), 'unexpected opportunity field rejected' );
