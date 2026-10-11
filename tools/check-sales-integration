@@ -60,7 +60,7 @@ db_password="$(php -r 'echo bin2hex(random_bytes(24));')"
 wp_root="$run_root/wordpress"
 crm_sha="$(git -C "$ROOT" rev-parse HEAD)"
 base_sha="$(git -C "$BASE_SOURCE" rev-parse HEAD)"
-mkdir -p "$wp_root/wp-content/plugins/core-blueprint" "$wp_root/wp-content/plugins/core-blueprint-crm"
+mkdir -p "$wp_root"
 
 echo "ISOLATED_ROOT=$run_root"
 echo "ISOLATED_DB=$database"
@@ -75,13 +75,15 @@ CREATE USER '$db_user'@'%' IDENTIFIED BY '$db_password';
 GRANT ALL PRIVILEGES ON $database.* TO '$db_user'@'%';
 " || fail 'Could not create isolated database and restricted test user'
 
+# Download into an empty WordPress root first; stage plugins only after
+# core is installed so WP-CLI's non-force safety check cannot be bypassed.
+wp core download --path="$wp_root" --version="$WP_VERSION" --locale=en_US --skip-content --quiet
+[[ "$(wp core version --path="$wp_root")" == "$WP_VERSION" ]] || fail 'Wrong WordPress version'
+mkdir -p "$wp_root/wp-content/plugins/core-blueprint" "$wp_root/wp-content/plugins/core-blueprint-crm"
 git -C "$BASE_SOURCE" archive --format=tar "$base_sha" \
   | tar -xf - -C "$wp_root/wp-content/plugins/core-blueprint"
 git -C "$ROOT" archive --format=tar "$crm_sha" \
   | tar -xf - -C "$wp_root/wp-content/plugins/core-blueprint-crm"
-
-wp core download --path="$wp_root" --version="$WP_VERSION" --locale=en_US --skip-content --quiet
-[[ "$(wp core version --path="$wp_root")" == "$WP_VERSION" ]] || fail 'Wrong WordPress version'
 wp config create --path="$wp_root" --dbname="$database" --dbuser="$db_user" \
   --dbpass="$db_password" --dbhost="127.0.0.1:3307" --dbprefix="cbt_" --skip-check --quiet
 wp config set DISABLE_WP_CRON true --raw --path="$wp_root" --quiet
