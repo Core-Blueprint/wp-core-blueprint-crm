@@ -84,3 +84,9 @@ The first test installation already exists. Resume it **without reprovisioning**
       wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$WP_TEST"
 
 Do not weaken the Base Privileged Access Guard, add ad-hoc roles, or grant caps directly just to satisfy this test.
+
+## Actual local acceptance evidence (2026-10-11)
+
+User executed the real WordPress/MariaDB fresh-install integration against CRM runtime snapshot `248f1318afc2b30069b4f5b56066a112cfc452f4` and Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`. The separate disposable test database was `cb_crm_it_jux4zaml`. Base's official CLI Operator recovery established a signed privilege approval. All assertions in `tests/integration/sales-mariadb.php` passed: InnoDB schema, seed retry, rollback, unique indexes, WordPress Trash, a real injected SQL error, durable recovery and duplicate retry.
+
+This is **fresh-install integration PASS**, not evidence of an existing 1.5 installation upgrade. That is tested separately in `tools/check-sales-schema-upgrade`. No production or staging environment was used. The newer integration-runner-only commits do not change CRM runtime behavior.

@@ -62,9 +62,13 @@ crm_sha="$(git -C "$ROOT" rev-parse HEAD)"
 crm15sha="$(git -C "$ROOT" rev-parse '42e6915263694210698511735e9b9cd80dd01a40^{commit}' 2>/dev/null || true)"
 [[ -n "$crm15sha" ]] || fail 'Pinned CRM schema 1.5 source commit missing locally: fetch origin first'
 [[ "$crm_sha" != "$crm15sha" ]] || fail 'Target cannot equal CRM v1.5 baseline'
-git -C "$ROOT" show "$crm15sha:core-blueprint-crm.php" | grep -Fq "define( 'CB_CRM_SCHEMA_VERSION', '1.5' );" \
+# Evaluate short source headers without piping to grep -q under pipefail.
+# This prevents false negatives caused by git show receiving SIGPIPE.
+legacy_header="$(git -C "$ROOT" show "$crm15sha:core-blueprint-crm.php")"
+target_header="$(git -C "$ROOT" show "$crm_sha:core-blueprint-crm.php")"
+[[ "$legacy_header" == *"define( 'CB_CRM_SCHEMA_VERSION', '1.5' );"* ]] \
   || fail 'Pinned legacy source is not schema 1.5'
-git -C "$ROOT" show "$crm_sha:core-blueprint-crm.php" | grep -Fq "define( 'CB_CRM_SCHEMA_VERSION', '1.6' );" \
+[[ "$target_header" == *"define( 'CB_CRM_SCHEMA_VERSION', '1.6' );"* ]] \
   || fail 'Feature target is not CRM schema 1.6'
 base_sha="$(git -C "$BASE_SOURCE" rev-parse HEAD)"
 mkdir -p "$wp_root"
