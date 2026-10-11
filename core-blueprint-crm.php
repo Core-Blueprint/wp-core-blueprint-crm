@@ -27,7 +27,7 @@ if ( defined( 'CB_CRM_FILE' ) ) {
 
 define( 'CB_CRM_NAME', 'Core Blueprint CRM' );
 define( 'CB_CRM_VERSION', '1.0.0-rc1' );
-define( 'CB_CRM_SCHEMA_VERSION', '1.5' );
+define( 'CB_CRM_SCHEMA_VERSION', '1.6' );
 define( 'CB_CRM_MIN_PHP', '8.4' );
 define( 'CB_CRM_REQUIRED_API', '1.0' );
 define( 'CB_CRM_FILE', __FILE__ );
