@@ -217,11 +217,51 @@ $GLOBALS['wpdb'] = $wpdb;
 if ( true !== \CB\CRM\Database\Schema::install() ) {
 	$fail( 'Fresh schema install did not satisfy postconditions.' );
 }
-if ( 9 !== count( $wpdb->tables ) ) {
-	$fail( 'Fresh schema install did not create all nine CRM tables.' );
+if ( 15 !== count( $wpdb->tables ) ) {
+	$fail( 'Fresh schema install did not create all fifteen CRM tables.' );
 }
 if ( [] !== $wpdb->repair_queries ) {
 	$fail( 'Fresh install unexpectedly required legacy default repair.' );
+}
+
+
+// Simulate an in-place upgrade from CRM schema 1.5: retain all nine existing
+// table structures/data while adding only the six canonical Sales tables.
+$fresh_wpdb = $wpdb;
+$legacy = new CRM_Schema_Fake_Wpdb();
+$legacy->tables = array_slice( $fresh_wpdb->tables, 0, 9, true );
+$legacy->data_marker = 'existing-customer-records';
+$old_schema = serialize( $legacy->tables );
+$wpdb = $legacy;
+$GLOBALS['wpdb'] = $legacy;
+if ( true !== \CB\CRM\Database\Schema::install() ) {
+	$fail( 'Upgrade from schema 1.5 to 1.6 did not satisfy schema postconditions.' );
+}
+if ( 15 !== count( $legacy->tables ) ) {
+	$fail( 'Upgrade from schema 1.5 did not create all Sales tables.' );
+}
+if ( $old_schema !== serialize( array_slice( $legacy->tables, 0, 9, true ) ) ) {
+	$fail( 'Sales schema upgrade mutated existing CRM table definitions.' );
+}
+if ( 'existing-customer-records' !== $legacy->data_marker ) {
+	$fail( 'Sales schema upgrade lost the legacy data preservation marker.' );
+}
+$legacy_state = serialize( $legacy->tables );
+if ( true !== \CB\CRM\Database\Schema::install() || $legacy_state !== serialize( $legacy->tables ) ) {
+	$fail( 'Retrying the upgraded Sales schema was not idempotent.' );
+}
+$wpdb = $fresh_wpdb;
+$GLOBALS['wpdb'] = $fresh_wpdb;
+
+// A damaged new Sales column must fail closed, not be marked migrated.
+$wpdb->tables['wp_cb_crm_sales_leads']['columns']['status']['Type'] = 'varchar(1)';
+$wpdb->blocked_type_repairs['wp_cb_crm_sales_leads.status'] = true;
+if ( false !== \CB\CRM\Database\Schema::install() ) {
+	$fail( 'Installer accepted a damaged Sales column after a blocked repair.' );
+}
+unset( $wpdb->blocked_type_repairs['wp_cb_crm_sales_leads.status'] );
+if ( true !== \CB\CRM\Database\Schema::install() ) {
+	$fail( 'Installer failed to repair the Sales column on retry.' );
 }
 
 // Reproduce the silent defaults that the old multi-definition dbDelta input
