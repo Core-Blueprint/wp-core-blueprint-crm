@@ -15,7 +15,7 @@ final class Assets {
 		if ( ! $screen ) { return; }
 		$context = Menu::screen_context( $screen );
 		$is_record_editor = Menu::is_record_editor_screen( $screen );
-		if ( ! $is_record_editor && ! in_array( $context, [ Menu::CONTEXT_OVERVIEW, Menu::CONTEXT_USERS ], true ) ) { return; }
+		if ( ! $is_record_editor && ! in_array( $context, [ Menu::CONTEXT_OVERVIEW, Menu::CONTEXT_USERS, Menu::CONTEXT_LEADS, Menu::CONTEXT_OPPORTUNITIES ], true ) ) { return; }
 
 		wp_enqueue_style( 'cb-crm-admin', CB_CRM_URL . 'assets/admin.css', [], CB_CRM_VERSION );
 		if ( ! $is_record_editor ) { return; }
