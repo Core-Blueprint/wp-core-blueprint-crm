@@ -20,7 +20,6 @@ final class UserAnonymizationRecovery {
 	private const PREFIX = 'cb_crm_user_anonymize_intent_';
 	private const HOOK = 'cb_crm_user_anonymize_reconcile';
 	private const RETRY_SECONDS = 300;
-	private const REPAIR_LIMIT = 20;
 
 	public static function init(): void {
 		add_action( 'delete_user', [ __CLASS__, 'before_delete' ], 10, 1 );
@@ -116,20 +115,10 @@ final class UserAnonymizationRecovery {
 	 * Never mutates Sales data or trusts option payloads as an identity.
 	 */
 	public static function reschedule_pending(): void {
-		global $wpdb;
 		if ( ! self::supported() || ! current_user_can( 'cb_manage_crm' ) ) {
 			return;
 		}
-		$names = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s ORDER BY option_id ASC LIMIT %d",
-				$wpdb->esc_like( self::PREFIX ) . '%',
-				self::REPAIR_LIMIT
-			)
-		);
-		if ( ! is_array( $names ) ) {
-			return;
-		}
+		$names = RecoveryQueueScanner::next_names( 'user' );
 		foreach ( $names as $name ) {
 			if ( ! is_string( $name ) || ! preg_match( '/^cb_crm_user_anonymize_intent_([1-9][0-9]*)$/D', $name, $matches ) ) {
 				continue;

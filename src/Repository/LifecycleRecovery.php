@@ -19,7 +19,6 @@ final class LifecycleRecovery {
 	private const PREFIX = 'cb_crm_delete_intent_';
 	private const HOOK = 'cb_crm_lifecycle_reconcile';
 	private const RETRY_SECONDS = 300;
-	private const REPAIR_LIMIT = 20;
 
 	public static function init(): void {
 		add_filter( 'pre_delete_post', [ __CLASS__, 'pre_delete_post' ], 10, 3 );
@@ -128,20 +127,10 @@ final class LifecycleRecovery {
 	 * mutations occur here; indexed wp_options option_name lookup only.
 	 */
 	public static function reschedule_pending(): void {
-		global $wpdb;
 		if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'cb_manage_crm' ) ) {
 			return;
 		}
-		$names = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s ORDER BY option_id ASC LIMIT %d",
-				$wpdb->esc_like( self::PREFIX ) . '%',
-				self::REPAIR_LIMIT
-			)
-		);
-		if ( ! is_array( $names ) ) {
-			return;
-		}
+		$names = RecoveryQueueScanner::next_names( 'identity' );
 		foreach ( $names as $name ) {
 			if ( ! is_string( $name ) || ! preg_match( '/^cb_crm_delete_intent_([1-9][0-9]*)$/D', $name, $matches ) ) {
 				continue;
