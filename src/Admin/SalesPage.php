@@ -187,7 +187,9 @@ final class SalesPage {
 		}
 		echo '</tbody></table></div>';
 
-		SalesStatusActions::render_for_record( $type, $item );
+		if ( Access::can_manage() ) {
+			SalesStatusActions::render_for_record( $type, $item );
+		}
 
 		echo '<h3>' . esc_html__( 'Participants', 'core-blueprint-crm' ) . '</h3>';
 		if ( [] === $detail['participants'] ) {
