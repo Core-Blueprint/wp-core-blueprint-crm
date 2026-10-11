@@ -106,7 +106,11 @@ function cb_crm_runtime_ready(): bool {
 
 /* Every CRM management-capability path fails closed while product runtime is unavailable. */
 add_filter( 'map_meta_cap', static function ( array $caps, string $cap ): array {
-	if ( in_array( $cap, [ 'cb_manage_crm', 'cb_view_crm_sales', 'cb_manage_crm_sales' ], true ) && ! cb_crm_runtime_ready() ) {
+	if (
+	( 'cb_manage_crm' === $cap
+		|| in_array( $cap, [ 'cb_view_crm_sales', 'cb_manage_crm_sales' ], true ) )
+	&& ! cb_crm_runtime_ready()
+) {
 		return [ 'do_not_allow' ];
 	}
 	return $caps;

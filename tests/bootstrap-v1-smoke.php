@@ -58,6 +58,12 @@ $canonical_base      = 'Core Blueprint must be installed and active.';
 $canonical_api       = 'Core API %1$s or a newer compatible minor version is required. Available Core API: %2$s.';
 $canonical_contracts = 'Required Core Blueprint Base contracts are unavailable.';
 
+$map_meta_start = strpos( $entry, "add_filter( 'map_meta_cap'" );
+$map_meta_end = false !== $map_meta_start ? strpos( $entry, '}, 10, 2 );', $map_meta_start ) : false;
+$map_meta_guard = false !== $map_meta_start && false !== $map_meta_end
+	? substr( $entry, $map_meta_start, $map_meta_end - $map_meta_start )
+	: '';
+
 $checks = [
 	'Base-required plugin declares exact versionless native WordPress dependency' => 1 === preg_match( '/^[ \t]*\*[ \t]*Requires Plugins:[ \t]*core-blueprint[ \t]*$/m', $entry ),
 	'API compatibility follows same-major sufficient-minor semantics' => $compatible,
@@ -77,7 +83,8 @@ $checks = [
 	'product readiness owns Base service contracts separately' => str_contains( $entry, 'function cb_crm_product_ready(): bool' ) && str_contains( $entry, 'SchemaRegistry' ) && str_contains( $entry, 'Governance\\\\Audit' ) && str_contains( $entry, 'Governance\\\\EventRegistry' ),
 	'canonical runtime readiness combines generic and product readiness' => str_contains( $entry, 'function cb_crm_runtime_ready(): bool' ) && str_contains( $entry, 'Requirements::runtime_ready() && cb_crm_product_ready()' ),
 	'clean break removes pre-v1 compatibility helpers' => ! str_contains( $entry, 'function cb_crm_api_compatible(' ) && ! str_contains( $entry, 'function cb_crm_base_contracts_ready(' ) && ! str_contains( $entry, 'function cb_crm_base_ready(' ),
-	'CRM management capability fails closed outside runtime readiness' => str_contains( $entry, "'map_meta_cap'" ) && str_contains( $entry, "'cb_manage_crm' === \$cap" ) && str_contains( $entry, "return [ 'do_not_allow' ];" ),
+	'CRM management capability fails closed outside runtime readiness' => str_contains( $map_meta_guard, "'cb_manage_crm' === \$cap" ) && str_contains( $map_meta_guard, '! cb_crm_runtime_ready()' ) && str_contains( $map_meta_guard, "return [ 'do_not_allow' ];" ),
+	'Sales view and manage capabilities share the fail-closed runtime gate' => str_contains( $map_meta_guard, "in_array( \$cap, [ 'cb_view_crm_sales', 'cb_manage_crm_sales' ], true )" ) && str_contains( $map_meta_guard, '! cb_crm_runtime_ready()' ) && str_contains( $map_meta_guard, "return [ 'do_not_allow' ];" ),
 	'product contract failure uses canonical factual body' => str_contains( $entry, "'{$canonical_contracts}'" ) && str_contains( $suite, "'{$canonical_contracts}'" ),
 	'lightweight suite registration precedes the runtime product gate' => false !== $suite_init && false !== $product_gate && $suite_init < $product_gate,
 	'Suite self-enforces generic plus registration readiness' => str_contains( $suite, 'private static function registration_ready(): bool' ) && str_contains( $suite, 'Requirements::runtime_ready()' ) && str_contains( $suite, 'cb_crm_registration_contract_ready' ),
