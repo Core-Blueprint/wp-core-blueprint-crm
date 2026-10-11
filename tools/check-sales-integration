@@ -188,6 +188,10 @@ CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-contract-golden.php"
 echo '==> Verify Wave 2A native WordPress Sales read-only list/detail screens'
 CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-admin-w2a.php" \
   wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
+
+echo '==> Verify Wave 2B1 authenticated nonce-bound CRM Sales status changes'
+CB_CRM_INTEGRATION_TEST_FILE="$ROOT/tests/integration/sales-admin-w2b1.php" \
+  wp eval 'require getenv("CB_CRM_INTEGRATION_TEST_FILE");' --path="$wp_root"
 echo 'CRM Sales real WordPress/MariaDB integration: PASS'
 
 # Optional real single-site WordPress deleted_user SQL-failure/recovery fixture.
