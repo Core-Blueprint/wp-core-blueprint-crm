@@ -1,0 +1,350 @@
+{
+  "version": "1.0.0",
+  "domain": "core-blueprint-crm",
+  "locales": [
+    "nl_NL",
+    "de_DE",
+    "fr_FR",
+    "es_ES",
+    "it_IT",
+    "pt_PT"
+  ],
+  "messages": {
+    "You do not have permission to view CRM Sales.": {
+      "nl_NL": "U hebt geen toestemming om CRM Sales te bekijken.",
+      "de_DE": "Sie sind nicht berechtigt, CRM Sales anzuzeigen.",
+      "fr_FR": "Vous n’avez pas l’autorisation de consulter CRM Sales.",
+      "es_ES": "No tiene permiso para ver CRM Sales.",
+      "it_IT": "Non hai il permesso di visualizzare CRM Sales.",
+      "pt_PT": "Não tem permissão para consultar o CRM Sales."
+    },
+    "Internal staff records. Read-only overview.": {
+      "nl_NL": "Interne medewerkersgegevens. Alleen-lezenoverzicht.",
+      "de_DE": "Interne Mitarbeiterdatensätze. Schreibgeschützte Übersicht.",
+      "fr_FR": "Dossiers internes du personnel. Vue en lecture seule.",
+      "es_ES": "Registros internos del personal. Vista de solo lectura.",
+      "it_IT": "Record interni del personale. Panoramica di sola lettura.",
+      "pt_PT": "Registos internos da equipa. Vista só de leitura."
+    },
+    "All statuses": {
+      "nl_NL": "Alle statussen",
+      "de_DE": "Alle Status",
+      "fr_FR": "Tous les statuts",
+      "es_ES": "Todos los estados",
+      "it_IT": "Tutti gli stati",
+      "pt_PT": "Todos os estados"
+    },
+    "Owner": {
+      "nl_NL": "Eigenaar",
+      "de_DE": "Verantwortliche Person",
+      "fr_FR": "Responsable",
+      "es_ES": "Responsable",
+      "it_IT": "Responsabile",
+      "pt_PT": "Responsável"
+    },
+    "All records": {
+      "nl_NL": "Alle records",
+      "de_DE": "Alle Datensätze",
+      "fr_FR": "Tous les dossiers",
+      "es_ES": "Todos los registros",
+      "it_IT": "Tutti i record",
+      "pt_PT": "Todos os registos"
+    },
+    "Assigned to me": {
+      "nl_NL": "Aan mij toegewezen",
+      "de_DE": "Mir zugewiesen",
+      "fr_FR": "Qui me sont attribués",
+      "es_ES": "Asignados a mí",
+      "it_IT": "Assegnati a me",
+      "pt_PT": "Atribuídos a mim"
+    },
+    "Reset filters": {
+      "nl_NL": "Filters wissen",
+      "de_DE": "Filter zurücksetzen",
+      "fr_FR": "Réinitialiser les filtres",
+      "es_ES": "Restablecer filtros",
+      "it_IT": "Reimposta i filtri",
+      "pt_PT": "Repor filtros"
+    },
+    "Next action": {
+      "nl_NL": "Volgende actie",
+      "de_DE": "Nächste Aktion",
+      "fr_FR": "Prochaine action",
+      "es_ES": "Próxima acción",
+      "it_IT": "Prossima azione",
+      "pt_PT": "Próxima ação"
+    },
+    "Updated": {
+      "nl_NL": "Bijgewerkt",
+      "de_DE": "Aktualisiert",
+      "fr_FR": "Mis à jour",
+      "es_ES": "Actualizado",
+      "it_IT": "Aggiornato",
+      "pt_PT": "Atualizado"
+    },
+    "No matching records.": {
+      "nl_NL": "Geen overeenkomende records.",
+      "de_DE": "Keine passenden Datensätze.",
+      "fr_FR": "Aucun dossier correspondant.",
+      "es_ES": "No hay registros coincidentes.",
+      "it_IT": "Nessun record corrispondente.",
+      "pt_PT": "Não existem registos correspondentes."
+    },
+    "Sales pagination": {
+      "nl_NL": "Sales-paginering",
+      "de_DE": "Sales-Seitennavigation",
+      "fr_FR": "Pagination des ventes",
+      "es_ES": "Paginación de ventas",
+      "it_IT": "Paginazione vendite",
+      "pt_PT": "Paginação de vendas"
+    },
+    "First page": {
+      "nl_NL": "Eerste pagina",
+      "de_DE": "Erste Seite",
+      "fr_FR": "Première page",
+      "es_ES": "Primera página",
+      "it_IT": "Prima pagina",
+      "pt_PT": "Primeira página"
+    },
+    "Next page": {
+      "nl_NL": "Volgende pagina",
+      "de_DE": "Nächste Seite",
+      "fr_FR": "Page suivante",
+      "es_ES": "Página siguiente",
+      "it_IT": "Pagina successiva",
+      "pt_PT": "Página seguinte"
+    },
+    "Back to overview": {
+      "nl_NL": "Terug naar overzicht",
+      "de_DE": "Zurück zur Übersicht",
+      "fr_FR": "Retour à la vue d’ensemble",
+      "es_ES": "Volver al resumen",
+      "it_IT": "Torna alla panoramica",
+      "pt_PT": "Voltar à visão geral"
+    },
+    "Record not found.": {
+      "nl_NL": "Record niet gevonden.",
+      "de_DE": "Datensatz nicht gefunden.",
+      "fr_FR": "Dossier introuvable.",
+      "es_ES": "Registro no encontrado.",
+      "it_IT": "Record non trovato.",
+      "pt_PT": "Registo não encontrado."
+    },
+    "Read-only detail. Changes are not available on this screen.": {
+      "nl_NL": "Alleen-lezenweergave. Wijzigingen zijn niet mogelijk op dit scherm.",
+      "de_DE": "Schreibgeschützte Detailansicht. Änderungen sind auf diesem Bildschirm nicht möglich.",
+      "fr_FR": "Détail en lecture seule. Les modifications ne sont pas disponibles sur cet écran.",
+      "es_ES": "Detalle de solo lectura. No es posible realizar cambios en esta pantalla.",
+      "it_IT": "Dettaglio di sola lettura. Le modifiche non sono disponibili in questa schermata.",
+      "pt_PT": "Detalhe só de leitura. Não é possível fazer alterações neste ecrã."
+    },
+    "Pipeline ID": {
+      "nl_NL": "Pipeline-ID",
+      "de_DE": "Pipeline-ID",
+      "fr_FR": "ID du pipeline",
+      "es_ES": "ID del pipeline",
+      "it_IT": "ID della pipeline",
+      "pt_PT": "ID do pipeline"
+    },
+    "Stage ID": {
+      "nl_NL": "Fase-ID",
+      "de_DE": "Phasen-ID",
+      "fr_FR": "ID de l’étape",
+      "es_ES": "ID de la etapa",
+      "it_IT": "ID della fase",
+      "pt_PT": "ID da fase"
+    },
+    "Revision": {
+      "nl_NL": "Revisie",
+      "de_DE": "Revision",
+      "fr_FR": "Révision",
+      "es_ES": "Revisión",
+      "it_IT": "Revisione",
+      "pt_PT": "Revisão"
+    },
+    "Created": {
+      "nl_NL": "Aangemaakt",
+      "de_DE": "Erstellt",
+      "fr_FR": "Créé",
+      "es_ES": "Creado",
+      "it_IT": "Creato",
+      "pt_PT": "Criado"
+    },
+    "Source": {
+      "nl_NL": "Bron",
+      "de_DE": "Quelle",
+      "fr_FR": "Source",
+      "es_ES": "Origen",
+      "it_IT": "Fonte",
+      "pt_PT": "Origem"
+    },
+    "Converted Opportunity ID": {
+      "nl_NL": "ID geconverteerde Opportunity",
+      "de_DE": "ID der konvertierten Verkaufschance",
+      "fr_FR": "ID de l’opportunité convertie",
+      "es_ES": "ID de oportunidad convertida",
+      "it_IT": "ID opportunità convertita",
+      "pt_PT": "ID da oportunidade convertida"
+    },
+    "Amount (minor units)": {
+      "nl_NL": "Bedrag (kleinste munteenheid)",
+      "de_DE": "Betrag (kleinste Währungseinheit)",
+      "fr_FR": "Montant (unité monétaire minimale)",
+      "es_ES": "Importe (unidad monetaria mínima)",
+      "it_IT": "Importo (unità monetaria minima)",
+      "pt_PT": "Montante (unidade monetária mínima)"
+    },
+    "Currency": {
+      "nl_NL": "Valuta",
+      "de_DE": "Währung",
+      "fr_FR": "Devise",
+      "es_ES": "Moneda",
+      "it_IT": "Valuta",
+      "pt_PT": "Moeda"
+    },
+    "Source Lead ID": {
+      "nl_NL": "Bron-Lead-ID",
+      "de_DE": "Ursprungs-Lead-ID",
+      "fr_FR": "ID du lead source",
+      "es_ES": "ID del lead de origen",
+      "it_IT": "ID lead di origine",
+      "pt_PT": "ID do lead de origem"
+    },
+    "Participants": {
+      "nl_NL": "Betrokkenen",
+      "de_DE": "Beteiligte",
+      "fr_FR": "Participants",
+      "es_ES": "Participantes",
+      "it_IT": "Partecipanti",
+      "pt_PT": "Participantes"
+    },
+    "No participants.": {
+      "nl_NL": "Geen betrokkenen.",
+      "de_DE": "Keine Beteiligten.",
+      "fr_FR": "Aucun participant.",
+      "es_ES": "Sin participantes.",
+      "it_IT": "Nessun partecipante.",
+      "pt_PT": "Sem participantes."
+    },
+    "Activity history": {
+      "nl_NL": "Activiteitengeschiedenis",
+      "de_DE": "Aktivitätsverlauf",
+      "fr_FR": "Historique des activités",
+      "es_ES": "Historial de actividad",
+      "it_IT": "Cronologia delle attività",
+      "pt_PT": "Histórico de atividades"
+    },
+    "Event": {
+      "nl_NL": "Gebeurtenis",
+      "de_DE": "Ereignis",
+      "fr_FR": "Événement",
+      "es_ES": "Evento",
+      "it_IT": "Evento",
+      "pt_PT": "Evento"
+    },
+    "Actor ID": {
+      "nl_NL": "Actor-ID",
+      "de_DE": "Akteur-ID",
+      "fr_FR": "ID de l’auteur",
+      "es_ES": "ID del actor",
+      "it_IT": "ID dell’attore",
+      "pt_PT": "ID do interveniente"
+    },
+    "No history entries.": {
+      "nl_NL": "Geen geschiedenisitems.",
+      "de_DE": "Keine Verlaufseinträge.",
+      "fr_FR": "Aucune entrée dans l’historique.",
+      "es_ES": "No hay entradas en el historial.",
+      "it_IT": "Nessuna voce nella cronologia.",
+      "pt_PT": "Sem entradas no histórico."
+    },
+    "Unable to display CRM Sales records. Check the filters or your access.": {
+      "nl_NL": "Kan CRM Sales-records niet tonen. Controleer de filters of uw toegangsrechten.",
+      "de_DE": "CRM-Sales-Datensätze können nicht angezeigt werden. Prüfen Sie die Filter oder Ihre Zugriffsrechte.",
+      "fr_FR": "Impossible d’afficher les dossiers CRM Sales. Vérifiez les filtres ou vos droits d’accès.",
+      "es_ES": "No se pueden mostrar los registros de CRM Sales. Compruebe los filtros o sus permisos.",
+      "it_IT": "Impossibile mostrare i record di CRM Sales. Controlla i filtri o i permessi.",
+      "pt_PT": "Não é possível apresentar os registos do CRM Sales. Verifique os filtros ou as permissões."
+    },
+    "Open": {
+      "nl_NL": "Open",
+      "de_DE": "Offen",
+      "fr_FR": "Ouvert",
+      "es_ES": "Abierto",
+      "it_IT": "Aperto",
+      "pt_PT": "Aberto"
+    },
+    "Qualified": {
+      "nl_NL": "Gekwalificeerd",
+      "de_DE": "Qualifiziert",
+      "fr_FR": "Qualifié",
+      "es_ES": "Cualificado",
+      "it_IT": "Qualificato",
+      "pt_PT": "Qualificado"
+    },
+    "Disqualified": {
+      "nl_NL": "Afgewezen",
+      "de_DE": "Disqualifiziert",
+      "fr_FR": "Disqualifié",
+      "es_ES": "Descalificado",
+      "it_IT": "Squalificato",
+      "pt_PT": "Desqualificado"
+    },
+    "Converted": {
+      "nl_NL": "Geconverteerd",
+      "de_DE": "Konvertiert",
+      "fr_FR": "Converti",
+      "es_ES": "Convertido",
+      "it_IT": "Convertito",
+      "pt_PT": "Convertido"
+    },
+    "Won": {
+      "nl_NL": "Gewonnen",
+      "de_DE": "Gewonnen",
+      "fr_FR": "Gagné",
+      "es_ES": "Ganado",
+      "it_IT": "Vinto",
+      "pt_PT": "Ganho"
+    },
+    "Lost": {
+      "nl_NL": "Verloren",
+      "de_DE": "Verloren",
+      "fr_FR": "Perdu",
+      "es_ES": "Perdido",
+      "it_IT": "Perso",
+      "pt_PT": "Perdido"
+    },
+    "Leads": {
+      "nl_NL": "Leads",
+      "de_DE": "Leads",
+      "fr_FR": "Leads",
+      "es_ES": "Leads",
+      "it_IT": "Lead",
+      "pt_PT": "Leads"
+    },
+    "Opportunities": {
+      "nl_NL": "Opportunities",
+      "de_DE": "Verkaufschancen",
+      "fr_FR": "Opportunités",
+      "es_ES": "Oportunidades",
+      "it_IT": "Opportunità",
+      "pt_PT": "Oportunidades"
+    },
+    "Filter": {
+      "nl_NL": "Filteren",
+      "de_DE": "Filtern",
+      "fr_FR": "Filtrer",
+      "es_ES": "Filtrar",
+      "it_IT": "Filtra",
+      "pt_PT": "Filtrar"
+    },
+    "Title": {
+      "nl_NL": "Titel",
+      "de_DE": "Titel",
+      "fr_FR": "Titre",
+      "es_ES": "Título",
+      "it_IT": "Titolo",
+      "pt_PT": "Título"
+    }
+  }
+}
