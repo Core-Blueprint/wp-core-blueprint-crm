@@ -1,11 +1,11 @@
 # CRM Sales Wave 1A — Consolidated Golden Audit
 
-**Audit date:** 2026-10-11  
-**Status:** TECHNICAL FOUNDATION LOCALLY GOLDEN, **NOT** production/WordPress.org/privacy-policy release approved.  
-**Tested source (before evidence-only documentation commit):** `1d0a2745d18f738b0b838a2e67e4865a12443d8c`  
-**Base dependency pinned in real tests:** `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`  
-**Branch:** `feature/crm-sales-wave1-foundation-v1`  
-**Tested local ZIP:** `dist/core-blueprint-crm.zip`  
+**Audit date:** 2026-10-11
+**Status:** TECHNICAL FOUNDATION LOCALLY GOLDEN, **NOT** production/WordPress.org/privacy-policy release approved.
+**Tested source (before evidence-only documentation commit):** `1d0a2745d18f738b0b838a2e67e4865a12443d8c`
+**Base dependency pinned in real tests:** `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`
+**Branch:** `feature/crm-sales-wave1-foundation-v1`
+**Tested local ZIP:** `dist/core-blueprint-crm.zip`
 **SHA-256:** `e7539338e321ca4d6896675c78acf0e96738e8c9e297fba87200cdb86df32579`
 
 ## Executive conclusion
