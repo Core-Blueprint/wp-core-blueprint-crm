@@ -1,7 +1,7 @@
 # CRM Sales Wave 1A P1A: operator recovery oversight
 
 **Date:** 2026-10-11
-**Status:** Implementation candidate, *NOT YET locally executed*.
+**Status:** P1A operator oversight Golden PASS locally on 2026-10-11; P1B automatic scheduler fairness still open.
 **Prerequisite:** P0 durable single-site deleted-user anonymization Golden PASS at CRM `ebc1041aae1624d77470c08c2d89bc523a456531`, Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`, real disposable MariaDB DB `cb_crm_it_0l1kujdc`. Previous P0 release SHA-256 `feccc71fa3e40847e50e14bd8c426afb4e84a0d683a15a8fec57d09c95247c91`.
 
 ## Scope and trust boundary
@@ -72,3 +72,9 @@ Once the test passes, produce a new runtime ZIP:
 The **automatic** `LifecycleRecovery::reschedule_pending()` and `UserAnonymizationRecovery::reschedule_pending()` functions still read only the first 20 options on each eligible `admin_init`. Persistent, inert or malformed first-page intents can starve later entries. This has intentionally not been rewritten before P1A acceptance. P1B must implement a bounded *progressing* scanner and prove fairness for both queues with real options and multiple requests. WP-Cron delivery/host outage and optional operator observability UX remain separate concerns.
 
 P2 verified data-subject access/export and P3 lawful retention/erasure remain governance decisions. Do not merge, run GitHub Actions, deploy, publish or process real Sales personal data without explicit approval.
+
+## Actual local P1A acceptance (2026-10-11)
+
+User validated CRM source `f28f93a4e9fc3cbaf301d263a3b605bda81b530b` with Base `8544d1097d98c3a241a6c46b8c6fd0dcc27372e4`. PHP lint, complete `./tools/check`, `./tools/i18n/check`, and optional isolated WordPress/MariaDB operator integration PASS. Disposable DB `cb_crm_it_wlsfksrp` under `/tmp/core-blueprint-tests/core-blueprint-crm-sales/run.wlSFKSRp`. 25 synthetic user intents plus one malformed post intent were enumerated in two pages (cursor 175 then 181); bad payload remained visible; unauthenticated call and unconfirmed retry were refused; one approved `user #700000024` retry succeeded without deleting any other intent. Six-locale PO header and absent-sendmail warnings are nonblocking.
+
+`./tools/build-release`, ZIP integrity test and checksum-file verification all PASS. Canonical release ZIP SHA-256: **`1cda98d251e8deef9011712c8287be593543d22b9bda515f844a85f2b0483e3c`**. This certifies P1A only. The legacy per-request `admin_init` first-20 scan remains an open fairness/starvation issue to be handled separately as P1B. No merge/CI/staging/production GO.
