@@ -20,7 +20,7 @@ final class Assets {
 		// The plugin version remains rc1 across local candidates. Bust stale admin CSS
 		// without changing the public plugin release/version contract.
 		$css_version = CB_CRM_VERSION;
-		$css_path = CB_CRM_DIR . 'assets/admin.css';
+		$css_path = dirname( __DIR__, 2 ) . '/assets/admin.css';
 		if ( is_file( $css_path ) ) {
 			$css_mtime = filemtime( $css_path );
 			if ( false !== $css_mtime ) {
