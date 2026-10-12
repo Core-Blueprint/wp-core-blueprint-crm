@@ -34,14 +34,6 @@
       "it_IT": "Non disponi dei permessi per creare record commerciali.",
       "pt_PT": "Não tem permissão para criar registos comerciais."
     },
-    "First find a Contact or Organization to associate with this record.": {
-      "nl_NL": "Zoek eerst een contactpersoon of organisatie om aan dit record te koppelen.",
-      "de_DE": "Suchen Sie zuerst einen Kontakt oder eine Organisation, die mit diesem Datensatz verknüpft werden soll.",
-      "fr_FR": "Recherchez d’abord un contact ou une organisation à associer à ce dossier.",
-      "es_ES": "Primero busque un contacto o una organización para asociarlo a este registro.",
-      "it_IT": "Cerca prima un contatto o un’organizzazione da collegare a questo record.",
-      "pt_PT": "Primeiro, procure um contacto ou uma organização para associar a este registo."
-    },
     "Relationship type": {
       "nl_NL": "Relatietype",
       "de_DE": "Beziehungstyp",
@@ -185,6 +177,22 @@
       "es_ES": "Registro de ventas creado.",
       "it_IT": "Record commerciale creato.",
       "pt_PT": "Registo comercial criado."
+    },
+    "Enter a title to save this record now. You can link a Contact or Organization later.": {
+      "nl_NL": "Voer een titel in om dit record nu op te slaan. Je kunt later een contactpersoon of organisatie koppelen.",
+      "de_DE": "Geben Sie einen Titel ein, um den Datensatz jetzt zu speichern. Kontakt oder Organisation können Sie später verknüpfen.",
+      "fr_FR": "Saisissez un titre pour enregistrer ce dossier maintenant. Vous pourrez associer un contact ou une organisation plus tard.",
+      "es_ES": "Introduzca un título para guardar el registro ahora. Puede vincular un contacto o una organización más adelante.",
+      "it_IT": "Inserisci un titolo per salvare subito il record. Potrai collegare un contatto o un’organizzazione in seguito.",
+      "pt_PT": "Introduza um título para guardar o registo agora. Pode associar um contacto ou organização mais tarde."
+    },
+    "No relationship yet": {
+      "nl_NL": "Nog geen relatie",
+      "de_DE": "Noch keine Verknüpfung",
+      "fr_FR": "Aucune relation pour le moment",
+      "es_ES": "Todavía sin relación",
+      "it_IT": "Nessuna relazione per ora",
+      "pt_PT": "Ainda sem relação"
     }
   }
 }

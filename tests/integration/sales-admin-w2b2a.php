@@ -107,4 +107,22 @@ $assert( is_array( $events_a ) && is_array( $events_b )
 	&& [ 'created' ] === array_column( $events_b['rows'], 'event_type' )
 	&& $admin->ID === $events_a['rows'][0]['actor_user_id'],
 	'atomic audit trail missing' );
+$quick_lead_post = $post( 'lead', $lead_stages[0]['stage_id'], '' );
+$quick_deal_post = $post( 'opportunity', $deal_stages[0]['stage_id'], '' );
+$quick_deal_post['amount_minor'] = '';
+$quick_deal_post['currency'] = '';
+$quick_lead_id = SalesCreateActions::process( $quick_lead_post );
+$quick_deal_id = SalesCreateActions::process( $quick_deal_post );
+$assert( is_int( $quick_lead_id ) && $quick_lead_id > 0 && is_int( $quick_deal_id ) && $quick_deal_id > 0,
+    'title-first creation without identity failed' );
+$quick_lead = StaffProjections::detail( 'lead', $quick_lead_id );
+$quick_deal = StaffProjections::detail( 'opportunity', $quick_deal_id );
+$assert( is_array( $quick_lead ) && is_array( $quick_deal )
+    && [] === $quick_lead['participants'] && [] === $quick_deal['participants']
+    && 1 === $quick_lead['record']['revision'] && 1 === $quick_deal['record']['revision']
+    && null === $quick_deal['record']['amount_minor'], 'Quick Capture data or revision invalid' );
+$quick_events = StaffProjections::history( 'lead', $quick_lead_id, 0, 20 );
+$assert( is_array( $quick_events ) && [ 'created' ] === array_column( $quick_events['rows'], 'event_type' ),
+    'Quick Capture lost immutable creation event' );
 echo "PASS: real WordPress/MariaDB W2B2-A guarded Lead/Opportunity creation, identity selection, C1 history.\n";
+echo "PASS: title-first unlinked Lead/Opportunity Quick Capture, transaction, audit.\n";

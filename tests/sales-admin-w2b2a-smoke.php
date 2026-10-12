@@ -113,6 +113,21 @@ namespace {
 	$empty_amount['currency'] = '';
 	$check( 18 === Create::process( $empty_amount ), 'nullable estimate rejected' );
 	$check( null === Facade::$calls[2][1]['amount_minor'], 'nullable estimate not preserved' );
+	$quick_lead = $post( 'lead' );
+	$quick_lead['party'] = '';
+	$check( 17 === Create::process( $quick_lead ), 'title-first Lead Quick Capture failed' );
+	$check( [] === Facade::$calls[3][2], 'unlinked Lead unexpectedly has participants' );
+	$quick_opp = $post( 'opportunity' );
+	$quick_opp['party'] = '';
+	$quick_opp['amount_minor'] = '';
+	$quick_opp['currency'] = '';
+	$check( 18 === Create::process( $quick_opp ), 'title-first Opportunity Quick Capture failed' );
+	$check( [] === Facade::$calls[4][2] && null === Facade::$calls[4][1]['amount_minor'], 'unlinked Opportunity mutated' );
+	$_GET = [];
+	ob_start(); Create::render_for_type( 'lead', 'core-blueprint-crm-leads' ); $quick_html = (string) ob_get_clean();
+	$check( str_contains( $quick_html, 'name="title"' ) && str_contains( $quick_html, 'name="party" value=""' )
+		&& str_contains( $quick_html, 'name="stage_id"' ) && str_contains( $quick_html, 'admin-post.php' ),
+		'create form requires identity lookup before saving' );
 
 	$_GET = [ 'identity_type' => 'contact', 'identity_search' => 'Identity' ];
 	ob_start(); Create::render_for_type( 'lead', 'core-blueprint-crm-leads' ); $html = (string) ob_get_clean();

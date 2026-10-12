@@ -57,7 +57,8 @@ $valid = [
 ];
 $assert( Rules::valid_participants( $valid ), 'multi-contact organization prospect supported' );
 $assert( Rules::valid_participants( [ [ 'party_type' => 'organization', 'party_id' => 42 ] ] ), 'organization-only prospect supported' );
-$assert( ! Rules::valid_participants( [] ), 'at least one identity needed' );
+$assert( ! Rules::valid_participants( [] ), 'strict participant validation remains default' );
+$assert( Rules::valid_participants( [], true ), 'creation explicitly permits empty participant set' );
 $assert( ! Rules::valid_participants( [ [ 'party_type' => 'contact', 'party_id' => 0 ] ] ), 'unknown identity refused' );
 $assert( ! Rules::valid_participants( [ [ 'party_type' => 'lead', 'party_id' => 2 ] ] ), 'lead cannot be a party' );
 $assert( ! Rules::valid_participants( [ $valid[0], $valid[0] ] ), 'duplicate participant blocked' );

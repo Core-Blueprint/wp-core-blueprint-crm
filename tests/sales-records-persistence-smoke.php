@@ -188,7 +188,7 @@ $GLOBALS['sales_actor'] = 17;
 
 $assert( 'crm_sales_invalid_input' === $code( Records::create_lead( [ 'title' => 'Bad', 'pipeline_id' => '10', 'stage_id' => 20 ], $parties ) ), 'numeric string ID rejected' );
 $assert( 'crm_sales_invalid_input' === $code( Records::create_lead( $lead + [ 'owner_user_id' => 999 ], $parties ) ), 'owner impersonation rejected' );
-$assert( 'crm_sales_invalid_participants' === $code( Records::create_lead( $lead, [] ) ), 'orphan record rejected' );
+$assert( ! \CB\CRM\Domain\Sales\Rules::valid_participants( [] ), 'other workflows still require participants by default' );
 $assert( 'crm_sales_invalid_participants' === $code( Records::create_lead( $lead, [ $parties[0], $parties[0] ] ) ), 'duplicate relation rejected' );
 
 $assert( 'crm_sales_invalid_pipeline' === $code( Records::create_lead( [ 'title' => 'Wrong pipeline', 'pipeline_id' => 11, 'stage_id' => 20 ], $parties ) ), 'deal pipeline cannot hold a Lead' );
@@ -256,6 +256,11 @@ $assert( 'crm_sales_storage_failed' === $code( Records::create_lead( $lead, $par
 $assert( $before === serialize( $wpdb->rows ), 'failed commit rolled back all records' );
 $wpdb->fail_commit = false;
 
+$quick_lead_id = Records::create_lead( $lead, [] );
+$quick_deal_id = Records::create_opportunity( [ 'title' => 'Fast prospect', 'pipeline_id' => 11, 'stage_id' => 21 ], [] );
+$assert( is_int( $quick_lead_id ) && $quick_lead_id > 0 && is_int( $quick_deal_id ) && $quick_deal_id > 0, 'Quick Capture creates without identities' );
+$assert( 3 === count( $wpdb->rows['wp_cb_crm_sales_participants'] ), 'Quick Capture does not manufacture identity rows' );
+$assert( 4 === count( $wpdb->rows['wp_cb_crm_sales_events'] ), 'Quick Capture creates transactional audit events' );
 $GLOBALS['sales_authorized'] = false;
 $assert( 'crm_sales_forbidden' === $code( Records::get( 'lead', $id ) ), 'unauthorised read fails closed' );
 $assert( 'crm_sales_forbidden' === $code( Records::get( 'opportunity', $deal_id ) ), 'unauthorised deal read fails closed' );
