@@ -78,9 +78,9 @@ final class Rules {
 	 *
 	 * @param array<int,array<string,mixed>> $participants
 	 */
-	public static function valid_participants( array $participants ): bool {
+	public static function valid_participants( array $participants, bool $allow_empty = false ): bool {
 		if ( [] === $participants ) {
-			return false;
+			return $allow_empty;
 		}
 		$seen = [];
 		foreach ( $participants as $participant ) {

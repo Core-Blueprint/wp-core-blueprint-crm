@@ -84,7 +84,7 @@ final class Records {
 		if ( '' === $title || mb_strlen( $title ) > 190 || $pipeline_id <= 0 || $stage_id <= 0 ) {
 			return self::error( 'crm_sales_invalid_input', 'Invalid CRM Sales title or stage.' );
 		}
-		if ( count( $participants ) > self::MAX_PARTICIPANTS || ! Rules::valid_participants( $participants ) ) {
+		if ( count( $participants ) > self::MAX_PARTICIPANTS || ! Rules::valid_participants( $participants, true ) ) {
 			return self::error( 'crm_sales_invalid_participants', 'Invalid CRM Sales participant set.' );
 		}
 

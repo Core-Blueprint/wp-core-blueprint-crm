@@ -52,7 +52,7 @@ final class SalesCreateActions {
 		$back = add_query_arg( [ 'page' => $slug ], admin_url( 'admin.php' ) );
 		echo '<p><a href="' . esc_url( $back ) . '">' . esc_html__( 'Back to overview', 'core-blueprint-crm' ) . '</a></p>';
 		echo '<h2>' . esc_html( $label ) . '</h2>';
-		echo '<p class="description">' . esc_html__( 'First find a Contact or Organization to associate with this record.', 'core-blueprint-crm' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Enter a title to save this record now. You can link a Contact or Organization later.', 'core-blueprint-crm' ) . '</p>';
 		echo '<form method="get" action="' . esc_url( admin_url( 'admin.php' ) ) . '" class="cb-crm-sales-filters">';
 		echo '<input type="hidden" name="page" value="' . esc_attr( $slug ) . '"><input type="hidden" name="create" value="1">';
 		echo '<label for="cb-crm-identity-type">' . esc_html__( 'Relationship type', 'core-blueprint-crm' ) . '</label>';
@@ -63,30 +63,32 @@ final class SalesCreateActions {
 		echo '</select><label for="cb-crm-identity-search">' . esc_html__( 'Search name', 'core-blueprint-crm' ) . '</label>';
 		echo '<input id="cb-crm-identity-search" name="identity_search" type="search" maxlength="80" value="' . esc_attr( $search ) . '" required>';
 		echo '<button type="submit" class="button">' . esc_html__( 'Find relationship', 'core-blueprint-crm' ) . '</button></form>';
-		if ( '' === $search ) {
-			return;
-		}
-		if ( [] === $identities ) {
+		if ( '' !== $search && [] === $identities ) {
 			echo '<p role="status">' . esc_html__( 'No matching Contacts or Organizations. Try another name.', 'core-blueprint-crm' ) . '</p>';
-			return;
 		}
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" class="cb-crm-sales-create">';
 		echo '<input type="hidden" name="action" value="' . esc_attr( self::HOOK ) . '">';
 		echo '<input type="hidden" name="entity_type" value="' . esc_attr( $type ) . '">';
 		wp_nonce_field( self::nonce_action( $type ), '_wpnonce', false, true );
-		echo '<fieldset><legend>' . esc_html__( 'Select a relationship', 'core-blueprint-crm' ) . '</legend>';
+		if ( [] === $identities ) {
+			echo '<input type="hidden" name="party" value="">';
+		} else {
+			echo '<fieldset><legend>' . esc_html__( 'Select a relationship', 'core-blueprint-crm' ) . '</legend>';
+			echo '<label class="cb-crm-sales-identity"><input type="radio" name="party" value="" checked> ' . esc_html__( 'No relationship yet', 'core-blueprint-crm' ) . '</label>';
 		foreach ( $identities as $index => $identity ) {
 			$id = 'cb-crm-party-' . $index;
 			echo '<label class="cb-crm-sales-identity" for="' . esc_attr( $id ) . '">';
-			echo '<input type="radio" id="' . esc_attr( $id ) . '" name="party" value="' . esc_attr( $party_type . ':' . $identity['id'] ) . '" required>';
+			echo '<input type="radio" id="' . esc_attr( $id ) . '" name="party" value="' . esc_attr( $party_type . ':' . $identity['id'] ) . '">';
 			echo esc_html( $identity['title'] ) . ' <span class="description">#' . esc_html( (string) $identity['id'] ) . '</span></label>';
 		}
 		echo '</fieldset>';
+		}
 		echo '<label for="cb-crm-sales-title">' . esc_html__( 'Title', 'core-blueprint-crm' ) . '</label>';
 		echo '<input id="cb-crm-sales-title" type="text" name="title" maxlength="190" required>';
 		echo '<label for="cb-crm-sales-stage">' . esc_html__( 'Pipeline and stage', 'core-blueprint-crm' ) . '</label>';
-		echo '<select id="cb-crm-sales-stage" name="stage_id" required><option value="">' . esc_html__( 'Choose a stage', 'core-blueprint-crm' ) . '</option>';
+		echo '<select id="cb-crm-sales-stage" name="stage_id" required>';
+		$initial_stage = $stages[0]['stage_id'];
 		$group = null;
 		foreach ( $stages as $stage ) {
 			if ( $group !== $stage['pipeline_id'] ) {
@@ -96,7 +98,7 @@ final class SalesCreateActions {
 				$group = $stage['pipeline_id'];
 				echo '<optgroup label="' . esc_attr( $stage['pipeline_name'] ) . '">';
 			}
-			echo '<option value="' . esc_attr( (string) $stage['stage_id'] ) . '">' . esc_html( $stage['stage_name'] ) . '</option>';
+			echo '<option value="' . esc_attr( (string) $stage['stage_id'] ) . '"' . selected( $initial_stage, $stage['stage_id'], false ) . '>' . esc_html( $stage['stage_name'] ) . '</option>';
 		}
 		if ( null !== $group ) {
 			echo '</optgroup>';
@@ -162,12 +164,19 @@ final class SalesCreateActions {
 		if ( '' === $title || mb_strlen( $title ) > 190 || null === $stage_id ) {
 			return new \WP_Error( 'crm_sales_invalid_request' );
 		}
-		if ( ! preg_match( '/^(contact|organization):([1-9][0-9]{0,17})$/D', $values['party'], $matches ) ) {
+		$participants = [];
+		if ( ! Rules::valid_participant_role( $values['role'] ) ) {
 			return new \WP_Error( 'crm_sales_invalid_request' );
 		}
-		$party_id = self::positive_integer( $matches[2] );
-		if ( null === $party_id || ! Rules::valid_participant_role( $values['role'] ) ) {
-			return new \WP_Error( 'crm_sales_invalid_request' );
+		if ( '' !== $values['party'] ) {
+			if ( ! preg_match( '/^(contact|organization):([1-9][0-9]{0,17})$/D', $values['party'], $matches ) ) {
+				return new \WP_Error( 'crm_sales_invalid_request' );
+			}
+			$party_id = self::positive_integer( $matches[2] );
+			if ( null === $party_id ) {
+				return new \WP_Error( 'crm_sales_invalid_request' );
+			}
+			$participants[] = [ 'party_type' => $matches[1], 'party_id' => $party_id, 'role' => $values['role'] ];
 		}
 		$stages = CreationOptions::stages( $type );
 		if ( $stages instanceof \WP_Error ) {
@@ -195,7 +204,6 @@ final class SalesCreateActions {
 			$input['amount_minor'] = $minor;
 			$input['currency'] = $currency;
 		}
-		$participants = [ [ 'party_type' => $matches[1], 'party_id' => $party_id, 'role' => $values['role'] ] ];
 		return Rules::LEAD === $type
 			? StaffActions::create_lead( $input, $participants )
 			: StaffActions::create_opportunity( $input, $participants );
